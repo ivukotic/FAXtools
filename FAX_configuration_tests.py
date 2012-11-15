@@ -160,8 +160,8 @@ for s in sites:  # this is file to be asked for
                  body= '\nDear '+s.responsableName+',\n\n\tA cron job analysing FAX infrastructure readiness detected that it could not receive '
                  body+='a file that is unique to your site, by directly demanding it from '+s.host+'. Command executed was:\n '
                  body+=s.comm1
-                 body+='\nLog file is available through a web page:\n http://ivukotic.web.cern.ch/ivukotic/FAX/index.asp.\n\tPlease be so kind as to investigate and correct the problem.\n'
-                 body+='\tIn case there was a change of then FAX door host or your are not a responsable person, please send mail to ivukotic@cern.ch so test configuration can be updated.\n\n'
+                 body+='\nLog file is available through a web page: http://ivukotic.web.cern.ch/ivukotic/FAX/index.asp.\n\n\tPlease be so kind as to investigate and correct the problem. '
+                 body+='In case there was a change of then FAX door host or your are not a responsable person, please send mail to ivukotic@cern.ch so test configuration can be updated.\n\n'
                  body+='Yours trully,\n FAX checking deamon.\n'
                  msg = MIMEText(body) 
                  msg['Subject'] = 'FAX service problem at '+s.name+' observed.'
