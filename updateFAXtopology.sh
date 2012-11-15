@@ -14,7 +14,7 @@ asetup 17.6.0,noTest
 
 voms-proxy-init -voms atlas -pwstdin < $HOME/gridlozinka.txt
 
-cd /afs/cern.ch/user/i/ivukotic/crons/
+cd $HOME/FAXtools/
 
 python FAX_configuration_tests.py
 
@@ -22,7 +22,7 @@ echo "Done."
 
 #moving files to web dir
 
-base=/afs/cern.ch/user/i/ivukotic/www/logs/FAXtopo
+base=$HOME/www/logs/FAXtopo
 
 d="$(date +%a)"
 webdir=$base/$d

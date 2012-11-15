@@ -4,13 +4,16 @@ import subprocess, threading, os, sys, cx_Oracle,time
 import smtplib
 from email.mime.text import MIMEText
 
+timeouts=30
+sleeps=25
+
 line=''
 
-with open('~/private/OracleAccess.txt', 'r') as f: 
+with open('/afs/cern.ch/user/i/ivukotic/private/OracleAccess.txt', 'r') as f: 
     lines=f.readlines()
-	for line in lines:
-		if 'ATLAS_WANHCTEST' in line:
-			break
+    for line in lines:
+        if 'ATLAS_WANHCTEST' in line:
+            break
     f.close()
 
 sites=[]; # each site contains [name, host, redirector, siteid]
@@ -122,8 +125,8 @@ with open('toExecute.sh', 'w') as f: # first check that site itself gives it's o
 
 print 'executing all of the xrdcps in parallel. 5 min timeout.'
 com = Command("source toExecute.sh")    
-com.run(300)
-time.sleep(120)
+com.run(timeouts)
+time.sleep(sleeps)
 
 
 
@@ -174,6 +177,7 @@ for s in sites:  # this is file to be asked for
             
 for s in sites: s.prnt(0)  #print only real sites
 
+sys.exit(0)
 
 print "================================= CHECK II ================================================="
 
@@ -188,8 +192,8 @@ with open('checkRedirection.sh', 'w') as f: # ask good sites for unexisting file
     
 print 'executing all of the redirection xrdcps in parallel. 5 min timeout.'
 com = Command("source checkRedirection.sh")    
-com.run(300)
-time.sleep(120)
+com.run(timeouts)
+time.sleep(sleeps)
 
 for s in sites:
     if s.redirector>0 or s.direct==0: continue
@@ -250,8 +254,8 @@ with open('checkUpDown.sh', 'w') as f: # ask global redirectors for files belong
 
 print 'executing all of the redirection xrdcps in parallel. 5 min timeout.'
 com = Command("source checkUpDown.sh")    
-com.run(300)
-time.sleep(120)
+com.run(timeouts)
+time.sleep(sleeps)
 
 
 
