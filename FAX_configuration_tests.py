@@ -4,8 +4,8 @@ import subprocess, threading, os, sys, cx_Oracle,time
 import smtplib
 from email.mime.text import MIMEText
 
-timeouts=30
-sleeps=25
+timeouts=300
+sleeps=250
 
 line=''
 
@@ -27,7 +27,8 @@ class site:
     redirects=0
     responsable=''
     responsableName=''
-    
+    comm1=''
+     
     def __init__(self, na, ho, re, si, resp, respName):
         self.name=na
         self.host=ho
@@ -119,8 +120,8 @@ with open('toExecute.sh', 'w') as f: # first check that site itself gives it's o
         if s.redirector>0: continue
         logfile=s.name+'_to_'+s.name+'.log'
         lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-1M'
-        comm='xrdcp -f -np -d 1 root://'+s.host+'//atlas/dq2/user/HironoriIto/'+lookingFor+' /dev/null >& '+logfile+' & \n'
-        f.write(comm)
+        s.comm1='xrdcp -f -np -d 1 root://'+s.host+'//atlas/dq2/user/HironoriIto/'+lookingFor+' /dev/null >& '+logfile+' & \n'
+        f.write(s.comm1)
     f.close()
 
 print 'executing all of the xrdcps in parallel. 5 min timeout.'
@@ -151,33 +152,34 @@ for s in sites:  # this is file to be asked for
         else:
             print logfile, "problem"
             # send mail
-            pass
-            # try:
-            #     smt = smtplib.SMTP()
-            #     smt.connect()   
-            #     
-            #     body= '\nDear '+s.responsableName+',\n\n\tA cron job analysing FAX infrastructure readiness detected that it could not receive\n'
-            #     body+='a file that is unique to your site, by directly demanding it from '+s.host+'.\n'
-            #     body+='Please be so kind as to investigate and correct the problem.\n'
-            #     body+='Yours trully,\n FAX checking deamon.\n'
-            #     msg = MIMEText(body) 
-            #     msg['Subject'] = 'FAX service problem at '+s.name+' observed.'
-            #     msg['From'] = 'persistent.model.check@cern.ch'
-            #     msg['To'] = s.responsable
-            #     
-            #     smt.sendmail('persistent.model.check@cern.ch', s.responsable, msg.as_string())
-            #         
-            #     smt.quit()
-            # 
-            # except smtplib.SMTPException:
-            #     print "Error: unable to send mail."
+            # pass
+            try:
+                 smt = smtplib.SMTP()
+                 smt.connect()   
+                 
+                 body= '\nDear '+s.responsableName+',\n\n\tA cron job analysing FAX infrastructure readiness detected that it could not receive '
+                 body+='a file that is unique to your site, by directly demanding it from '+s.host+'. Command executed was:\n '
+                 body+=s.comm1
+                 body+='\nLog file is available through a web page:\n http://ivukotic.web.cern.ch/ivukotic/FAX/index.asp.\n\tPlease be so kind as to investigate and correct the problem.\n'
+                 body+='\tIn case there was a change of then FAX door host or your are not a responsable person, please send mail to ivukotic@cern.ch so test configuration can be updated.\n\n'
+                 body+='Yours trully,\n FAX checking deamon.\n'
+                 msg = MIMEText(body) 
+                 msg['Subject'] = 'FAX service problem at '+s.name+' observed.'
+                 msg['From'] = 'fax.door.checker@cern.ch'
+                 msg['To'] = s.responsable
+                 
+                 smt.sendmail('ivukotic@cern.ch', s.responsable, msg.as_string())
+                     
+                 smt.quit()
+             
+            except smtplib.SMTPException:
+                print "Error: unable to send mail."
                     
 
                 
             
 for s in sites: s.prnt(0)  #print only real sites
 
-sys.exit(0)
 
 print "================================= CHECK II ================================================="
 
