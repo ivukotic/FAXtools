@@ -50,12 +50,12 @@ class LFNs (DQDashboardTool):
     
     def writeout(self, filesPerJob=5):
         ofs=[]
-        jobs=int(math.ceil(len(root)/filesPerJob))
+        jobs=int(math.ceil(len(self.roots)/filesPerJob))
         for j in range(jobs):
             cf='pfn_'+j+'.tmp'
             ofs.append(cf)
             with open(cf,'w') as f:
-                rftw=self.root[j*filesPerJob,(j+1)*filesPerJob]
+                rftw=self.roots[j*filesPerJob,(j+1)*filesPerJob]
                 f.write(",".join(rftw))
             f.close()
         return ofs
