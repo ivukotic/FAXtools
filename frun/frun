@@ -1,0 +1,110 @@
+#!/usr/bin/env python
+
+import sys, os, re
+
+try:
+    import dq2.clientapi.cli.cliutil
+    from dq2.common.cli.DQDashboardTool import DQDashboardTool
+    from dq2.clientapi.cli.cliutil import getDQ2
+    from dq2.filecatalog.lfc.lfcconventions import to_native_lfn
+except ImportError:
+    print "Environment not set [error importing DQ2 dependencies]!"
+    sys.exit(1)
+
+
+class LFNs (DQDashboardTool):
+    usage=''
+    version=''
+    description=''
+    dsn=[]
+    toolOptions = [ dq2.clientapi.cli.cliutil.opt_dataset_version  ]
+
+    def __init__ (self, idsn):
+        DQDashboardTool.__init__(self)
+        self.dsn=idsn
+ 
+    def execute(self):
+        dq = getDQ2(self)
+        roots=[]
+        redir='glrd.usatlas.org'
+        if os.environ.get("XRDREDIRECTOR") != None:
+            redir=os.environ.get("XRDREDIRECTOR")    
+            
+                
+        for ds in self.dsn:
+            print 'doing: ', ds
+            ret = dq.listFilesInDataset(ds, version=self.options.version)
+
+            if len(ret):
+                entry = ret[0]
+            else:
+                print "encountered an empty DS:", ds
+                continue
+        
+            for guid in entry:
+                gfn='root://'+redir+'/' + to_native_lfn(ds, entry[guid]['lfn']).replace("/grid", "")
+                if gfn.endswith('.root'):
+                    roots.append(gfn)
+                    
+        # print roots
+        
+        with open('pfn.tmp','w') as f:
+            f.write(",".join(roots))
+        f.close()
+
+iDS=[]
+
+# first pass through the arguments
+for clp in sys.argv:
+    print clp	
+    clpw = clp.split('=')
+    if clpw[0]=='--inDS':
+        l=clpw[1].split(',')
+        for w in l:
+            if len(w)<5:
+                print 'very suspitiously looking DS. skipping: ', w
+            else:
+                iDS.append(w)
+                
+    if clpw[0]=='--inDsTxt':
+        with open(clpw[1],'r') as f:
+            lines=f.readlines()
+            for l in lines:
+                l=l.split(",")
+                for w in l:
+                    w=w.strip()
+                    if len(w)<5:
+                        print 'very suspitiously looking DS. skipping: ', w
+                    else:
+                        iDS.append(w)
+        f.close()
+
+# second pass
+for clp in sys.argv:
+    clpw = clp.split('=')
+    if clpw[0]=='--removedDS' and (clpw[1] in iDS):
+        iDS.remove(clpw[1])
+        
+allARGS=['prun']
+for i,clp in enumerate(sys.argv):
+    clpf=clp.split('=')[0]
+    if i<1 or clpf=='--inDS' or clpf=='--inDsTxt' or clpf=='--pfnList': continue
+    allARGS.append(clp)
+
+sys.argv=[]
+
+if iDS is None:
+    print 'This is FRUN meaning you have to give it inDS or inDsTxt'
+    sys.exit(0)
+else:
+    print iDS
+    LFNs(iDS).execute()
+    
+if os.path.exists('pfn.tmp'):
+    import subprocess
+    allARGS.append('--pfnList=pfn.tmp')
+    print 'submitting prun job:',' '.join(allARGS)
+    p = subprocess.Popen(allARGS, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+    print out
+    print err
