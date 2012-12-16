@@ -52,7 +52,7 @@ class LFNs (DQDashboardTool):
         ofs=[]
         jobs=int(math.ceil(len(self.roots)/filesPerJob))
         for j in range(jobs):
-            cf='pfn_'+j+'.tmp'
+            cf='pfn_'+str(j)+'.tmp'
             ofs.append(cf)
             with open(cf,'w') as f:
                 rftw=self.roots[j*filesPerJob,(j+1)*filesPerJob]
