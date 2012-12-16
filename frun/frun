@@ -48,7 +48,7 @@ class LFNs (DQDashboardTool):
                     
         return self.roots
     
-    def writeout(self, filesPerJob=5):
+    def writeout(self, filesPerJob=20):
         ofs=[]
         jobs=int(math.ceil(len(self.roots)/filesPerJob))
         for j in range(jobs):
