@@ -9,13 +9,13 @@ echo "deleting old files..."
 WD=/afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/
 
 cd $WD
-rm checkRedirection.sh checkUpDown.sh toExecute.sh *.log
+rm check*.sh *.log
 
 source /afs/cern.ch/project/gd/LCG-share/current/etc/profile.d/grid_env.sh; 
 
 source $AtlasSetup/scripts/asetup.sh 17.6.0,noTest
 
-voms-proxy-init -voms atlas -pwstdin < $WD/gridlozinka.txt
+voms-proxy-init -cert /afs/cern.ch/user/i/ivukotic/.globus/usercert.pem -key /afs/cern.ch/user/i/ivukotic/.globus/userkey.pem -voms atlas -pwstdin < /afs/cern.ch/user/i/ivukotic/gridlozinka.txt
 
 cd $WD
 

@@ -38,7 +38,8 @@ class site:
     host=''
     redirector=''
     direct=0
-    redirects=0
+    upstream=0
+    downstream=0
     comm1=''
      
     def __init__(self, na, ho, re):
@@ -48,7 +49,7 @@ class site:
     
     def prnt(self, what):
         if (what>=0 and self.redirector!=what): return
-        print '\tredirector:', self.redirector, '\tname:', self.name, '\thost:', self.host, '\tresponds:', self.direct, '\t redirects:', self.redirects
+        print '\tredirector:', self.redirector, '\tname:', self.name, '\thost:', self.host, '\tresponds:', self.direct, '\t upstream:', self.upstream, '\t downstream:', self.downstream
     
 
 print 'Geting site list from AGIS...' 
@@ -99,7 +100,7 @@ print 'creating scripts to execute'
     
 print "================================= CHECK I =================================================="
     
-with open('toExecute.sh', 'w') as f: # first check that site itself gives it's own file
+with open('checkDirect.sh', 'w') as f: # first check that site itself gives it's own file
     for s in sites:
         logfile=s.name+'_to_'+s.name+'.log'
         lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-1M'
@@ -109,7 +110,7 @@ with open('toExecute.sh', 'w') as f: # first check that site itself gives it's o
 
 #sys.exit(0)
 print 'executing all of the xrdcps in parallel. 5 min timeout.'
-com = Command("source toExecute.sh")    
+com = Command("source checkDirect.sh")    
 com.run(timeouts)
 time.sleep(sleeps)
 
@@ -132,33 +133,31 @@ for s in sites:  # this is file to be asked for
             s.direct=1
         else:
             print logfile, "problem"
-        send ('siteName: '+ s.name + '\nmetricName: FAXprobe1\nmetricStatus: '+str(s.direct)+'\ntimestamp: '+datetime.datetime.now().isoformat(' ')+'EOT\n') 
             
 for s in sites: s.prnt(0)  #print only real sites
 
-sys.exit(0)
+#sys.exit(0)
 
 print "================================= CHECK II ================================================="
 
-with open('checkRedirection.sh', 'w') as f: # ask good sites for unexisting file
+with open('checkUpstream.sh', 'w') as f: # ask good sites for unexisting file
     for s in sites:
         if s.direct==0: continue
-        logfile='redirectFrom_'+s.name+'.log'
+        logfile='upstreamFrom_'+s.name+'.log'
         lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.unexisting-1M'
-        comm='xrdcp -f -np -d 1 root://'+s.host+'//atlas/dq2/user/HironoriIto/'+lookingFor+' /dev/null >& '+logfile+' & \n'
+        comm='xrdcp -f -np -d 1 '+s.host+'//atlas/dq2/user/HironoriIto/'+lookingFor+' /dev/null >& '+logfile+' & \n'
         f.write(comm)            
     f.close()
     
 print 'executing all of the redirection xrdcps in parallel. 5 min timeout.'
-com = Command("source checkRedirection.sh")    
+com = Command("source checkUpstream.sh")    
 com.run(timeouts)
 time.sleep(sleeps)
 
-alllinks=set()
 
 for s in sites:
     if s.direct==0: continue
-    logfile='redirectFrom_'+s.name+'.log'
+    logfile='upstreamFrom_'+s.name+'.log'
     with open(logfile, 'r') as f:
         print logfile
         lines=f.readlines()        
@@ -167,88 +166,56 @@ for s in sites:
             if l.count("Received redirection")>0:
                 red=l[l.find("[")+1 : l.find("]")]
                 reds.append(red.split(':')[0])
-        links=[]
         print 'redirections:',reds
         if len(reds)==0:
-            s.redirects=0
+            s.upstream=0
             print 'redirection does not work'
         else:    
-            s.redirects=1
-            links.append( [s.host, reds[0] ] )
-            alllinks.add( s.siteid * 10000 + getSiteID(reds[0]) )
-            lr=len(reds)
-            for c in range(lr-1):
-                links.append([reds[c],reds[c+1]])
-                alllinks.add( getSiteID(reds[c]) * 10000 + getSiteID(reds[c+1]) )
-            print 'links: ', links
+            s.upstream=1
+            print 'redirection works'
 
-
-
+#sys.exit(0)
 print "================================= CHECK III ================================================"
 
-with open('checkUpDown.sh', 'w') as f: # ask global redirectors for files belonging to good sites
-    for red in [16,17]:        
-        for s in sites:
-            if s.redirector>0 or s.direct==0: continue
-            logfile='checkUpDown_'+getHost(red)+'_to_'+s.name+'.log'
-            lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-1M'
-            comm='xrdcp -f -np -d 1 root://'+getHost(red)+'//atlas/dq2/user/HironoriIto/'+lookingFor+' /dev/null >& '+logfile+' & \n'
-            f.write(comm)            
+with open('checkDownstream.sh', 'w') as f: # ask global redirectors for files belonging to good sites
+    for s in sites:
+        if s.direct==0: continue
+        logfile='checkDownstream_'+s.redirector+'_to_'+s.name+'.log'
+        lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-1M'
+        comm='xrdcp -f -np -d 1 root://'+s.redirector+'//atlas/dq2/user/HironoriIto/'+lookingFor+' /dev/null >& '+logfile+' & \n'
+        f.write(comm)            
     f.close()
 
 print 'executing all of the redirection xrdcps in parallel. 5 min timeout.'
-com = Command("source checkUpDown.sh")    
+com = Command("source checkDownstream.sh")    
 com.run(timeouts)
 time.sleep(sleeps)
 
-
-
-for d in [16,17]:        
-    for s in sites:
-        if s.redirector>0 or s.direct==0: continue
-        logfile='checkUpDown_'+getHost(d)+'_to_'+s.name+'.log'
-        with open(logfile, 'r') as f:
-            print 'Checking file: ', logfile
-            lines=f.readlines()
-            succ=False
-            reds=[]
-            for l in lines:
-                if l.startswith(" BytesSubmitted"):
-                    succ=True
-            if succ==False: 
-                print 'Did not work.' 
-                continue                
-            print 'OK'
-            reds=[]
-            for l in lines:
-                if l.count("Received redirection")>0:
-                    red=l[l.find("[")+1 : l.find("]")]
-                    reds.append(red.split(':')[0])
-            links=[]
-            print 'redirections:',reds
-            if len(reds)==0:
-                s.redirects=0
-                print 'redirection does not work'
-            else:    
-                s.redirects=1
-                links.append( [getHost(d), reds[0] ] )
-                print d, reds[0], d * 10000 + getSiteID(reds[0])
-                alllinks.add( d * 10000 + getSiteID(reds[0]) )
-                lr=len(reds)
-                for c in range(lr-1):
-                    links.append([reds[c],reds[c+1]])
-                    if getSiteID(reds[c])==0 or getSiteID(reds[c+1])==0: continue
-                    
-                    print getSiteID(reds[c]), getSiteID(reds[c+1]), getSiteID(reds[c]) * 10000 + getSiteID(reds[c+1])
-                    alllinks.add( getSiteID(reds[c]) * 10000 + getSiteID(reds[c+1]) )
-                print 'links: ', links
+for s in sites:
+    if s.direct==0: continue
+    logfile='checkDownstream_'+s.redirector+'_to_'+s.name+'.log'
+    with open(logfile, 'r') as f:
+        print 'Checking file: ', logfile
+        lines=f.readlines()
+        succ=False
+        reds=[]
+        for l in lines:
+            if l.startswith(" BytesSubmitted"):
+                succ=True
+                s.downstream=1
+        if succ==False: 
+            print 'Did not work.'
+            s.downstream=0 
+            continue                
+        print 'OK'
                 
-for i in alllinks:
-    s=int(round(i/10000))
-    d=int(i-round(i/10000)*10000)
-    if s==d:
-        print 'source and destination the same. skip'
-        continue
-    if getHost(s)==0 or getHost(d)==0: continue
-    print 'uploading -  s:',s,'\td:',d,'\tfile from:',getHost(s),"\t was asked from:",getHost(d)
-        
+print '--------------------------------- Uploading results ---------------------------------'
+ts=datetime.datetime.now()
+ts=ts.replace(microsecond=0)
+for s in sites:
+    sta='0'
+    if s.direct==1: sta='1'
+    if s.upstream==1 and s.downstream==0: sta='2'
+    if s.upstream==0 and  s.downstream==1: sta='3'
+    if s.upstream==1 and  s.downstream==1: sta='4' 
+    send ('siteName: '+ s.name + '\nmetricName: FAXprobe1\nmetricStatus: '+sta+'\ntimestamp: '+ts.isoformat(' ')+'\n')      
