@@ -1,0 +1,5 @@
+siteName aglt2
+Traceback (most recent call last):
+  File "collectFAXtopology.py", line 42, in <module>
+    if l[0]=='siteName': js=capitalize(l[1])
+NameError: name 'capitalize' is not defined
