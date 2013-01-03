@@ -48,14 +48,14 @@ finally:
             print l[0],l[1]
             if l[0]=='siteName': s.name=l[1].upper()
             if l[0]=='metricName': continue
-            if l[0]=='metricStatus': s.status=l[1]
+            if l[0]=='metricStatus': s.status=int(l[1])
             if l[0]=='timestamp': s.times = l[1] 
         sites.append(s)        
 
 
 f1 = open('direct.json','w')
 for s in sites:
-    js=s.time+' '+s.name
+    js=s.times+' '+s.name
     if s.status==0:
         js+=' 0 red'
     else:
@@ -66,7 +66,7 @@ f1.close()
 
 f2 = open('upstream.json','w')
 for s in sites:
-    js=s.time+' '+s.name
+    js=s.times+' '+s.name
     if s.status==0 or s.status==3:
         js+=' 0 red'
     else:
@@ -77,7 +77,7 @@ f2.close()
    
 f3 = open('downstream.json','w')
 for s in sites:
-    js=s.time+' '+s.name
+    js=s.times+' '+s.name
     if s.status==0 or s.status==2:
         js+=' 0 red'
     else:
