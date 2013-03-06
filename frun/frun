@@ -43,7 +43,7 @@ class LFNs (DQDashboardTool):
         
             for guid in entry:
                 gfn='root://'+redir+'/' + to_native_lfn(ds, entry[guid]['lfn']).replace("/grid", "")
-                if gfn.endswith('.root'):
+                if gfn.count('.root')>0:
                     self.roots.append(gfn)
                     
         return self.roots
