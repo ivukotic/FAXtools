@@ -35,6 +35,7 @@ sites=[]; # each site contains [name, host, redirector]
 
 class site:    
     name=''
+    fullname=''
     host=''
     redirector=''
     direct=0
@@ -42,14 +43,17 @@ class site:
     downstream=0
     comm1=''
      
-    def __init__(self, na, ho, re):
+    def __init__(self, fn, na, ho, re):
+        if na=='grif':
+            na=fn
+        self.fullname=fn
         self.name=na
         self.host=ho
         self.redirector=re
     
     def prnt(self, what):
         if (what>=0 and self.redirector!=what): return
-        print '\tredirector:', self.redirector, '\tname:', self.name, '\thost:', self.host, '\tresponds:', self.direct, '\t upstream:', self.upstream, '\t downstream:', self.downstream
+        print 'fullname:',self.fullname,'\tredirector:', self.redirector, '\tname:', self.name, '\thost:', self.host, '\tresponds:', self.direct, '\t upstream:', self.upstream, '\t downstream:', self.downstream
     
 
 print 'Geting site list from AGIS...' 
@@ -62,8 +66,8 @@ try:
     f = opener.open(req)
     res=simplejson.load(f)
     for s in res:
-        print  s["rc_site"], s["endpoint"], s["redirector"]["endpoint"]
-        si=site(s["rc_site"].lower(), s["endpoint"], s["redirector"]["endpoint"])
+        print  s["name"],s["rc_site"], s["endpoint"], s["redirector"]["endpoint"]
+        si=site(s["name"].lower(),s["rc_site"].lower(), s["endpoint"], s["redirector"]["endpoint"])
         sites.append(si)
 except:
     print "Unexpected error:", sys.exc_info()[0]    
@@ -167,12 +171,12 @@ for s in sites:
                 red=l[l.find("[")+1 : l.find("]")]
                 reds.append(red.split(':')[0])
         print 'redirections:',reds
-        if len(reds)==0:
-            s.upstream=0
-            print 'redirection does not work'
-        else:    
+        if s.redirector.split(':')[0]  in reds:
             s.upstream=1
             print 'redirection works'
+        else:    
+            s.upstream=0
+            print 'redirection does not work'
 
 #sys.exit(0)
 print "================================= CHECK III ================================================"
