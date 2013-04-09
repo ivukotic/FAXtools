@@ -224,7 +224,7 @@ for s in sites:
 print "================================= CHECK IV ================================================"
 
 with open('checkSecurity.sh', 'w') as f: # deletes proxy and then tries to directly access the files
-    f.write('rm -f /tmp/x509*')
+    f.write('rm -f /tmp/x509* \n')
     for s in sites:
         if s.direct==0: continue
         logfile='checkSecurity_'+s.name+'.log'
