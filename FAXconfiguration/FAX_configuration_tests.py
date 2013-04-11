@@ -205,7 +205,7 @@ time.sleep(sleeps)
 
 for s in sites:
     if s.direct==0: continue
-    logfile='checkDownstream_'+s.redirector+'_to_'+s.name+'.log'
+    logfile='downstreamTo_'+s.name+'.log'
     with open(logfile, 'r') as f:
         print 'Checking file: ', logfile
         lines=f.readlines()
