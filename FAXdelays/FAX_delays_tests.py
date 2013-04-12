@@ -260,7 +260,7 @@ for s in sites:  # this is file to be asked for
         succ=False
         for l in lines:
             # print l
-            if l.startswith("Read: Hole in the cache:"):
+            if l.count("Read: Hole in the cache:")>0:
                 succ=True
                 break
         if succ==True:
