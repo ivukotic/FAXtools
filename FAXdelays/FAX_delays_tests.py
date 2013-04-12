@@ -118,7 +118,7 @@ for s in sites:  # this is file to be asked for
         succ=False
         for l in lines:
             # print l
-            if l.startswith(" BytesSubmitted"):
+            if l.startswith("Read: Hole in the cache:"):
                 succ=True
                 break
         if succ==True:
