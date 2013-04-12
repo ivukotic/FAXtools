@@ -21,4 +21,6 @@ cd $WD
 
 python FAX_configuration_tests.py
 
+cp *.log /afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/.
+
 echo "Done." 

@@ -35,22 +35,34 @@ sites=[]; # each site contains [name, host, redirector]
 
 class site:    
     name=''
+    fullname=''
     host=''
     redirector=''
     direct=0
     upstream=0
     downstream=0
+    security=0
     comm1=''
      
-    def __init__(self, na, ho, re):
+    def __init__(self, fn, na, ho, re):
+        if na=='grif':
+            na=fn
+        self.fullname=fn
         self.name=na
         self.host=ho
         self.redirector=re
     
     def prnt(self, what):
         if (what>=0 and self.redirector!=what): return
-        print '\tredirector:', self.redirector, '\tname:', self.name, '\thost:', self.host, '\tresponds:', self.direct, '\t upstream:', self.upstream, '\t downstream:', self.downstream
+        print 'fullname:',self.fullname,'\tredirector:', self.redirector, '\tname:', self.name, '\thost:', self.host, '\tresponds:', self.direct, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t security:', self.security
     
+    def status(self):
+       s=0
+       s=s|(self.security<<3)
+       s=s|(self.downstream<<2)
+       s=s|(self.upstream<<1)
+       s=s|(self.direct<<0)
+       return s
 
 print 'Geting site list from AGIS...' 
 
@@ -62,8 +74,8 @@ try:
     f = opener.open(req)
     res=simplejson.load(f)
     for s in res:
-        print  s["rc_site"], s["endpoint"], s["redirector"]["endpoint"]
-        si=site(s["rc_site"].lower(), s["endpoint"], s["redirector"]["endpoint"])
+        print  s["name"],s["rc_site"], s["endpoint"], s["redirector"]["endpoint"]
+        si=site(s["name"].lower(),s["rc_site"].lower(), s["endpoint"], s["redirector"]["endpoint"])
         sites.append(si)
 except:
     print "Unexpected error:", sys.exc_info()[0]    
@@ -167,12 +179,12 @@ for s in sites:
                 red=l[l.find("[")+1 : l.find("]")]
                 reds.append(red.split(':')[0])
         print 'redirections:',reds
-        if len(reds)==0:
-            s.upstream=0
-            print 'redirection does not work'
-        else:    
+        if s.redirector.split(':')[0]  in reds:
             s.upstream=1
             print 'redirection works'
+        else:    
+            s.upstream=0
+            print 'redirection does not work'
 
 #sys.exit(0)
 print "================================= CHECK III ================================================"
@@ -180,7 +192,7 @@ print "================================= CHECK III =============================
 with open('checkDownstream.sh', 'w') as f: # ask global redirectors for files belonging to good sites
     for s in sites:
         if s.direct==0: continue
-        logfile='checkDownstream_'+s.redirector+'_to_'+s.name+'.log'
+        logfile='downstreamTo_'+s.name+'.log'
         lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-1M'
         comm='xrdcp -f -np -d 1 root://'+s.redirector+'//atlas/dq2/user/HironoriIto/'+lookingFor+' /dev/null >& '+logfile+' & \n'
         f.write(comm)            
@@ -193,7 +205,7 @@ time.sleep(sleeps)
 
 for s in sites:
     if s.direct==0: continue
-    logfile='checkDownstream_'+s.redirector+'_to_'+s.name+'.log'
+    logfile='downstreamTo_'+s.name+'.log'
     with open(logfile, 'r') as f:
         print 'Checking file: ', logfile
         lines=f.readlines()
@@ -209,13 +221,51 @@ for s in sites:
             continue                
         print 'OK'
                 
+print "================================= CHECK IV ================================================"
+
+with open('checkSecurity.sh', 'w') as f: # deletes proxy and then tries to directly access the files
+    f.write('rm -f /tmp/x509* \n')
+    for s in sites:
+        if s.direct==0: continue
+        logfile='checkSecurity_'+s.name+'.log'
+        lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-1M'
+        s.comm1='xrdcp -f -np -d 1 '+s.host+'//atlas/dq2/user/HironoriIto/'+lookingFor+' /dev/null >& '+logfile+' & \n'
+        f.write(s.comm1)
+    f.close()
+
+#sys.exit(0)
+print 'executing all of the xrdcps in parallel. 5 min timeout.'
+com = Command("source checkSecurity.sh")
+com.run(timeouts)
+time.sleep(sleeps)
+
+
+print 'checking log files'
+
+# checking which sites gave their own file directly
+for s in sites:  # this is file to be asked for
+    if s.direct==0: continue
+    logfile='checkSecurity_'+s.name+'.log'
+    with open(logfile, 'r') as f:
+        lines=f.readlines()
+        succ=False
+        for l in lines:
+            # print l
+            if l.startswith(" BytesSubmitted"):
+                succ=True
+                break
+        if succ==True:
+            print logfile, "security does not work."
+            s.security=0
+        else:
+            s.security=1
+            print logfile, "security works."
+
+for s in sites: s.prnt(0)  #print only real sites
+
+
 print '--------------------------------- Uploading results ---------------------------------'
 ts=datetime.datetime.now()
 ts=ts.replace(microsecond=0)
 for s in sites:
-    sta='0'
-    if s.direct==1: sta='1'
-    if s.upstream==1 and s.downstream==0: sta='2'
-    if s.upstream==0 and  s.downstream==1: sta='3'
-    if s.upstream==1 and  s.downstream==1: sta='4' 
-    send ('siteName: '+ s.name + '\nmetricName: FAXprobe1\nmetricStatus: '+sta+'\ntimestamp: '+ts.isoformat(' ')+'\n')      
+    send ('siteName: '+ s.name + '\nmetricName: FAXprobe1\nmetricStatus: '+str(s.status())+'\ntimestamp: '+ts.isoformat(' ')+'\n')      
