@@ -96,7 +96,7 @@ print "================================= CHECK I ===============================
 with open('checkDelays.sh', 'w') as f: # first check that site itself gives it's own file
     for s in sites:
         logfile='delaysTo_'+s.name+'.log'
-        lookingFor = (DTS+DTSFN).replace('XXX',s.name)
+        lookingFor = (DTS+DTSFN).replace('XXX',s.name.upper())
         s.comm1='xrdcp -f -np -d 1 root//glrd.usatlas.org'+lookingFor+' /dev/null >& '+logfile+' & \n'
         f.write(s.comm1)
     f.close()
