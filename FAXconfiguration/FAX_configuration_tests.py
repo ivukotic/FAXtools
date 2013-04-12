@@ -192,7 +192,7 @@ print "================================= CHECK III =============================
 with open('checkDownstream.sh', 'w') as f: # ask global redirectors for files belonging to good sites
     for s in sites:
         if s.direct==0: continue
-        logfile='checkDownstream_'+s.redirector+'_to_'+s.name+'.log'
+        logfile='downstreamTo_'+s.name+'.log'
         lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-1M'
         comm='xrdcp -f -np -d 1 root://'+s.redirector+'//atlas/dq2/user/HironoriIto/'+lookingFor+' /dev/null >& '+logfile+' & \n'
         f.write(comm)            
