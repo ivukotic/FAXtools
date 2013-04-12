@@ -141,6 +141,6 @@ for s in sites:
     with open(logfile, 'r') as f:
         lines=f.readlines()
         for l in lines:
-            if l.index("requested")>0:
+            if l.count("requested")>0:
                 print l
     
