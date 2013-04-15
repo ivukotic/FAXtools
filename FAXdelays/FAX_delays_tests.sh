@@ -21,6 +21,6 @@ cd $WD
 
 python FAX_delays_tests.py
 
-cp *.log $HOME/www/logs/FAXconfiguration/.
+mv check*.sh *.log $HOME/www/logs/FAXdelays/.
 
 echo "Done." 
