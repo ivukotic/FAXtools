@@ -281,7 +281,7 @@ print 'checking log files'
 for s in sites: s.prnt(0)  #print only real sites
 
 for s in sites:  
-    if s.direct==0: continue
+    # if s.direct==0: continue
     logfile='delaysTo_'+s.name+'.log'
     with open(logfile, 'r') as f:
         lines=f.readlines()
