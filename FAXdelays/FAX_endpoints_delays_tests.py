@@ -257,6 +257,7 @@ print 'checking log files'
 
 # checking which sites gave their own file directly
 for s in sites:  # this is file to be asked for
+    if s.name.count('MWT2')==0: continue
     logfile='delaysTo_'+s.name+'.log'
     with open(logfile, 'r') as f:
         lines=f.readlines()
