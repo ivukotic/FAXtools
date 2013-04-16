@@ -235,15 +235,15 @@ print 'creating scripts to execute'
     
 print "================================= CHECK I =================================================="
     
-with open('checkDelays.sh', 'w') as f: # first check that site itself gives it's own file
-    for s in sites:
+for s in sites:
+    with open('checkDelays_'+s.name+'.sh', 'w') as f: # first check that site itself gives it's own file
         logfile='delaysTo_'+s.name+'.log'
         lookingFor = (DTS+DTSFN).replace('XXX',s.name.upper())
         s.comm1='xrdcp -f -np -d 1 root://'+s.host+lookingFor+' /dev/null >& '+logfile+' & \n'
         f.write(s.comm1)
     f.close()
 
-#sys.exit(0)
+sys.exit(0)
 print 'executing all of the xrdcps in parallel. 5 min timeout.'
 com = Command("source checkDelays.sh")    
 com.run(timeouts)
