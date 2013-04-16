@@ -240,7 +240,7 @@ for s in sites:
         logfile='delaysTo_'+s.name+'.log'
         for fn in DTSFNS:
             lookingFor = (DTS+fn).replace('XXX',s.name.upper())
-            s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' /dev/null >& '+logfile+'  \n'
+            s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' /dev/null >> '+logfile+'  \n'
             com = Command(s.comm1)
             com.run(20)
             f.write(s.comm1)
