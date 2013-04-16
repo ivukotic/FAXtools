@@ -206,7 +206,7 @@ except:
 
 class Command(object):
     
-    def __init__(self, cmd):
+    def __init__(self, cmd, foreground=False):
         self.cmd = cmd
         self.process = None
     
@@ -214,7 +214,7 @@ class Command(object):
         def target():
             print 'command started: ', self.cmd
             self.process = subprocess.Popen(self.cmd, shell=True)
-            self.process.communicate()
+            if (foreground): self.process.communicate()
         
         thread = threading.Thread(target=target)
         thread.start()
@@ -236,57 +236,55 @@ print 'creating scripts to execute'
 print "================================= CHECK I =================================================="
     
 for s in sites:
-    with open('checkDelays_'+s.name+'.sh', 'w') as f: # first check that site itself gives it's own file
-        logfile='delaysTo_'+s.name+'.log'
-        for fn in DTSFNS:
-            lookingFor = (DTS+fn).replace('XXX',s.name.upper())
-            s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' /dev/null >> '+logfile+'  \n'
-            com = Command(s.comm1)
-            com.run(20)
-            f.write(s.comm1)
-    f.close()
+    for fn in DTSFNS:
+        logfile='delaysTo_'+s.name+'_'+fn+'.log'
+        lookingFor = (DTS+fn).replace('XXX',s.name.upper())
+        s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' /dev/null >> '+logfile+'  \n'
+        com = Command(s.comm1)
+        com.run(20)
+    time.sleep(300)
 
-sys.exit(0)
-print 'executing all of the xrdcps in parallel. 5 min timeout.'
-com = Command("source checkDelays.sh")    
-com.run(timeouts)
-time.sleep(sleeps)
-
-
-print 'checking log files'
-
-# checking which sites gave their own file directly
-for s in sites:  # this is file to be asked for
-    if s.name.count('MWT2')==0: continue
-    logfile='delaysTo_'+s.name+'.log'
-    with open(logfile, 'r') as f:
-        lines=f.readlines()
-        succ=False
-        for l in lines:
-            # print l
-            if l.count("Read: Hole in the cache:")>0:
-                succ=True
-                break
-        if succ==True:
-            print logfile, "works"
-            s.direct=1
-        else:
-            print logfile, "problem"
-            
-for s in sites: s.prnt(0)  #print only real sites
-
-#sys.exit(0)
-
-print 'checking log files'
-
-for s in sites: s.prnt(0)  #print only real sites
-
-for s in sites:  
-    if s.direct==0: continue
-    logfile='delaysTo_'+s.name+'.log'
-    with open(logfile, 'r') as f:
-        lines=f.readlines()
-        for l in lines:
-            if l.count("requested")>0:
-                print l
-    
+# sys.exit(0)
+# print 'executing all of the xrdcps in parallel. 5 min timeout.'
+# com = Command("source checkDelays.sh")    
+# com.run(timeouts)
+# time.sleep(sleeps)
+# 
+# 
+# print 'checking log files'
+# 
+# # checking which sites gave their own file directly
+# for s in sites:  # this is file to be asked for
+#     if s.name.count('MWT2')==0: continue
+#     logfile='delaysTo_'+s.name+'.log'
+#     with open(logfile, 'r') as f:
+#         lines=f.readlines()
+#         succ=False
+#         for l in lines:
+#             # print l
+#             if l.count("Read: Hole in the cache:")>0:
+#                 succ=True
+#                 break
+#         if succ==True:
+#             print logfile, "works"
+#             s.direct=1
+#         else:
+#             print logfile, "problem"
+#             
+# for s in sites: s.prnt(0)  #print only real sites
+# 
+# #sys.exit(0)
+# 
+# print 'checking log files'
+# 
+# for s in sites: s.prnt(0)  #print only real sites
+# 
+# for s in sites:  
+#     if s.direct==0: continue
+#     logfile='delaysTo_'+s.name+'.log'
+#     with open(logfile, 'r') as f:
+#         lines=f.readlines()
+#         for l in lines:
+#             if l.count("requested")>0:
+#                 print l
+#     
