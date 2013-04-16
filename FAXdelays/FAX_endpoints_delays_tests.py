@@ -147,8 +147,8 @@ DTSFNS=[
     'NTUP_SMWZ.01007411._000115.XXX.root.2'
 ]
 
-from random import choice
-DTSFN=choice(DTSFNS)
+# from random import choice
+# DTSFN=choice(DTSFNS)
 
 sites=[]; # each site contains [name, host, redirector]
 
@@ -238,9 +238,10 @@ print "================================= CHECK I ===============================
 for s in sites:
     with open('checkDelays_'+s.name+'.sh', 'w') as f: # first check that site itself gives it's own file
         logfile='delaysTo_'+s.name+'.log'
-        lookingFor = (DTS+DTSFN).replace('XXX',s.name.upper())
-        s.comm1='xrdcp -f -np -d 1 root://'+s.host+lookingFor+' /dev/null >& '+logfile+' & \n'
-        f.write(s.comm1)
+        for fn in DTSFNS:
+            lookingFor = (DTS+fn).replace('XXX',s.name.upper())
+            s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' /dev/null >& '+logfile+' & \n'
+            f.write(s.comm1)
     f.close()
 
 sys.exit(0)
