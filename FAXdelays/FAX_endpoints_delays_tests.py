@@ -209,12 +209,13 @@ class Command(object):
     def __init__(self, cmd, foreground=False):
         self.cmd = cmd
         self.process = None
+        self.f=foreground
     
     def run(self, timeout):
         def target():
             print 'command started: ', self.cmd
             self.process = subprocess.Popen(self.cmd, shell=True)
-            if (foreground): self.process.communicate()
+            if (self.f): self.process.communicate()
         
         thread = threading.Thread(target=target)
         thread.start()
