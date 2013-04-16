@@ -9,7 +9,6 @@ echo "deleting old files..."
 WD=$HOME/FAXtools/FAXdelays/
 
 cd $WD
-rm check*.sh *.log
 
 source /afs/cern.ch/project/gd/LCG-share/current/etc/profile.d/grid_env.sh; 
 
@@ -21,6 +20,6 @@ cd $WD
 
 python FAX_endpoints_delays_tests.py
 
-cp *.log $HOME/www/logs/FAXconfiguration/.
+mv *.log $HOME/www/logs/FAXdelays/.
 
 echo "Done." 
