@@ -235,15 +235,18 @@ for s in sites: s.prnt(-1) # print all
 print 'creating scripts to execute'
     
 print "================================= CHECK I =================================================="
-    
+
+cou=0
 for s in sites:
+    cou=cou+1
+    if not cou==3: continue
     for fn in DTSFNS:
         logfile='delaysTo_'+s.name+'_'+fn+'.log'
         lookingFor = (DTS+fn).replace('XXX',s.name.upper())
         s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' /dev/null >& '+logfile+'  \n'
         com = Command(s.comm1)
         com.run(30)
-    time.sleep(300)
+    time.sleep(120)
 
 # sys.exit(0)
 # print 'executing all of the xrdcps in parallel. 5 min timeout.'
