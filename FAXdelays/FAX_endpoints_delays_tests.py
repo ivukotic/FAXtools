@@ -239,9 +239,9 @@ for s in sites:
     for fn in DTSFNS:
         logfile='delaysTo_'+s.name+'_'+fn+'.log'
         lookingFor = (DTS+fn).replace('XXX',s.name.upper())
-        s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' /dev/null >> '+logfile+'  \n'
+        s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' /dev/null >& '+logfile+'  \n'
         com = Command(s.comm1)
-        com.run(20)
+        com.run(30)
     time.sleep(300)
 
 # sys.exit(0)
