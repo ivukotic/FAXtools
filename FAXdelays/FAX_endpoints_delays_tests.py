@@ -247,8 +247,7 @@ for s in sites:
         s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' /dev/null >& '+logfile+'  \n'
         com = Command(s.comm1)
         com.run(120)
-    time.sleep(240)
-
+    
 sys.exit(0)
 # print 'executing all of the xrdcps in parallel. 5 min timeout.'
 # com = Command("source checkDelays.sh")    
