@@ -217,7 +217,7 @@ class Command(object):
             # self.process = subprocess.Popen(self.cmd, shell=True)
             self.process = subprocess.Popen(self.cmd, stdout=subprocess.PIPE)
             # if (self.f): self.process.communicate()
-            out, err = p.communicate()
+            out, err = self.process.communicate()
             print out
         
         thread = threading.Thread(target=target)
