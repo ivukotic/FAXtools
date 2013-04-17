@@ -214,8 +214,11 @@ class Command(object):
     def run(self, timeout):
         def target():
             print 'command started: ', self.cmd
-            self.process = subprocess.Popen(self.cmd, shell=True)
-            if (self.f): self.process.communicate()
+            # self.process = subprocess.Popen(self.cmd, shell=True)
+            self.process = subprocess.Popen(self.cmd, stdout=subprocess.PIPE)
+            # if (self.f): self.process.communicate()
+            out, err = p.communicate()
+            print out
         
         thread = threading.Thread(target=target)
         thread.start()
@@ -239,14 +242,15 @@ print "================================= CHECK I ===============================
 cou=0
 for s in sites:
     cou=cou+1
-    if not cou==3: continue
+    if not cou==1: continue
     for fn in DTSFNS:
         logfile='delaysTo_'+s.name+'_'+fn+'.log'
         lookingFor = (DTS+fn).replace('XXX',s.name.upper())
-        s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' /dev/null >& '+logfile+'  \n'
+        # s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' /dev/null >& '+logfile+'  \n'
+        s.comm1=['xrdcp','-f','-np','-d 1',s.host+lookingFor,'/dev/null']
         com = Command(s.comm1)
-        com.run(30)
-    time.sleep(120)
+        com.run(240)
+    time.sleep(250)
 
 # sys.exit(0)
 # print 'executing all of the xrdcps in parallel. 5 min timeout.'
