@@ -247,7 +247,7 @@ for s in sites:
         logfile='delaysTo_'+s.name+'_'+fn+'.log'
         lookingFor = (DTS+fn).replace('XXX',s.name.upper())
         # s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' /dev/null >& '+logfile+'  \n'
-        s.comm1=['xrdcp','-f','-np','-d 1',s.host+lookingFor,'/dev/null']
+        s.comm1=['xrdcp',s.host+lookingFor,'/dev/null','-f','-np','-d 1']
         com = Command(s.comm1)
         com.run(240)
     time.sleep(250)
