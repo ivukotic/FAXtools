@@ -214,11 +214,8 @@ class Command(object):
     def run(self, timeout):
         def target():
             print 'command started: ', self.cmd
-            # self.process = subprocess.Popen(self.cmd, shell=True)
-            self.process = subprocess.Popen(self.cmd, stdout=subprocess.PIPE, shell=True)
-            # if (self.f): self.process.communicate()
-            out, err = self.process.communicate()
-            print out
+            self.process = subprocess.Popen(self.cmd, shell=True)
+            if (self.f): self.process.communicate()
         
         thread = threading.Thread(target=target)
         thread.start()
@@ -242,17 +239,17 @@ print "================================= CHECK I ===============================
 cou=0
 for s in sites:
     cou=cou+1
-    if not cou==1: continue
+    if not cou==sys.argv[1]: continue
+    print 'site no: ',cou
     for fn in DTSFNS:
         logfile='delaysTo_'+s.name+'_'+fn+'.log'
         lookingFor = (DTS+fn).replace('XXX',s.name.upper())
-        # s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' /dev/null >& '+logfile+'  \n'
-        s.comm1=['xrdcp',s.host+lookingFor,'/dev/null','-f','-np','-d 1']
+        s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' /dev/null >& '+logfile+'  \n'
         com = Command(s.comm1)
-        com.run(240)
-    time.sleep(250)
+        com.run(120)
+    time.sleep(240)
 
-# sys.exit(0)
+sys.exit(0)
 # print 'executing all of the xrdcps in parallel. 5 min timeout.'
 # com = Command("source checkDelays.sh")    
 # com.run(timeouts)
