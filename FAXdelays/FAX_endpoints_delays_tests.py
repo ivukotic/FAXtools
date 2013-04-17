@@ -215,7 +215,7 @@ class Command(object):
         def target():
             print 'command started: ', self.cmd
             # self.process = subprocess.Popen(self.cmd, shell=True)
-            self.process = subprocess.Popen(self.cmd, stdout=subprocess.PIPE)
+            self.process = subprocess.Popen(self.cmd, stdout=subprocess.PIPE, shell=True)
             # if (self.f): self.process.communicate()
             out, err = self.process.communicate()
             print out
