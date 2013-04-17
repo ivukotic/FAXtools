@@ -239,7 +239,7 @@ print "================================= CHECK I ===============================
 cou=0
 for s in sites:
     cou=cou+1
-    if not cou==sys.argv[1]: continue
+    if not cou==int(sys.argv[1]): continue
     print 'site no: ',cou
     for fn in DTSFNS:
         logfile='delaysTo_'+s.name+'_'+fn+'.log'
