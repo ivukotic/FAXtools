@@ -239,14 +239,14 @@ print "================================= CHECK I ===============================
 cou=0
 for s in sites:
     cou=cou+1
+    print cou, s.name
     if not cou==int(sys.argv[1]): continue
-    print 'site no: ',cou
     cou2=0
     for fn in DTSFNS:
         cou2=cou2+1
         if cou2>int(sys.argv[2]): continue
         logfile='delaysTo_'+s.name+'_'+fn+'.log'
-        lookingFor = (DTS+fn).replace('XXX',s.name.upper())
+        lookingFor = (DTS+fn).replace('XXX',s.name.upper())+'_inexistent'
         s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' /dev/null >& '+logfile+'  \n'
         com = Command(s.comm1)
         com.run(120)
