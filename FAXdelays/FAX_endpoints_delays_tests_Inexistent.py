@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import subprocess, threading, os, sys,time
-import logging, datetime
+import logging, datetime,random
 
 timeouts=300
 sleeps=250
@@ -246,7 +246,7 @@ for s in sites:
         cou2=cou2+1
         if cou2>int(sys.argv[2]): continue
         logfile='delaysTo_'+s.name+'_'+fn+'.log'
-        lookingFor = (DTS+fn).replace('XXX',s.name.upper())+'_inexistent'
+        lookingFor = (DTS+fn).replace('XXX',s.name.upper())+'_inexistent_'+str(random.randint(0,100000))
         s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' /dev/null >& '+logfile+'  \n'
         com = Command(s.comm1)
         com.run(120)
