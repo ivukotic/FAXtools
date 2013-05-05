@@ -247,7 +247,7 @@ for s in sites:
         if cou2>int(sys.argv[2]): continue
         logfile='delaysTo_'+s.name+'_'+fn+'.log'
         lookingFor = (DTS+fn).replace('XXX',s.name.upper())+'_inexistent_'+str(random.randint(0,100000))
-        s.comm1='time xrd existfile'+s.host+' '+lookingFor+' >& '+logfile+'  \n'
+        s.comm1='time xrd '+s.host+' existfile '+lookingFor+' >& '+logfile+'  \n'
         com = Command(s.comm1)
         com.run(120)
     
