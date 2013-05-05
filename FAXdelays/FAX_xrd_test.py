@@ -246,7 +246,7 @@ for s in sites:
         cou2=cou2+1
         if cou2>int(sys.argv[2]): continue
         logfile='delaysTo_'+s.name+'_'+fn+'.log'
-        lookingFor = (DTS+fn).replace('XXX',s.name.upper())+'_inexistent_'+str(random.randint(0,100000))
+        lookingFor = (DTS+fn).replace('XXX',s.name.upper()) # +'_inexistent_'+str(random.randint(0,100000))
         s.comm1='time xrd '+s.host+' existfile '+lookingFor+' >& '+logfile+'  \n'
         print s.comm1
         com = Command(s.comm1)
