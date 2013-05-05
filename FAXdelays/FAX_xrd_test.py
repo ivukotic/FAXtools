@@ -237,6 +237,7 @@ print 'creating scripts to execute'
 print "================================= CHECK I =================================================="
 
 cou=0
+skip=50
 for s in sites:
     cou=cou+1
     print cou, s.name
@@ -244,10 +245,11 @@ for s in sites:
     cou2=0
     for fn in DTSFNS:
         cou2=cou2+1
-        if cou2>int(sys.argv[2]): continue
+        if cou2<skip: continue
+        if cou2>skip+int(sys.argv[2]): continue
         logfile='delaysTo_'+s.name+'_'+fn+'.log'
         lookingFor = (DTS+fn).replace('XXX',s.name.upper()) # +'_inexistent_'+str(random.randint(0,100000))
-        s.comm1='time xrd '+s.host.replace('root://','')+' existfile '+lookingFor+' >& '+logfile+'  \n'
+        s.comm1='/usr/bin/time -f"real: %e" xrd '+s.host.replace('root://','')+' existfile '+lookingFor+' >& '+logfile+'  \n'
         print s.comm1
         com = Command(s.comm1)
         com.run(120)
