@@ -247,52 +247,9 @@ for s in sites:
         if cou2>int(sys.argv[2]): continue
         logfile='delaysTo_'+s.name+'_'+fn+'.log'
         lookingFor = (DTS+fn).replace('XXX',s.name.upper()) # +'_inexistent_'+str(random.randint(0,100000))
-        s.comm1='time xrd '+s.host+' existfile '+lookingFor+' >& '+logfile+'  \n'
+        s.comm1='time xrd '+s.host.replace('root://','')+' existfile '+lookingFor+' >& '+logfile+'  \n'
         print s.comm1
         com = Command(s.comm1)
         com.run(120)
     
 sys.exit(0)
-# print 'executing all of the xrdcps in parallel. 5 min timeout.'
-# com = Command("source checkDelays.sh")    
-# com.run(timeouts)
-# time.sleep(sleeps)
-# 
-# 
-# print 'checking log files'
-# 
-# # checking which sites gave their own file directly
-# for s in sites:  # this is file to be asked for
-#     if s.name.count('MWT2')==0: continue
-#     logfile='delaysTo_'+s.name+'.log'
-#     with open(logfile, 'r') as f:
-#         lines=f.readlines()
-#         succ=False
-#         for l in lines:
-#             # print l
-#             if l.count("Read: Hole in the cache:")>0:
-#                 succ=True
-#                 break
-#         if succ==True:
-#             print logfile, "works"
-#             s.direct=1
-#         else:
-#             print logfile, "problem"
-#             
-# for s in sites: s.prnt(0)  #print only real sites
-# 
-# #sys.exit(0)
-# 
-# print 'checking log files'
-# 
-# for s in sites: s.prnt(0)  #print only real sites
-# 
-# for s in sites:  
-#     if s.direct==0: continue
-#     logfile='delaysTo_'+s.name+'.log'
-#     with open(logfile, 'r') as f:
-#         lines=f.readlines()
-#         for l in lines:
-#             if l.count("requested")>0:
-#                 print l
-#     
