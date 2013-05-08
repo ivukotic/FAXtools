@@ -5,7 +5,7 @@ import logging, datetime,random
 timeouts=300
 sleeps=250
 
-DTS='//atlas/dq2/user/flegger/XXX/user.flegger.XXX.data12_8TeV.00212172.physics_Muons.merge.NTUP_SMWZ.f479_m1228_p1067_p1141_tid01007411_00/'
+DTS='//atlas/rucio/flegger:'
 DTSFNS=[
     'NTUP_SMWZ.01007411._000122.XXX.root.2',
     'NTUP_SMWZ.01007411._000091.XXX.root.1',
