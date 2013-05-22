@@ -122,7 +122,7 @@ with open('checkDirect.sh', 'w') as f: # first check that site itself gives it's
 
 #sys.exit(0)
 print 'executing all of the xrdcps in parallel. 5 min timeout.'
-com = Command("source checkDirect.sh")    
+com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkDirect.sh")    
 com.run(timeouts)
 time.sleep(sleeps)
 
@@ -162,7 +162,7 @@ with open('checkUpstream.sh', 'w') as f: # ask good sites for unexisting file
     f.close()
     
 print 'executing all of the redirection xrdcps in parallel. 5 min timeout.'
-com = Command("source checkUpstream.sh")    
+com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkUpstream.sh")    
 com.run(timeouts)
 time.sleep(sleeps)
 
@@ -199,7 +199,7 @@ with open('checkDownstream.sh', 'w') as f: # ask global redirectors for files be
     f.close()
 
 print 'executing all of the redirection xrdcps in parallel. 5 min timeout.'
-com = Command("source checkDownstream.sh")    
+com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkDownstream.sh")    
 com.run(timeouts)
 time.sleep(sleeps)
 
@@ -235,7 +235,7 @@ with open('checkSecurity.sh', 'w') as f: # deletes proxy and then tries to direc
 
 #sys.exit(0)
 print 'executing all of the xrdcps in parallel. 5 min timeout.'
-com = Command("source checkSecurity.sh")
+com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkSecurity.sh")
 com.run(timeouts)
 time.sleep(sleeps)
 

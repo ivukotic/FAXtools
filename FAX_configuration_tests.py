@@ -8,6 +8,7 @@ timeouts=300
 sleeps=250
 
 line=''
+home='/afs/cern.ch/user/i/ivukotic/FAXtools/'
 
 with open('/afs/cern.ch/user/i/ivukotic/private/OracleAccess.txt', 'r') as f: 
     lines=f.readlines()
@@ -125,7 +126,7 @@ with open('toExecute.sh', 'w') as f: # first check that site itself gives it's o
     f.close()
 
 print 'executing all of the xrdcps in parallel. 5 min timeout.'
-com = Command("source toExecute.sh")    
+com = Command("source "+home+"toExecute.sh")    
 com.run(timeouts)
 time.sleep(sleeps)
 
@@ -193,7 +194,7 @@ with open('checkRedirection.sh', 'w') as f: # ask good sites for unexisting file
     f.close()
     
 print 'executing all of the redirection xrdcps in parallel. 5 min timeout.'
-com = Command("source checkRedirection.sh")    
+com = Command("source "+home+"checkRedirection.sh")    
 com.run(timeouts)
 time.sleep(sleeps)
 
@@ -255,7 +256,7 @@ with open('checkUpDown.sh', 'w') as f: # ask global redirectors for files belong
     f.close()
 
 print 'executing all of the redirection xrdcps in parallel. 5 min timeout.'
-com = Command("source checkUpDown.sh")    
+com = Command("source "+home+"checkUpDown.sh")    
 com.run(timeouts)
 time.sleep(sleeps)
 

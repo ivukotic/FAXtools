@@ -249,6 +249,7 @@ for s in sites:
         if cou2>skip+int(sys.argv[2]): continue
         logfile='delaysTo_'+s.name+'_'+fn+'.log'
         lookingFor = (DTS+fn).replace('XXX',s.name.upper())#  +'_inexistent_'+str(random.randint(0,100000))
+        s.host='uct2-s6.uchicago.edu:1096'
         s.comm1='/usr/bin/time -f"real: %e" xrd '+s.host.replace('root://','')+' existfile '+lookingFor+' >& '+logfile+'  \n'
         print s.comm1
         com = Command(s.comm1)
