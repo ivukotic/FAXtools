@@ -311,3 +311,13 @@ ts=datetime.datetime.now()
 ts=ts.replace(microsecond=0)
 for s in sites:
     send ('siteName: '+ s.name + '\nmetricName: FAXprobe1\nmetricStatus: '+str(s.status())+'\ndelay: '+str(s.delay)+'\ntimestamp: '+ts.isoformat(' ')+'\n')      
+
+
+print '--------------------------------- Writing file for twiki ----------------------------'
+with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiSites.log', 'w') as f: 
+    f.write('| *name* | *address* |')
+    for s in sites:
+        f.write('| '+s.name+' | '+s.host+' |\n')
+        # if s.direct==0: continue
+        f.write(s.comm1)
+    f.close()
