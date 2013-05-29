@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import subprocess, threading, os, sys, cx_Oracle,time
-import stomp, logging, datetime, ConfigParser
+import stomp, logging, datetime, ConfigParser, random
 
 logging.basicConfig()
 
@@ -42,6 +42,7 @@ class site:
     upstream=0
     downstream=0
     security=0
+    delay=0
     comm1=''
      
     def __init__(self, fn, na, ho, re):
@@ -54,8 +55,10 @@ class site:
     
     def prnt(self, what):
         if (what>=0 and self.redirector!=what): return
-        print 'fullname:',self.fullname,'\tredirector:', self.redirector, '\tname:', self.name, '\thost:', self.host, '\tresponds:', self.direct, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t security:', self.security
-    
+        print '------------------------------------\nfullname:',self.fullname
+        print 'redirector:', self.redirector, '\tname:', self.name, '\thost:', self.host
+        print 'responds:', self.direct, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t security:', self.security, '\t delay:', self.delay
+        
     def status(self):
        s=0
        s=s|(self.security<<3)
@@ -79,7 +82,7 @@ try:
         sites.append(si)
 except:
     print "Unexpected error:", sys.exc_info()[0]    
-
+    
 
         
 
@@ -221,7 +224,44 @@ for s in sites:
             continue                
         print 'OK'
                 
+                
+
 print "================================= CHECK IV ================================================"
+
+with open('checkDelays.sh', 'w') as f: 
+    for s in sites:
+        if s.direct==0: continue
+        logfile='checkDelays_'+s.name+'.log'
+        lookingFor = '//atlas/dq2/user/HironoriIto/user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-'+str(random.randint(0,100000))
+        s.comm1='/usr/bin/time -f"real: %e" xrd '+s.host.replace('root://','')+' existfile '+lookingFor+' >& '+logfile+' & \n'
+        f.write(s.comm1)
+    f.close()
+
+#sys.exit(0)
+print 'executing all of the xrd lookups in parallel. 1 min timeout.'
+com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkDelays.sh")
+com.run(60)
+time.sleep(sleeps)
+
+
+print 'checking log files'
+
+# checking sites delays
+for s in sites:
+    if s.direct==0: continue
+    logfile='checkDelays_'+s.name+'.log'
+    with open(logfile, 'r') as f:
+        lines=f.readlines()
+        for l in lines:
+            # print l
+            if l.startswith("real:"):
+                s.delay=float(l.split(":")[1])
+                break
+
+              
+                
+                
+print "================================= CHECK V ================================================"
 
 with open('checkSecurity.sh', 'w') as f: # deletes proxy and then tries to directly access the files
     f.write('rm -f /tmp/x509* \n')
@@ -264,8 +304,9 @@ for s in sites:  # this is file to be asked for
 for s in sites: s.prnt(0)  #print only real sites
 
 
+
 print '--------------------------------- Uploading results ---------------------------------'
 ts=datetime.datetime.now()
 ts=ts.replace(microsecond=0)
 for s in sites:
-    send ('siteName: '+ s.name + '\nmetricName: FAXprobe1\nmetricStatus: '+str(s.status())+'\ntimestamp: '+ts.isoformat(' ')+'\n')      
+    send ('siteName: '+ s.name + '\nmetricName: FAXprobe1\nmetricStatus: '+str(s.status())+'\ndelay: '+str(s.delay)+'\ntimestamp: '+ts.isoformat(' ')+'\n')      
