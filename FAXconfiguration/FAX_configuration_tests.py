@@ -319,5 +319,4 @@ with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiSites.log
     for s in sites:
         f.write('| '+s.name+' | '+s.host+' |\n')
         # if s.direct==0: continue
-        f.write(s.comm1)
     f.close()
