@@ -256,7 +256,7 @@ for s in sites:
             # print l
             if l.startswith("real:"):
                 s.delay=float(l.split(":")[1])
-                print s.name+': '+s.delay
+                print s.name+': '+str(s.delay)
                 break
 
               
