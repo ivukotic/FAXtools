@@ -315,8 +315,12 @@ for s in sites:
 
 print '--------------------------------- Writing file for twiki ----------------------------'
 with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiSites.log', 'w') as f: 
-    f.write('| *name* | *address* |')
+    f.write('| *status* | *name* | *address* |')
     for s in sites:
-        f.write('| '+s.name+' | '+s.host+' |\n')
-        # if s.direct==0: continue
+        lin=''
+        if s.direct==0: 
+            lin+='| %ICON{led-red}% | '
+        else:
+            lin+='| %ICON{led-green}% | '
+        f.write(lin+s.name+' | '+s.host+' |\n')
     f.close()
