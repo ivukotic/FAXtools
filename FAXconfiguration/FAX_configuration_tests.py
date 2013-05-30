@@ -313,7 +313,7 @@ for s in sites:
     send ('siteName: '+ s.name + '\nmetricName: FAXprobe1\nmetricStatus: '+str(s.status())+'\ndelay: '+str(s.delay)+'\ntimestamp: '+ts.isoformat(' ')+'\n')      
 
 
-print '--------------------------------- Writing file for twiki ----------------------------'
+print '--------------------------------- Writing SEs for twiki ----------------------------'
 with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiSites.log', 'w') as f: 
     f.write('| *status* | *name* | *address* |\n')
     for s in sites:
@@ -324,3 +324,24 @@ with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiSites.log
             lin+='| %ICON{led-green}% | '
         f.write(lin+s.name+' | '+s.host+' |\n')
     f.close()
+
+
+print '--------------------------------- Writing redirectors for twiki ----------------------------'
+with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiRedirectors.log', 'w') as fi:
+    fi.write("| *Site* | *Address* |\n")
+    try:
+        req = urllib2.Request("http://atlas-agis-api.cern.ch/request/service/query/get_redirector_services/?json&state=ACTIVE", None)
+        opener = urllib2.build_opener()
+        f = opener.open(req)
+        res=simplejson.load(f)
+        for s in res:
+             l="| "+s["rc_site"]+" | "+s["endpoint"]+" |\n"
+             # print l
+             fi.write(l)
+        print "got FAX redirectors from AGIS."
+
+    except:
+        print "Unexpected error:", sys.exc_info()[0]    
+
+    fi.close()
+
