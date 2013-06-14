@@ -9,9 +9,9 @@ config.read("neet.cfg")
 HOST = config.get("Connection", "HOST")
 PORT = int(config.get("Connection", "PORT"))
 QUEUE = config.get("Connection", "QUEUE")
+REDIRECTORSQUEUE = config.get("Connection","REDIRECTORSQUEUE")
 
-
-def send (message):
+def send (message, site=True):
     """ Send message by stomp protocols.
     @param message: the message being sent
     
@@ -20,8 +20,11 @@ def send (message):
     conn.start()
     conn.connect()
     
-    conn.send(message,destination=QUEUE, ack='auto')
-    
+    if site:
+        conn.send(message,destination=QUEUE, ack='auto')
+    else:
+        conn.send(message,destination=REDIRECTORSQUEUE, ack='auto')
+        
     try:
        conn.disconnect()
     except Exception:
@@ -32,6 +35,7 @@ timeouts=300
 sleeps=250
 
 sites=[]; # each site contains [name, host, redirector]
+redirectors=[]
 
 class site:    
     name=''
@@ -67,6 +71,16 @@ class site:
        s=s|(self.direct<<0)
        return s
 
+class redirector:
+    def __init__(self, name, address):
+        self.name=name
+        self.address=address
+        self.upstream=False
+        self.downstream=False
+        self.status=False
+    def prnt(self):
+        print 'redirector: ', self.redirector, '\taddress: ', self.address, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t status:', self.status
+
 print 'Geting site list from AGIS...' 
 
 import urllib2,simplejson
@@ -85,6 +99,22 @@ except:
     
 
         
+
+
+
+
+print 'Geting redirector list from AGIS...' 
+try:
+    req = urllib2.Request("http://atlas-agis-api.cern.ch/request/service/query/get_redirector_services/?json&state=ACTIVE", None)
+    opener = urllib2.build_opener()
+    f = opener.open(req)
+    res=simplejson.load(f)
+    for s in res:
+        print s["name"], s["endpoint"]
+        redirectors.append(redirector(s["rc_site"],s["endpoint"]))
+except:
+    print "Unexpected error:", sys.exc_info()[0]    
+
 
 class Command(object):
     
@@ -261,8 +291,101 @@ for s in sites:
 
               
                 
-                
 print "================================= CHECK V ================================================"
+                
+with open('checkRedirectorDownstream.sh', 'w') as f:
+    for r in redirectors:
+        logfile='checkRedirectorDownstream_'+r.name+'.log'
+        thereIsUnderlayingWorkingSite=False
+        for s in sites:
+            if s.direct==0: continue
+            if s.redirector==r.address or r.name='XROOTD_glrd' or r='XROOTD_atlas-xrd-eu':
+                lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-1M'
+                comm='xrdcp -f -np -d 1 root://'+r.address+'//atlas/dq2/user/HironoriIto/'+lookingFor+' /dev/null >& '+logfile+' & \n'
+                f.write(comm)
+                thereIsUnderlayingWorkingSite=True
+                break
+        if not thereIsUnderlayingWorkingSite:
+            r.status|=1 # can not check downstream
+    f.close()
+
+#sys.exit(0)
+print 'executing all of the xrdcps  in parallel. 5 min timeout.'
+com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkRedirectorDownstream.sh")
+com.run(timeouts)
+time.sleep(sleeps)
+
+
+print 'checking log files'
+
+# checking sites delays
+for r in redirectors:
+    if r.status&1: continue
+    logfile='checkRedirectorDownstream_'+s.name+'.log'
+    with open(logfile, 'r') as f:
+        print 'Checking file: ', logfile
+        lines=f.readlines()
+        succ=False
+        for l in lines:
+            if l.startswith(" BytesSubmitted"):
+                succ=True
+                r.downstream=True
+        if succ==False: 
+            print 'Did not work.'
+            r.status|=2               
+        print 'OK'
+
+                
+                
+                
+print "================================= CHECK VI ================================================"
+
+                
+with open('checkRedirectorUpstream.sh', 'w') as f:
+    for r in redirectors:
+        logfile='checkRedirectorUpstream_'+r.name+'.log'
+        thereIsOverlayingWorkingSite=False
+        for s in sites:
+            if s.direct==0: continue
+            if s.redirector==r.address or r.name='XROOTD_glrd' or r='XROOTD_atlas-xrd-eu':
+                lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-1M'
+                comm='xrdcp -f -np -d 1 root://'+r.address+'//atlas/dq2/user/HironoriIto/'+lookingFor+' /dev/null >& '+logfile+' & \n'
+                f.write(comm)
+                thereIsOverlayingWorkingSite=True
+                break
+        if not thereIsOverlayingWorkingSite:
+            r.status|=1 # can not check upstream
+    f.close()
+
+#sys.exit(0)
+print 'executing all of the xrdcps  in parallel. 5 min timeout.'
+com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkRedirectorUpstream.sh")
+com.run(timeouts)
+time.sleep(sleeps)
+
+
+print 'checking log files'
+
+# checking sites delays
+for r in redirectors:
+    if r.status&1: continue
+    logfile='checkRedirectorUpstream_'+s.name+'.log'
+    with open(logfile, 'r') as f:
+        print 'Checking file: ', logfile
+        lines=f.readlines()
+        succ=False
+        for l in lines:
+            if l.startswith(" BytesSubmitted"):
+                succ=True
+                r.upstream=True
+        if succ==False: 
+            print 'Did not work.'
+            r.status|=4               
+        print 'OK'
+
+
+
+print "================================= CHECK VII ================================================"
 
 with open('checkSecurity.sh', 'w') as f: # deletes proxy and then tries to directly access the files
     f.write('rm -f /tmp/x509* \n')
@@ -306,11 +429,16 @@ for s in sites: s.prnt(0)  #print only real sites
 
 
 
-print '--------------------------------- Uploading results ---------------------------------'
+print '--------------------------------- Uploading site results ---------------------------------'
 ts=datetime.datetime.now()
 ts=ts.replace(microsecond=0)
 for s in sites:
     send ('siteName: '+ s.name + '\nmetricName: FAXprobe1\nmetricStatus: '+str(s.status())+'\ndelay: '+str(s.delay)+'\ntimestamp: '+ts.isoformat(' ')+'\n')      
+
+
+print '--------------------------------- Uploading redirector results ---------------------------------'
+for r in redirectors:
+    send ('redirectorName: '+ r.name + '\nmetricName: FAXprobe2\naddress: '+r.address+'\nmetricStatus: '+str(r.status())+'\ntimestamp: '+ts.isoformat(' ')+'\n', False)      
 
 
 print '--------------------------------- Writing SEs for twiki ----------------------------'
@@ -328,20 +456,19 @@ with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiSites.log
 
 print '--------------------------------- Writing redirectors for twiki ----------------------------'
 with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiRedirectors.log', 'w') as fi:
-    fi.write("| *Site* | *Address* |\n")
+    fi.write("| *status* | *Site* | *Address* |\n")
     try:
-        req = urllib2.Request("http://atlas-agis-api.cern.ch/request/service/query/get_redirector_services/?json&state=ACTIVE", None)
-        opener = urllib2.build_opener()
-        f = opener.open(req)
-        res=simplejson.load(f)
-        for s in res:
-             l="| "+s["rc_site"]+" | "+s["endpoint"]+" |\n"
-             # print l
-             fi.write(l)
+        for r in redirectors:
+            l=''
+            if r.status>0: 
+                l+='| %ICON{led-red}% | '
+            else:
+                l+='| %ICON{led-green}% | '
+            l += r.name+" | "+r.address+" |\n"
+            print l
+            fi.write(l)
         print "got FAX redirectors from AGIS."
-
     except:
-        print "Unexpected error:", sys.exc_info()[0]    
-
+        print "Unexpected error:", sys.exc_info()[0]
     fi.close()
 
