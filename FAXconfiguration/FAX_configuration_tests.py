@@ -347,7 +347,7 @@ with open('checkRedirectorUpstream.sh', 'w') as f:
         thereIsOverlayingWorkingSite=False
         for s in sites:
             if s.direct==0: continue
-            if s.redirector==r.address or r.name='XROOTD_glrd' or r='XROOTD_atlas-xrd-eu':
+            if s.redirector==r.address or r.name=='XROOTD_glrd' or r=='XROOTD_atlas-xrd-eu':
                 lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-1M'
                 comm='xrdcp -f -np -d 1 root://'+r.address+'//atlas/dq2/user/HironoriIto/'+lookingFor+' /dev/null >& '+logfile+' & \n'
                 f.write(comm)
