@@ -79,7 +79,7 @@ class redirector:
         self.downstream=False
         self.status=False
     def prnt(self):
-        print 'redirector: ', self.redirector, '\taddress: ', self.address, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t status:', self.status
+        print 'redirector: ', self.name, '\taddress: ', self.address, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t status:', self.status
 
 print 'Geting site list from AGIS...' 
 
@@ -111,7 +111,7 @@ try:
     res=simplejson.load(f)
     for s in res:
         print s["name"], s["endpoint"]
-        redirectors.append(redirector(s["rc_site"],s["endpoint"]))
+        redirectors.append(redirector(s["name"],s["endpoint"]))
 except:
     print "Unexpected error:", sys.exc_info()[0]    
 
@@ -321,7 +321,7 @@ print 'checking log files'
 # checking sites delays
 for r in redirectors:
     if r.status&1: continue
-    logfile='checkRedirectorDownstream_'+s.name+'.log'
+    logfile='checkRedirectorDownstream_'+r.name+'.log'
     with open(logfile, 'r') as f:
         print 'Checking file: ', logfile
         lines=f.readlines()
@@ -369,7 +369,7 @@ print 'checking log files'
 # checking sites delays
 for r in redirectors:
     if r.status&1: continue
-    logfile='checkRedirectorUpstream_'+s.name+'.log'
+    logfile='checkRedirectorUpstream_'+r.name+'.log'
     with open(logfile, 'r') as f:
         print 'Checking file: ', logfile
         lines=f.readlines()
