@@ -82,7 +82,7 @@ class redirector:
         self.address=address
         self.upstream=False
         self.downstream=False
-        self.status=False
+        self.status=0
     def prnt(self):
         print 'redirector: ', self.name, '\taddress: ', self.address, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t status:', self.status
 
@@ -443,7 +443,7 @@ for s in sites:
 
 print '--------------------------------- Uploading redirector results ---------------------------------'
 for r in redirectors:
-    sendRed ('redirectorName: '+ r.name + '\nmetricName: FAXprobe2\naddress: '+r.address+'\nmetricStatus: '+str(r.status())+'\ntimestamp: '+ts.isoformat(' ')+'\n')      
+    sendRed ('redirectorName: '+ r.name + '\nmetricName: FAXprobe2\naddress: '+r.address+'\nmetricStatus: '+str(r.status)+'\ntimestamp: '+ts.isoformat(' ')+'\n')      
 
 
 print '--------------------------------- Writing SEs for twiki ----------------------------'
