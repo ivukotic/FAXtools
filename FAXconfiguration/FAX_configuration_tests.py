@@ -11,7 +11,7 @@ PORT = int(config.get("Connection", "PORT"))
 QUEUE = config.get("Connection", "QUEUE")
 REDIRECTORSQUEUE = config.get("Connection","REDIRECTORSQUEUE")
 
-def send (message, site=True):
+def send (message):
     """ Send message by stomp protocols.
     @param message: the message being sent
     
@@ -19,12 +19,17 @@ def send (message, site=True):
     conn = stomp.Connection([(HOST,PORT)])
     conn.start()
     conn.connect()
-    
-    if site:
-        conn.send(message,destination=QUEUE, ack='auto')
-    else:
-        conn.send(message,destination=REDIRECTORSQUEUE, ack='auto')
-        
+    conn.send(message,destination=QUEUE, ack='auto')    
+    try:
+       conn.disconnect()
+    except Exception:
+        'Exception on disconnect'
+
+def sendRed (message):
+    conn = stomp.Connection([(HOST,PORT)])
+    conn.start()
+    conn.connect()
+    conn.send(message,destination=REDIRECTORSQUEUE, ack='auto')
     try:
        conn.disconnect()
     except Exception:
@@ -438,7 +443,7 @@ for s in sites:
 
 print '--------------------------------- Uploading redirector results ---------------------------------'
 for r in redirectors:
-    send ('redirectorName: '+ r.name + '\nmetricName: FAXprobe2\naddress: '+r.address+'\nmetricStatus: '+str(r.status())+'\ntimestamp: '+ts.isoformat(' ')+'\n', False)      
+    sendRed ('redirectorName: '+ r.name + '\nmetricName: FAXprobe2\naddress: '+r.address+'\nmetricStatus: '+str(r.status())+'\ntimestamp: '+ts.isoformat(' ')+'\n')      
 
 
 print '--------------------------------- Writing SEs for twiki ----------------------------'
