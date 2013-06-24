@@ -300,7 +300,7 @@ print "================================= CHECK V ===============================
                 
 with open('checkRedirectorDownstream.sh', 'w') as f:
     for r in redirectors:
-        logfile='checkRedirectorDownstream_'+r.name+'.log'
+        logfile='checkRedirectorDownstream_'+r.name.upper()+'.log'
         thereIsUnderlayingWorkingSite=False
         for s in sites:
             if s.direct==0: continue
@@ -326,7 +326,7 @@ print 'checking log files'
 # checking sites delays
 for r in redirectors:
     if r.status&1: continue
-    logfile='checkRedirectorDownstream_'+r.name+'.log'
+    logfile='checkRedirectorDownstream_'+r.name.upper()+'.log'
     with open(logfile, 'r') as f:
         print 'Checking file: ', logfile
         lines=f.readlines()
@@ -348,7 +348,7 @@ print "================================= CHECK VI ==============================
                 
 with open('checkRedirectorUpstream.sh', 'w') as f:
     for r in redirectors:
-        logfile='checkRedirectorUpstream_'+r.name+'.log'
+        logfile='checkRedirectorUpstream_'+r.name.upper()+'.log'
         thereIsOverlayingWorkingSite=False
         for s in sites:
             if s.direct==0: continue
@@ -374,7 +374,7 @@ print 'checking log files'
 # checking sites delays
 for r in redirectors:
     if r.status&1: continue
-    logfile='checkRedirectorUpstream_'+r.name+'.log'
+    logfile='checkRedirectorUpstream_'+r.name.upper()+'.log'
     with open(logfile, 'r') as f:
         print 'Checking file: ', logfile
         lines=f.readlines()
