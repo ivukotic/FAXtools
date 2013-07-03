@@ -17,6 +17,8 @@ source $AtlasSetup/scripts/asetup.sh 17.7.0,noTest
 
 voms-proxy-init -cert /afs/cern.ch/user/i/ivukotic/.globus/usercert.pem -key /afs/cern.ch/user/i/ivukotic/.globus/userkey.pem -voms atlas -pwstdin < /afs/cern.ch/user/i/ivukotic/gridlozinka.txt
 
+source /afs/cern.ch/project/xrootd/software/setup.sh test/3.3.3-rc1/x86_64-slc6-gcc45-opt
+
 cd $WD
 
 python FAX_configuration_tests.py
