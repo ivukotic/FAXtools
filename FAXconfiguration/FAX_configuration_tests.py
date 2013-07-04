@@ -175,7 +175,7 @@ for s in sites:  # this is file to be asked for
         succ=False
         for l in lines:
             # print l
-            if l.startswith(" BytesSubmitted"):
+            if l.count("Read: Hole in the cache: offs=0, len=1310720")>0:
                 succ=True
                 break
         if succ==True:
@@ -250,7 +250,7 @@ for s in sites:
         succ=False
         reds=[]
         for l in lines:
-            if l.startswith(" BytesSubmitted"):
+            if l.count("Read: Hole in the cache: offs=0, len=1310720")>0:
                 succ=True
                 s.downstream=1
         if succ==False: 
@@ -332,7 +332,7 @@ for r in redirectors:
         lines=f.readlines()
         succ=False
         for l in lines:
-            if l.startswith(" BytesSubmitted"):
+            if l.count("Read: Hole in the cache: offs=0, len=1310720")>0:
                 succ=True
                 r.downstream=True
         if succ==False: 
@@ -380,7 +380,7 @@ for r in redirectors:
         lines=f.readlines()
         succ=False
         for l in lines:
-            if l.startswith(" BytesSubmitted"):
+            if l.count("Read: Hole in the cache: offs=0, len=1310720")>0:
                 succ=True
                 r.upstream=True
         if succ==False: 
@@ -421,7 +421,7 @@ for s in sites:  # this is file to be asked for
         succ=False
         for l in lines:
             # print l
-            if l.startswith(" BytesSubmitted"):
+            if l.count("Read: Hole in the cache: offs=0, len=1310720")>0:
                 succ=True
                 break
         if succ==True:
