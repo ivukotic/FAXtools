@@ -268,7 +268,7 @@ with open('checkDelays.sh', 'w') as f:
         if s.direct==0: continue
         logfile='checkDelays_'+s.name+'.log'
         lookingFor = '//atlas/dq2/user/HironoriIto/user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-'+str(random.randint(0,100000))
-        s.comm1='/usr/bin/time -f"real: %e" xrd '+s.host.replace('root://','')+' existfile '+lookingFor+' 2>'+logfile+' & \n'
+        s.comm1='/usr/bin/time -f"real: %e" xrdfs '+s.host.replace('root://','')+' stat '+lookingFor+' 2>'+logfile+' & \n'
         f.write(s.comm1)
     f.close()
 
