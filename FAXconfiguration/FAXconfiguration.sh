@@ -25,4 +25,8 @@ python FAX_configuration_tests.py
 
 cp *.log /afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/.
 
+killall -9 xrdcp
+
+killall -9 xrdfs
+
 echo "Done." 
