@@ -267,8 +267,8 @@ with open('checkDelays1.sh', 'w') as f:
     for s in sites:
         if s.direct==0: continue
         logfile='checkDelays_'+s.name+'.log'
-        lookingFor = '//atlas/dq2/user/HironoriIto/user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-'+str(random.randint(0,100000))
-        s.comm1='/usr/bin/time -f"real: %e" xrdfs '+s.host.replace('root://','')+' stat '+lookingFor+' 2>'+logfile+' & \n'
+        lookingFor = '//atlas/dq2/user/HironoriIto/user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name # +'-'+str(random.randint(0,100000))
+        s.comm1='/usr/bin/time -f"real: %e" xrdfs '+s.host.replace('root://','')+' locate -r '+lookingFor+' 2>'+logfile+' & \n'
         f.write(s.comm1)
     f.close()
 
