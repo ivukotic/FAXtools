@@ -263,18 +263,18 @@ for s in sites:
 
 print "================================= CHECK IV ================================================"
 
-with open('checkDelays.sh', 'w') as f: 
+with open('checkDelays1.sh', 'w') as f: 
     for s in sites:
         if s.direct==0: continue
         logfile='checkDelays_'+s.name+'.log'
-        lookingFor = '//atlas/dq2/user/HironoriIto/user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-'+str(random.randint(0,100000))
-        s.comm1='/usr/bin/time -f"real: %e" xrdfs '+s.host.replace('root://','')+' stat '+lookingFor+' 2>'+logfile+' & \n'
+        lookingFor = '//atlas/dq2/user/HironoriIto/user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name # +'-'+str(random.randint(0,100000))
+        s.comm1='/usr/bin/time -f"real: %e" xrdfs '+s.host.replace('root://','')+' locate -r '+lookingFor+' 2>'+logfile+' & \n'
         f.write(s.comm1)
     f.close()
 
 #sys.exit(0)
 print 'executing all of the xrd lookups in parallel. 1 min timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkDelays.sh")
+com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkDelays1.sh")
 com.run(60)
 time.sleep(sleeps)
 
