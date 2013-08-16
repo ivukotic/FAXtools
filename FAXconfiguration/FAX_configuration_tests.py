@@ -8,6 +8,8 @@ config = ConfigParser.ConfigParser()
 config.read("neet.cfg")
 HOST = config.get("Connection", "HOST")
 PORT = int(config.get("Connection", "PORT"))
+USER = config.get("Connection", "USER")
+PASS = config.get("Connection", "PASS")
 QUEUE = config.get("Connection", "QUEUE")
 REDIRECTORSQUEUE = config.get("Connection","REDIRECTORSQUEUE")
 
@@ -16,7 +18,7 @@ def send (message):
     @param message: the message being sent
     
     """  
-    conn = stomp.Connection([(HOST,PORT)])
+    conn = stomp.Connection([(HOST,PORT)],USER,PASS)
     conn.start()
     conn.connect()
     conn.send(message,destination=QUEUE, ack='auto')    
@@ -26,7 +28,7 @@ def send (message):
         'Exception on disconnect'
 
 def sendRed (message):
-    conn = stomp.Connection([(HOST,PORT)])
+    conn = stomp.Connection([(HOST,PORT)],USER,PASS)
     conn.start()
     conn.connect()
     conn.send(message,destination=REDIRECTORSQUEUE, ack='auto')
