@@ -50,7 +50,7 @@ class Command(object):
         def target():
             print 'command started: ', self.cmd
             self.process = subprocess.Popen(self.cmd, shell=True)
-            self.process.communicate()
+            return self.process.communicate()[0]
         
         thread = threading.Thread(target=target)
         thread.start()
@@ -123,126 +123,16 @@ for s in sites:
     for f in files:
         nfile=f.replace("root://fax.mwt2.org",s.host).replace("MWT2",sname)
         print nfile
-        c='root -q -b "list.C(\"'+nfile+'\")"'
+        c='root -q -b "list.C(\\"'+nfile+'\\")"'
         print c
         com = Command(c)    
-        com.run(60)
+        if (com.run(60)!=0):
+            s.fails+=1
+        else:
+            s.successes+=1
+    print sname, "\tsuccesses:",s.successes,"\t\tfails:" ,s.fails,"\t\tsuccess rate: ",s.successes*100./(s.successes+s.fails)," %"
         
-# 
-# 
-# for s in sites: s.prnt(-1) # print all
-# print 'creating scripts to execute'
-#     
-# print "================================= CHECK I =================================================="
-#     
-# with open('checkDirect.sh', 'w') as f: # first check that site itself gives it's own file
-#     for s in sites:
-#         logfile=s.name+'_to_'+s.name+'.log'
-#         lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-1M'
-#         s.comm1='xrdcp -f -np -d 1 '+s.host+'//atlas/dq2/user/HironoriIto/'+lookingFor+' /dev/null >& '+logfile+' & \n'
-#         f.write(s.comm1)
-#     f.close()
-# 
-# #sys.exit(0)
-# print 'executing all of the xrdcps in parallel. 5 min timeout.'
-# com = Command("source checkDirect.sh")    
-# com.run(timeouts)
-# time.sleep(sleeps)
-# 
-# 
-# print 'checking log files'
-# 
-# # checking which sites gave their own file directly
-# for s in sites:  # this is file to be asked for
-#     logfile=s.name+'_to_'+s.name+'.log'
-#     with open(logfile, 'r') as f:
-#         lines=f.readlines()
-#         succ=False
-#         for l in lines:
-#             # print l
-#             if l.startswith(" BytesSubmitted"):
-#                 succ=True
-#                 break
-#         if succ==True:
-#             print logfile, "works"
-#             s.direct=1
-#         else:
-#             print logfile, "problem"
-#             
-# for s in sites: s.prnt(0)  #print only real sites
-# 
-# #sys.exit(0)
-# 
-# print "================================= CHECK II ================================================="
-# 
-# with open('checkUpstream.sh', 'w') as f: # ask good sites for unexisting file
-#     for s in sites:
-#         if s.direct==0: continue
-#         logfile='upstreamFrom_'+s.name+'.log'
-#         lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.unexisting-1M'
-#         comm='xrdcp -f -np -d 1 '+s.host+'//atlas/dq2/user/HironoriIto/'+lookingFor+' /dev/null >& '+logfile+' & \n'
-#         f.write(comm)            
-#     f.close()
-#     
-# print 'executing all of the redirection xrdcps in parallel. 5 min timeout.'
-# com = Command("source checkUpstream.sh")    
-# com.run(timeouts)
-# time.sleep(sleeps)
-# 
-# 
-# for s in sites:
-#     if s.direct==0: continue
-#     logfile='upstreamFrom_'+s.name+'.log'
-#     with open(logfile, 'r') as f:
-#         print logfile
-#         lines=f.readlines()        
-#         reds=[]
-#         for l in lines:
-#             if l.count("Received redirection")>0:
-#                 red=l[l.find("[")+1 : l.find("]")]
-#                 reds.append(red.split(':')[0])
-#         print 'redirections:',reds
-#         if len(reds)==0:
-#             s.upstream=0
-#             print 'redirection does not work'
-#         else:    
-#             s.upstream=1
-#             print 'redirection works'
-# 
-# #sys.exit(0)
-# print "================================= CHECK III ================================================"
-# 
-# with open('checkDownstream.sh', 'w') as f: # ask global redirectors for files belonging to good sites
-#     for s in sites:
-#         if s.direct==0: continue
-#         logfile='checkDownstream_'+s.redirector+'_to_'+s.name+'.log'
-#         lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-1M'
-#         comm='xrdcp -f -np -d 1 root://'+s.redirector+'//atlas/dq2/user/HironoriIto/'+lookingFor+' /dev/null >& '+logfile+' & \n'
-#         f.write(comm)            
-#     f.close()
-# 
-# print 'executing all of the redirection xrdcps in parallel. 5 min timeout.'
-# com = Command("source checkDownstream.sh")    
-# com.run(timeouts)
-# time.sleep(sleeps)
-# 
-# for s in sites:
-#     if s.direct==0: continue
-#     logfile='checkDownstream_'+s.redirector+'_to_'+s.name+'.log'
-#     with open(logfile, 'r') as f:
-#         print 'Checking file: ', logfile
-#         lines=f.readlines()
-#         succ=False
-#         reds=[]
-#         for l in lines:
-#             if l.startswith(" BytesSubmitted"):
-#                 succ=True
-#                 s.downstream=1
-#         if succ==False: 
-#             print 'Did not work.'
-#             s.downstream=0 
-#             continue                
-#         print 'OK'
+
 #                 
 # print '--------------------------------- Uploading results ---------------------------------'
 # ts=datetime.datetime.now()
