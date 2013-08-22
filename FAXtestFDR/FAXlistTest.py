@@ -118,13 +118,12 @@ with open("inputFiles.txt", 'r') as f:
         # print l
         
 for s in sites:
-    if s.name!='aglt2': continue
+    if s.name!='mwt2': continue
     sname=s.name.upper()
     for f in files:
         nfile=f.replace("root://fax.mwt2.org",s.host).replace("MWT2",sname)
         print nfile
-        c='root -q -b "list.C(\\"'+nfile+'\\")"'
-        print c
+        c='root -q -b "list.C(\\"'+nfile+'\\")" >> '+sname.+'.log &'
         com = Command(c)    
         if (com.run(60)!=0):
             s.fails+=1
