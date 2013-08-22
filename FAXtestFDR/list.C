@@ -1,4 +1,4 @@
-void list(string fn){
+int list(string fn){
 
 TFile *f = TFile::Open(fn.c_str());
 if (f) {
