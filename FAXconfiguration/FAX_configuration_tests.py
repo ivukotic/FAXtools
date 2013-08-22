@@ -265,7 +265,7 @@ for s in sites:
 
 print "================================= CHECK IV ================================================"
 
-with open('checkDelays1.sh', 'w') as f: 
+with open('checkDelays.sh', 'w') as f: 
     for s in sites:
         if s.direct==0: continue
         logfile='checkDelays_'+s.name+'.log'
@@ -276,7 +276,7 @@ with open('checkDelays1.sh', 'w') as f:
 
 #sys.exit(0)
 print 'executing all of the xrd lookups in parallel. 1 min timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkDelays1.sh")
+com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkDelays.sh")
 com.run(60)
 time.sleep(sleeps)
 
