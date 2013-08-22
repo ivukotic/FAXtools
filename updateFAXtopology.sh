@@ -10,7 +10,7 @@ rm checkRedirection.sh checkUpDown.sh toExecute.sh *.log
 
 source /afs/cern.ch/project/gd/LCG-share/current/etc/profile.d/grid_env.sh; 
 
-asetup 17.7.0,noTest
+asetup 17.8.0,noTest
 
 voms-proxy-init -voms atlas -pwstdin < $HOME/gridlozinka.txt
 
