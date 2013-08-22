@@ -123,7 +123,7 @@ for s in sites:
     for f in files:
         nfile=f.replace("root://fax.mwt2.org",s.host).replace("MWT2",sname)
         print nfile
-        c='root -q -b "list.C(\\"'+nfile+'\\")" >> '+sname.+'.log &'
+        c='root -q -b "list.C(\\"'+nfile+'\\")" >> '+sname+'.log &'
         com = Command(c)    
         if (com.run(60)!=0):
             s.fails+=1
