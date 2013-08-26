@@ -107,7 +107,7 @@ except:
 
 
 sitesToCheck=[]
-for i in (1,len(sys.argv)):
+for i in (1,len(sys.argv)-1):
     stc=sys.argv[i]
     found=0
     for s in sites:
