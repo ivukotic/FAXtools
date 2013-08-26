@@ -75,8 +75,7 @@ class site:
     successes=0
     fails=0
     comm1=''
-
-
+    
     def __init__(self, fn, na, ho, re):
         if na=='grif':
             na=fn
@@ -84,11 +83,9 @@ class site:
         self.name=na
         self.host=ho
         self.redirector=re
-
-
+        
     def prnt(self):
         print  self.name, '\tsuccesses:', self.successes, '\t fails:', self.fails
-
 
 
 print 'Geting site list from AGIS...'
@@ -109,6 +106,20 @@ except:
     print "Unexpected error:", sys.exc_info()[0]
 
 
+sitesToCheck=[]
+for i in (1,len(sys.argv)):
+    stc=sys.argv[i]
+    found=0
+    for s in sites:
+        if stc==s.name:
+            sitesToCheck.append(stc)
+            found=1
+    if not found:
+        print 'Unrecognized site name:', stc
+        
+print 'Sites To check:', sitesToCheck
+
+
 # read file list file
 files=[]
 with open("inputFiles.txt", 'r') as f:
@@ -118,7 +129,7 @@ with open("inputFiles.txt", 'r') as f:
         # print l
         
 for s in sites:
-    # if s.name!='mwt2': continue
+    if s.name not in sitesToCheck: continue
     sname=s.name.upper()
     for f in files:
         nfile=f.replace("root://fax.mwt2.org",s.host).replace("MWT2",sname)
