@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 import subprocess, threading, os, sys, time
 import stomp, logging, datetime, ConfigParser, random
-import urllib2,simplejson
+import urllib2
+
+try: import simplejson as json
+except ImportError: import json
 
 logging.basicConfig()
 
