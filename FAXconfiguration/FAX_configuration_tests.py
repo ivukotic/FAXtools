@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-import subprocess, threading, os, sys, cx_Oracle,time
+import subprocess, threading, os, sys, time
 import stomp, logging, datetime, ConfigParser, random
+import urllib2,simplejson
 
 logging.basicConfig()
 
@@ -54,6 +55,7 @@ class site:
     downstream=0
     security=0
     delay=0
+    monitor=0
     comm1=''
      
     def __init__(self, fn, na, ho, re):
@@ -68,10 +70,11 @@ class site:
         if (what>=0 and self.redirector!=what): return
         print '------------------------------------\nfullname:',self.fullname
         print 'redirector:', self.redirector, '\tname:', self.name, '\thost:', self.host
-        print 'responds:', self.direct, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t security:', self.security, '\t delay:', self.delay
+        print 'responds:', self.direct, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t security:', self.security, '\t delay:', self.delay, '\t monitored:', self.monitor
         
     def status(self):
        s=0
+       s=s|(self.monitor<<4)
        s=s|(self.security<<3)
        s=s|(self.downstream<<2)
        s=s|(self.upstream<<1)
@@ -90,7 +93,7 @@ class redirector:
 
 print 'Geting site list from AGIS...' 
 
-import urllib2,simplejson
+
 
 try:
     req = urllib2.Request("http://atlas-agis-api-0.cern.ch/request/service/query/get_se_services/?json&state=ACTIVE&flavour=XROOTD", None)
@@ -149,6 +152,10 @@ class Command(object):
 
 for s in sites: s.prnt(-1) # print all
 print 'creating scripts to execute'
+    
+
+
+
     
 print "================================= CHECK I =================================================="
     
@@ -437,9 +444,44 @@ for s in sites: s.prnt(0)  #print only real sites
 
 
 
+    
+print "================================= CHECK MONITORING =================================================="
+    
+print 'Geting info from Dashboard ...' 
+ts=datetime.datetime.now()
+ts=ts.replace(microsecond=0)
+ts=ts.replace(second=0)
+fr=str(ts-datetime.timedelta(0,5*3600)).replace(" ","+").replace(":","%3A")
+to=str(ts).replace(" ","+").replace(":","%3A")
+try:
+    ur="http://dashb-atlas-xrootd-transfers.cern.ch/dashboard/request.py/test-details.json?client=voatlas106.cern.ch&from_date="+fr+"&to_date="+to
+    req = urllib2.Request(ur, None)
+    opener = urllib2.build_opener()
+    f = opener.open(req)
+    res=simplejson.load(f)
+    res=res["testDetails"]
+    for m in res:
+        #print m
+        if m['server_site'].count("MWT2"):
+            m['server_site']="MWT2"
+        found=0
+        for s in sites:
+            if s.name==m['server_site'].lower():
+                s.monitor=1
+                found=1
+        if not found:
+            print "can't connect this record with any site:\n", m
+except:
+    print "Unexpected error:", sys.exc_info()[0]    
+
+
+
+
+
 print '--------------------------------- Uploading site results ---------------------------------'
 ts=datetime.datetime.now()
 ts=ts.replace(microsecond=0)
+
 for s in sites:
     send ('siteName: '+ s.name + '\nmetricName: FAXprobe1\nmetricStatus: '+str(s.status())+'\ndelay: '+str(s.delay)+'\ntimestamp: '+ts.isoformat(' ')+'\n')      
 
