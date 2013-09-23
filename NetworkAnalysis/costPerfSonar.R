@@ -1,8 +1,8 @@
 # here downloading data
 
-names<-c("small","medium","large")
+names<-c("Min","Average","Max")
 if (0==1){
-	cols<-c(486,485,484)
+	cols<-c(10066,10064,10065)
 	ci <- data.frame(names,cols)
 
 	library(rjson)
@@ -22,12 +22,12 @@ if (0==1){
 	}
 	ci<-cbind(ci,I(rawdata))
 	
-	save(ci,file="localCopyFTS.data")
+	save(ci,file="localCopyPerfSonar.data")
 	print("loading done")
 }
 
 if (0==1){
-	load("localCopyFTS.data")
+	load("localCopyPerfSonar.data")
 
 	
 	cleaned<-list()
@@ -56,12 +56,12 @@ if (0==1){
 		cleaned[[u]]<-I(data.frame(mDFsorted[mDFsorted$rate>0,]))
 	}
 	
-	save(cleaned,file="cleanFTS.data")
+	save(cleaned,file="cleanPerfSonar.data")
 }
 
 	library(psych)
-	load("cleanFTS.data")
-	j<-3
+	load("cleanPerfSonar.data")
+	j<-1
 	cc       <- strsplit(as.vector(cleaned[[j]]$link),"_to_")
     source         <- unlist(cc)[2*(1:length(cleaned[[j]]$link))-1]
     destination    <- unlist(cc)[2*(1:length(cleaned[[j]]$link))  ]
@@ -84,10 +84,11 @@ if (0==1){
 	print (paste("total bandwidth:",sum(me$rate)))
 	
 	setEPS()
-	postscript(file = paste("FTS",names[[j]],"files.eps"))
+	postscript(file = paste("PerfSonar",names[[j]],"Throughput.eps"))
+	
 	 par(mfrow = c(2, 1))
-	 plot (x=c(1:length(me$link)),y=me$rate,main=paste("FTS",names[[j]],"files"), xlab="link number", ylab="MB/s",type="h")
-	 hist(me$rate,main=paste("FTS",names[[j]],"files"),ylab="count", xlab="rate MB/s")
+	 plot (x=c(1:length(me$link)),y=me$rate,main=paste("PerfSonar",names[[j]],"Throughput"), xlab="link number", ylab="MB/s",type="h")
+	 hist(me$rate,main=paste("PerfSonar",names[[j]],"Throughput"),ylab="count", xlab="rate MB/s")
     dev.off()
 	
 	ma<-aggregate(rate~unlist(source) + unlist(destination), data=cleaned[[j]], FUN="mean")	
@@ -96,22 +97,26 @@ if (0==1){
 	
 	print(m[1:4,1:4])
 	
-	postscript(file = paste("FTS",names[[j]],"filesMatrix.eps"))
+	
+	postscript(file = paste("PerfSonar",names[[j]],"ThroughputMatrix.eps"))
+	
 	par(mfrow = c(1, 1))
 	par(plt=c(0.2,0.98,0.2,0.9) )
 	
-	image(c(1:length(uSources)), c(1:length(uDestinations)), m, # xlim=c(0,86),ylim=c(0,86),
-		col =topo.colors(12), #c("blue","green","red")   #key.axes = axis(4, seq(0, 200, by = 10)),
-		axes=FALSE,xlab="Sources",ylab="Destinations",main=paste("FTS",names[[j]],"files"),)
+	image(c(1:length(uSources)), c(1:length(uDestinations)), m, 
+		col =topo.colors(12), 
+		axes=FALSE,xlab="Sources",ylab="Destinations",main=paste("PerfSonar",names[[j]],"Throughput"),)
 	
 	axis(1,at=c(1:length(uSources)),labels=uSources, cex.axis=0.4,las=2)
 	axis(2,at=c(1:length(uDestinations)),labels= uDestinations, cex.axis=0.4,las=2)
+	
 	dev.off()
+	
 	
 	par(mfrow = c(4, 2))
 	par(plt=c(0.2,0.95,0.2,0.8) )
 	#splits per link
 	aLink<-split(cleaned[[j]], cleaned[[j]]$link)
-	for (r in 2:9)
-		plot(x=aLink[[r]]$date, y=aLink[[r]]$rate,  main=paste(paste(aLink[[r]]$source[[1]],"to",aLink[[r]]$destination[[1]])), xlab='date', ylab='rate [MB/s]', type="l", col="blue")
+#	for (r in 2:9)
+#		plot(x=aLink[[r]]$date, y=aLink[[r]]$rate,  main=paste(paste(aLink[[r]]$source[[1]],"to",aLink[[r]]$destination[[1]])), xlab='date', ylab='rate [MB/s]', type="l", col="blue")
 	

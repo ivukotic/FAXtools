@@ -81,17 +81,18 @@ if (0==1){
 	print (describe(me$rate))
 	print (paste("total bandwidth:",sum(me$rate)))
 	
-	postscript(file = "FAX.ps",paper="a4")
+	setEPS()
+	postscript(file = "FAX.eps")
 	 par(mfrow = c(2, 1))
 	 plot (x=c(1:length(me$link)),y=me$rate,main="FAX measurements (100MB files)", xlab="link number", ylab="MB/s",type="h")
 	 hist(me$rate,main="FAX measurements" ,ylab="count", xlab="rate MB/s")
     dev.off()
     
-    postscript(file = "FAX_rates_pie.ps",paper="a4")
+    postscript(file = "FAX_rates_pie.eps")
 	 par(mfrow = c(1, 1))
 	 slices<-hist(me$rate,breaks=c(0,1,10,100,15000),  plot=FALSE)$counts
 	 lbls <- c("< 1 MB/s", "1 - 10 MB/s", "10 - 100 MB/s",">100 MB/s")
-	 lbls <- paste(lbls, paste("(",slices," links",")",sep=""))
+	 lbls <- paste(lbls, paste("\n",slices," links",sep=""))
 	 pie (slices, labels = lbls,main="FAX rates (100MB files)", col = c("red", "gray", "blue", "green"))
     dev.off()
 	
@@ -103,6 +104,7 @@ if (0==1){
 	
 	print(m[1:4,1:4])
 	
+	postscript(file = "FAXmatrix.eps")
 	par(mfrow = c(1, 1))
 	par(plt=c(0.2,0.98,0.2,0.90) )
 	
@@ -114,7 +116,8 @@ if (0==1){
 	
 	axis(1,at=c(1:length(uSources)),labels=uSources, cex.axis=0.4,las=2)
 	axis(2,at=c(1:length(uDestinations)),labels= uDestinations, cex.axis=0.4,las=2)
-	
+	dev.off()
+	 
 	par(mfrow = c(4, 2))
 	par(plt=c(0.2,0.95,0.2,0.8) )
 	#splits per link
