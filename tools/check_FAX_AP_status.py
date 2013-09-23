@@ -30,7 +30,7 @@ class site:
 
     
 def usage():
-    print "usage: check_FAX_AP_status.py -s/--site [-v] [-h] SITE_NAME \n returned code consist of 3 numbers: direct access, upstream redirection, downstream redirection. \n 3 - not working, 5 - working, 7 - offline"
+    print "usage: check_FAX_AP_status.py -s/--site [-v/--verbose] [-h/--help] SITE_NAME \nreturned code consist of 3 numbers: direct access, upstream redirection, downstream redirection. \n3 - not working, 5 - working, 7 - offline"
     
 
 def main(argv=None):
