@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-import os, sys, time, getopt
-from  datetime import datetime
-from datetime import timedelta
+import subprocess, threading
+import os, sys, time
+
 try: 
 	import simplejson as json
 except ImportError: 
@@ -11,7 +11,6 @@ import urllib2
 
 import xml.etree.ElementTree as ET
 
-curtime=datetime.now()
 
 sites=[]; # each site contains [name, host, redirector]
 redirectors=[]
