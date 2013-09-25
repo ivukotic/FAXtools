@@ -126,8 +126,8 @@ with open('checkAPs.sh', 'w') as f:
 #sys.exit(0)
 print 'executing all of the xrdcps in parallel. 5 min timeout.'
 com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkAPs.sh")
-com.run(120)
-time.sleep(sleeps)
+com.run(60)
+time.sleep(70)
 
 
 print 'checking log files'
