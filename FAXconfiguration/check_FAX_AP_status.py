@@ -170,7 +170,7 @@ with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiSitesStat
 
 print '--------------------------------- Writing redirectors for twiki ----------------------------'
 with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiRedirectorsStatus.log', 'w') as fi:
-    fi.write("| *status* | *Site* | *Address* |\n")
+    fi.write("| *name* | *address* | *version* | *site* |\n")
     try:
         for r in redirectors:
             f.write('| '+r.name+' | '+r.address+' | '+r.version+ ' | '+r.site+ '|\n')
