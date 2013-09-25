@@ -83,17 +83,21 @@ if (0==1){
 	
 	setEPS()
 	postscript(file = "FAX.eps")
+	 par(mar=c(1,1.5,3,1.5) )
 	 par(mfrow = c(2, 1))
 	 plot (x=c(1:length(me$link)),y=me$rate,main="FAX measurements (100MB files)", xlab="link number", ylab="MB/s",type="h")
-	 hist(me$rate,main="FAX measurements" ,ylab="count", xlab="rate MB/s")
+	 #hist(me$rate,main="FAX measurements" ,ylab="count", xlab="rate MB/s")
+	 hist(me$rate,ylab="count", xlab="rate MB/s")
     dev.off()
     
     postscript(file = "FAX_rates_pie.eps")
 	 par(mfrow = c(1, 1))
+	 par(mar=c(1,1.5,1,1.5) )
 	 slices<-hist(me$rate,breaks=c(0,1,10,100,15000),  plot=FALSE)$counts
 	 lbls <- c("< 1 MB/s", "1 - 10 MB/s", "10 - 100 MB/s",">100 MB/s")
 	 lbls <- paste(lbls, paste("\n",slices," links",sep=""))
-	 pie (slices, labels = lbls,main="FAX rates (100MB files)", col = c("red", "gray", "blue", "green"))
+	 #pie (slices, labels = lbls,main="FAX rates (100MB files)", col = c("red", "gray", "blue", "green"))
+	 pie (slices, labels = lbls, col = c("red", "gray", "blue", "green"))
     dev.off()
 	
 	ma<-aggregate(rate~unlist(source) + unlist(destination), data=cleanedFAX, FUN="mean")	
@@ -112,7 +116,7 @@ if (0==1){
 		#col =topo.colors(12), #c("blue","green","red")   #key.axes = axis(4, seq(0, 200, by = 10)),
 		col=c("red","blue","green","yellow"),
 		breaks=c(0,1,10,100,1000),
-		axes=FALSE,xlab="Sources",ylab="Destinations",main="FAX measurements (100MB files)",)
+		axes=FALSE,xlab="Sources",ylab="Destinations",)#main="FAX measurements (100MB files)")
 	
 	axis(1,at=c(1:length(uSources)),labels=uSources, cex.axis=0.4,las=2)
 	axis(2,at=c(1:length(uDestinations)),labels= uDestinations, cex.axis=0.4,las=2)

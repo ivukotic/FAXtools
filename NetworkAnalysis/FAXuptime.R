@@ -2,10 +2,12 @@ hours<-720
 
 library(rjson)
 
-
-postscript(file = "FAXavailability.ps", paper = "a4")
-
-par(mfrow = c(2, 2))
+setEPS()
+postscript(file = "FAXavailability.eps", width=7, height=2.5)
+#png(file = "FAXavailability.png",width = 1024, height = 480, pointsize=6, res=240)
+#pdf(file = "FAXavailability.pdf", width=7, height=2.5)
+par(mfrow = c(1, 3))
+par(mar=c(1,1.5,3,1.5) )
 
 ur <- paste("http://dashb-atlas-ssb.cern.ch/dashboard/request.py/getplotdata?time=",hours,"&dateFrom=&dateTo=&site=AGLT2&sites=all&clouds=all&batch=1&columnid=", sep = "")
 
@@ -42,10 +44,10 @@ for (i in 1:nrow(mDFsorted)) {
 tottime <- sum(mDFsorted$EndTime - mDFsorted$Time)
 
 slices <- c(greentime, redtime, graytime)
-lbls <- c("available", "endpoint issue", "offline")
+lbls <- c("available", "unavailable", "offline")
 pct <- round(slices/sum(slices) * 100)
-lbls <- paste(lbls, pct) # add percents to labels 
-lbls <- paste(lbls, "%", sep = "") # ad % to labels
+#lbls <- paste(lbls, pct) # add percents to labels 
+lbls <- paste(lbls, "\n", pct , "%", sep = "") # ad % to labels
 pie(slices, labels = lbls, main = "Direct access availability", col = c("green", "red", "gray"))
 
 
@@ -82,10 +84,10 @@ for (i in 1:nrow(mDFsorted)) {
 tottime <- sum(mDFsorted$EndTime - mDFsorted$Time)
 
 slices <- c(greentime, redtime, graytime)
-lbls <- c("available", "endpoint issue", "offline")
+lbls <- c("available", "unavailable", "offline")
 pct <- round(slices/sum(slices) * 100)
-lbls <- paste(lbls, pct) # add percents to labels 
-lbls <- paste(lbls, "%", sep = "") # ad % to labels
+#lbls <- paste(lbls, pct) # add percents to labels 
+lbls <- paste(lbls, "\n", pct , "%", sep = "") # ad % to labels
 pie(slices, labels = lbls, main = "Upstream redirection", col = c("green", "red", "gray"))
 
 
@@ -122,10 +124,10 @@ for (i in 1:nrow(mDFsorted)) {
 tottime <- sum(mDFsorted$EndTime - mDFsorted$Time)
 
 slices <- c(greentime, redtime, graytime)
-lbls <- c("available", "endpoint issue", "offline")
+lbls <- c("available", "unavailable", "offline")
 pct <- round(slices/sum(slices) * 100)
-lbls <- paste(lbls, pct) # add percents to labels 
-lbls <- paste(lbls, "%", sep = "") # ad % to labels
+#lbls <- paste(lbls, pct) # add percents to labels 
+lbls <- paste(lbls, "\n", pct , "%", sep = "") # ad % to labels
 pie(slices, labels = lbls, main = "Downstream redirection", col = c("green", "red", "gray"))
 
 
