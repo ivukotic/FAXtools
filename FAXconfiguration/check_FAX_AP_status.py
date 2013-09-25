@@ -137,10 +137,13 @@ print 'checking log files'
 # checking which sites gave their own file directly
 for s in sites:  # this is file to be asked for
     logfile='checkAP_'+s.name+'.log'
-    tree = ET.parse(logfile)
-    root = tree.getroot()
-    print root.attrib
-
+    print "parsing:", logfile
+    try:
+        tree = ET.parse(logfile)
+        root = tree.getroot()
+        print root.attrib
+    except:
+        print "something wrong in this one."
 
 print '--------------------------------- Writing SEs for twiki ----------------------------'
 with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiSitesStatus.log', 'w') as f: 
