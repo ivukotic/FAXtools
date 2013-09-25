@@ -116,10 +116,10 @@ for s in sites: s.prnt(-1) # print all
 with open('checkAPs.sh', 'w') as f:
     for s in sites:
         logfile='checkAP_'+s.name+'.log'
-        f.write('xrd '+s.host.replace('root://','')+' query 1 a >'+logfile+' & \n')
+        f.write('xrdfs '+s.host.replace('root://','')+' query stats a >'+logfile+' & \n')
     for r in redirectors:
         logfile='checkAP_'+r.name+'.log'  
-        f.write('xrd '+r.address.replace('root://','')+' query 1 a >'+logfile+' & \n')
+        f.write('xrd '+r.address.replace('root://','')+' query stats a >'+logfile+' & \n')
         
     f.close()
 
