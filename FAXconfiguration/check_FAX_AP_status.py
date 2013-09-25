@@ -133,15 +133,30 @@ time.sleep(70)
 print 'checking log files'
 
 
-
-# checking which sites gave their own file directly
 for s in sites:  # this is file to be asked for
     logfile='checkAP_'+s.name+'.log'
     print "parsing:", logfile
     try:
         tree = ET.parse(logfile)
         root = tree.getroot()
-        print root.attrib
+        atr=root.attrib
+        print atr
+        s.version=atr["ver"]
+        s.site=atr["site"]
+    except:
+        print "something wrong in this one."
+        
+        
+for s in redirectors:  # this is file to be asked for
+    logfile='checkAP_'+s.name+'.log'
+    print "parsing:", logfile
+    try:
+        tree = ET.parse(logfile)
+        root = tree.getroot()
+        atr=root.attrib
+        print atr
+        s.version=atr["ver"]
+        s.site=atr["site"]
     except:
         print "something wrong in this one."
 
@@ -159,7 +174,6 @@ with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiRedirecto
     try:
         for r in redirectors:
             f.write('| '+r.name+' | '+s.address+' | '+r.version+ ' | '+r.site+ '|\n')
-        print "got FAX redirectors from AGIS."
     except:
         print "Unexpected error:", sys.exc_info()[0]
     fi.close()
