@@ -114,8 +114,7 @@ class Command(object):
 for s in sites: s.prnt(-1) # print all
     
 
- f = open('checkAPs.sh', 'w')
- if f:
+with open('checkAPs.sh', 'w') as f:
     for s in sites:
         logfile='checkAP_'+s.name+'.log'
         f.write('xrd '+s.host.replace('root://','')+' query 1 a >'+logfile+' & \n')
