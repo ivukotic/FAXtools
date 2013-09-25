@@ -173,7 +173,7 @@ with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiRedirecto
     fi.write("| *status* | *Site* | *Address* |\n")
     try:
         for r in redirectors:
-            f.write('| '+r.name+' | '+s.address+' | '+r.version+ ' | '+r.site+ '|\n')
+            f.write('| '+r.name+' | '+r.address+' | '+r.version+ ' | '+r.site+ '|\n')
     except:
         print "Unexpected error:", sys.exc_info()[0]
     fi.close()
