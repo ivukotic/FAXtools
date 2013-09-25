@@ -124,7 +124,7 @@ with open('checkAPs.sh', 'w') as f:
     f.close()
 
 #sys.exit(0)
-print 'executing all of the xrdcps in parallel. 5 min timeout.'
+print 'executing all of the xrds in parallel. 70s timeout.'
 com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkAPs.sh")
 com.run(60)
 time.sleep(70)
@@ -173,7 +173,7 @@ with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiRedirecto
     fi.write("| *name* | *address* | *version* | *site* |\n")
     try:
         for r in redirectors:
-            f.write('| '+r.name+' | '+r.address+' | '+r.version+ ' | '+r.site+ '|\n')
+            fi.write('| '+r.name+' | '+r.address+' | '+r.version+ ' | '+r.site+ '|\n')
     except:
         print "Unexpected error:", sys.exc_info()[0]
     fi.close()
