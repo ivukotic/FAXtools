@@ -119,13 +119,13 @@ with open('checkAPs.sh', 'w') as f:
         f.write('xrdfs '+s.host.replace('root://','')+' query stats a >'+logfile+' & \n')
     for r in redirectors:
         logfile='checkAP_'+r.name+'.log'  
-        f.write('xrd '+r.address.replace('root://','')+' query stats a >'+logfile+' & \n')
+        f.write('xrdfs '+r.address.replace('root://','')+' query stats a >'+logfile+' & \n')
         
     f.close()
 
 #sys.exit(0)
 print 'executing all of the xrds in parallel. 70s timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkAPs.sh")
+com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAX_AP_status/checkAPs.sh")
 com.run(60)
 time.sleep(70)
 
