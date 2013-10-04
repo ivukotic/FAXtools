@@ -1,16 +1,25 @@
-# here downloading data
+library(rjson)
+library(psych)
+	
+toEPS<-FALSE
+reload<-F
+days<-10
 
 names<-c("small","medium","large")
-if (0==1){
+
+if (reload){
 	cols<-c(486,485,484)
 	ci <- data.frame(names,cols)
 
-	library(rjson)
 	today <- Sys.Date()
 	format(today, format="%y-%m-%d")
-	from=today-5
+	from=today-days
 	format(from, format="%y-%m-%d")
-	urls<-c(paste('http://dashb-atlas-ssb.cern.ch/dashboard/request.py/getplotdata?batch=1&time=custom&dateFrom=',as.character(from),'&dateTo=',as.character(today),'&columnid=',cols,sep=""))
+	if (days<5){
+		urls<-c(paste('http://dashb-atlas-ssb.cern.ch/dashboard/request.py/getplotdata?batch=1&time=custom&dateFrom=',as.character(from),'&dateTo=',as.character(today),'&columnid=',cols,sep=""))
+	}else{
+		urls<-c(paste('/Users/ivukotic/',cols,'.dat',sep=""))
+	}
 	ci<-cbind(ci,urls)
 	
 	rawdata<-list()
@@ -26,7 +35,7 @@ if (0==1){
 	print("loading done")
 }
 
-if (0==1){
+if (reload){
 	load("localCopyFTS.data")
 
 	
@@ -59,7 +68,6 @@ if (0==1){
 	save(cleaned,file="cleanFTS.data")
 }
 
-	library(psych)
 	load("cleanFTS.data")
 	j<-3
 	cc       <- strsplit(as.vector(cleaned[[j]]$link),"_to_")
@@ -83,12 +91,15 @@ if (0==1){
 	print (describe(me$rate))
 	print (paste("total bandwidth:",sum(me$rate)))
 	
-	setEPS()
-	postscript(file = paste("FTS",names[[j]],"files.eps"))
+	if(toEPS){
+		setEPS()
+		postscript(file = paste("FTS",names[[j]],"files.eps"))
+	}
+	
 	 par(mfrow = c(2, 1))
 	 plot (x=c(1:length(me$link)),y=me$rate,main=paste("FTS",names[[j]],"files"), xlab="link number", ylab="MB/s",type="h")
 	 hist(me$rate,main=paste("FTS",names[[j]],"files"),ylab="count", xlab="rate MB/s")
-    dev.off()
+    if(toEPS) dev.off()
 	
 	ma<-aggregate(rate~unlist(source) + unlist(destination), data=cleaned[[j]], FUN="mean")	
 	m <- matrix(NA, nrow = length(uSources), ncol = length(uDestinations), byrow = FALSE, dimnames = list(uSources, uDestinations))
@@ -96,7 +107,7 @@ if (0==1){
 	
 	print(m[1:4,1:4])
 	
-	postscript(file = paste("FTS",names[[j]],"filesMatrix.eps"))
+	if(toEPS) postscript(file = paste("FTS",names[[j]],"filesMatrix.eps"))
 	par(mfrow = c(1, 1))
 	par(plt=c(0.2,0.98,0.2,0.9) )
 	
@@ -106,7 +117,7 @@ if (0==1){
 	
 	axis(1,at=c(1:length(uSources)),labels=uSources, cex.axis=0.4,las=2)
 	axis(2,at=c(1:length(uDestinations)),labels= uDestinations, cex.axis=0.4,las=2)
-	dev.off()
+	if(toEPS) dev.off()
 	
 	par(mfrow = c(4, 2))
 	par(plt=c(0.2,0.95,0.2,0.8) )

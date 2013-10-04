@@ -1,9 +1,14 @@
+toEPS<-FALSE
+reload<-FALSE
+days<-5
 
 library(rjson)
-if(0==1){
+library(psych)
+
+if(reload){
 	today <- Sys.Date()
 	format(today, format="%y-%m-%d")
-	from=today-5
+	from=today-days
 	format(from, format="%y-%m-%d")
 	url=paste('http://dashb-atlas-ssb.cern.ch/dashboard/request.py/getplotdata?batch=1&time=custom&dateFrom=',as.character(from),'&dateTo=',as.character(today),'&columnid=10091',sep="")
 	print(url)
@@ -17,7 +22,7 @@ if(0==1){
 	print("loading done")
 }
 
-if (0==1){
+if (reload){
 	load("localCopyFAX.data")
 
 	#transforms it into matrix
@@ -53,19 +58,19 @@ if (0==1){
 	#removing rows with 0 rate
 	cleanedFAX<-I(data.frame(mDFsorted[mDFsorted$rate>0,]))
 	
-	save(cleanedFAX,file="cleanFAX.data")
-}
-
-	library(psych)
-	load("cleanFAX.data")
-	
 	cc       <- strsplit(as.vector(cleanedFAX$link),"_to_")
 	source         <- unlist(cc)[2*(1:length(cleanedFAX$link))-1]
 	destination    <- unlist(cc)[2*(1:length(cleanedFAX$link))  ]
     
 	cleanedFAX$source<-as.list(source)
 	cleanedFAX$destination <-as.list(destination)
-		
+	
+	save(cleanedFAX,file="cleanFAX.data")
+}
+
+	load("cleanFAX.data")
+	
+
 	uSources<-sort(unlist(unique(cleanedFAX$source)))
 	uDestinations<-sort(unlist(unique(cleanedFAX$destination)))
 	
@@ -81,24 +86,34 @@ if (0==1){
 	print (describe(me$rate))
 	print (paste("total bandwidth:",sum(me$rate)))
 	
-	setEPS()
-	postscript(file = "FAX.eps")
+	if(toEPS){
+		setEPS()
+		postscript(file = "FAX.eps")
+	}
+	
 	 par(mar=c(1,1.5,3,1.5) )
 	 par(mfrow = c(2, 1))
 	 plot (x=c(1:length(me$link)),y=me$rate,main="FAX measurements (100MB files)", xlab="link number", ylab="MB/s",type="h")
-	 #hist(me$rate,main="FAX measurements" ,ylab="count", xlab="rate MB/s")
-	 hist(me$rate,ylab="count", xlab="rate MB/s")
-    dev.off()
+    if (toEPS) {
+    	hist(me$rate,ylab="count", xlab="rate MB/s")
+    	dev.off()
+    }else{
+	    hist(me$rate,main="FAX measurements" ,ylab="count", xlab="rate MB/s")	
+    }
     
-    postscript(file = "FAX_rates_pie.eps")
+    
+    if(toEPS) 	postscript(file = "FAX_rates_pie.eps")
 	 par(mfrow = c(1, 1))
 	 par(mar=c(1,1.5,1,1.5) )
 	 slices<-hist(me$rate,breaks=c(0,1,10,100,15000),  plot=FALSE)$counts
 	 lbls <- c("< 1 MB/s", "1 - 10 MB/s", "10 - 100 MB/s",">100 MB/s")
 	 lbls <- paste(lbls, paste("\n",slices," links",sep=""))
-	 #pie (slices, labels = lbls,main="FAX rates (100MB files)", col = c("red", "gray", "blue", "green"))
-	 pie (slices, labels = lbls, col = c("red", "gray", "blue", "green"))
-    dev.off()
+    if(toEPS){ 
+		 pie (slices, labels = lbls, col = c("red", "gray", "blue", "green"))
+    	 dev.off()
+ 	}else{
+	 	pie (slices, labels = lbls,main="FAX rates (100MB files)", col = c("red", "gray", "blue", "green"))	
+ 	}
 	
 	ma<-aggregate(rate~unlist(source) + unlist(destination), data=cleanedFAX, FUN="mean")	
 	m <- matrix(NA, nrow = length(uSources), ncol = length(uDestinations), byrow = FALSE, dimnames = list(uSources, uDestinations))
@@ -108,7 +123,7 @@ if (0==1){
 	
 	print(m[1:4,1:4])
 	
-	postscript(file = "FAXmatrix.eps")
+	if(toEPS) postscript(file = "FAXmatrix.eps")
 	par(mfrow = c(1, 1))
 	par(plt=c(0.2,0.98,0.2,0.90) )
 	
@@ -120,7 +135,7 @@ if (0==1){
 	
 	axis(1,at=c(1:length(uSources)),labels=uSources, cex.axis=0.4,las=2)
 	axis(2,at=c(1:length(uDestinations)),labels= uDestinations, cex.axis=0.4,las=2)
-	dev.off()
+	if(toEPS) dev.off()
 	 
 	par(mfrow = c(4, 2))
 	par(plt=c(0.2,0.95,0.2,0.8) )
