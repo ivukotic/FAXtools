@@ -279,7 +279,7 @@ print "================================= CHECK RUCIO ===========================
 with open('checkRucio.sh', 'w') as f: # first check that site itself gives it's own file
     for s in sites:
         logfile='rucio_'+s.name+'.log'
-        lookingFor = '/atlas/rucio/user:user.HironoriIto.xrootd.'+s.name+'-1M'
+        lookingFor = '//atlas/rucio/user:user.HironoriIto.xrootd.'+s.name+'-1M'
         s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
         f.write(s.comm1)
     f.close()
@@ -348,7 +348,7 @@ for s in sites:
 
               
                 
-print "================================= CHECK VI ================================================"
+print "================================= CHECK REDIRECTOR DOWNSTREAM ================================================"
                 
 with open('checkRedirectorDownstream.sh', 'w') as f:
     for r in redirectors:
@@ -395,7 +395,7 @@ for r in redirectors:
                 
                 
                 
-print "================================= CHECK VII ================================================"
+print "================================= CHECK REDIRECTOR UPSTREAM ================================================"
 
                 
 with open('checkRedirectorUpstream.sh', 'w') as f:
@@ -442,7 +442,7 @@ for r in redirectors:
 
 
 
-print "================================= CHECK VIII ================================================"
+print "================================= CHECK X509 ================================================"
 
 with open('checkSecurity.sh', 'w') as f: # deletes proxy and then tries to directly access the files
     f.write('export KRB5CCNAME=/nocredentials \n')
