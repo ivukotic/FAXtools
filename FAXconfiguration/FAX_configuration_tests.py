@@ -68,15 +68,17 @@ class site:
         self.name=na
         self.host=ho
         self.redirector=re
+        self.rucio=0
     
     def prnt(self, what):
         if (what>=0 and self.redirector!=what): return
         print '------------------------------------\nfullname:',self.fullname
         print 'redirector:', self.redirector, '\tname:', self.name, '\thost:', self.host
-        print 'responds:', self.direct, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t security:', self.security, '\t delay:', self.delay, '\t monitored:', self.monitor
+        print 'responds:', self.direct, '\t rucio:', self.rucio, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t security:', self.security, '\t delay:', self.delay, '\t monitored:', self.monitor
         
     def status(self):
        s=0
+       s=s|(self.rucio<<5)
        s=s|(self.monitor<<4)
        s=s|(self.security<<3)
        s=s|(self.downstream<<2)
@@ -160,7 +162,7 @@ print 'creating scripts to execute'
 
 
     
-print "================================= CHECK I =================================================="
+print "================================= CHECK DIRECT =================================================="
     
 with open('checkDirect.sh', 'w') as f: # first check that site itself gives it's own file
     for s in sites:
@@ -200,7 +202,7 @@ for s in sites: s.prnt(0)  #print only real sites
 
 #sys.exit(0)
 
-print "================================= CHECK II ================================================="
+print "================================= CHECK UPSTREAM ================================================="
 
 with open('checkUpstream.sh', 'w') as f: # ask good sites for unexisting file
     for s in sites:
@@ -237,7 +239,7 @@ for s in sites:
             print 'redirection does not work'
 
 #sys.exit(0)
-print "================================= CHECK III ================================================"
+print "================================= CHECK DOWNSTREAM ================================================"
 
 with open('checkDownstream.sh', 'w') as f: # ask global redirectors for files belonging to good sites
     for s in sites:
@@ -272,8 +274,46 @@ for s in sites:
         print 'OK'
                 
                 
+print "================================= CHECK RUCIO =================================================="
+    
+with open('checkRucio.sh', 'w') as f: # first check that site itself gives it's own file
+    for s in sites:
+        logfile='rucio_'+s.name+'.log'
+        lookingFor = '/atlas/rucio/user:user.HironoriIto.xrootd.'+s.name+'-1M'
+        s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
+        f.write(s.comm1)
+    f.close()
 
-print "================================= CHECK IV ================================================"
+#sys.exit(0)
+print 'executing all of the xrdcps in parallel. 1 min timeout.'
+com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkRucio.sh")    
+com.run(58)
+time.sleep(60)
+
+print 'checking log files'
+
+# checking which sites gave their own file directly
+for s in sites:  # this is file to be asked for
+    logfile='rucio_'+s.name+'.log'
+    with open(logfile, 'r') as f:
+        lines=f.readlines()
+        succ=False
+        for l in lines:
+            # print l
+            if l.count("Read: Hole in the cache: offs=0, len=1310720")>0:
+                succ=True
+                break
+        if succ==True:
+            print logfile, "works"
+            s.rucio=1
+        else:
+            print logfile, "problem"
+            
+for s in sites: s.prnt(0)  #print only real sites
+
+#sys.exit(0)
+
+print "================================= CHECK DELAYS ================================================"
 
 with open('checkDelays.sh', 'w') as f: 
     for s in sites:
@@ -308,7 +348,7 @@ for s in sites:
 
               
                 
-print "================================= CHECK V ================================================"
+print "================================= CHECK VI ================================================"
                 
 with open('checkRedirectorDownstream.sh', 'w') as f:
     for r in redirectors:
@@ -355,7 +395,7 @@ for r in redirectors:
                 
                 
                 
-print "================================= CHECK VI ================================================"
+print "================================= CHECK VII ================================================"
 
                 
 with open('checkRedirectorUpstream.sh', 'w') as f:
@@ -402,7 +442,7 @@ for r in redirectors:
 
 
 
-print "================================= CHECK VII ================================================"
+print "================================= CHECK VIII ================================================"
 
 with open('checkSecurity.sh', 'w') as f: # deletes proxy and then tries to directly access the files
     f.write('export KRB5CCNAME=/nocredentials \n')
