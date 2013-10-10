@@ -279,7 +279,7 @@ print "================================= CHECK RUCIO ===========================
 with open('checkRucio.sh', 'w') as f: # first check that site itself gives it's own file
     for s in sites:
         logfile='rucio_'+s.name+'.log'
-        lookingFor = '//atlas/rucio/user:user.HironoriIto.xrootd.'+s.name+'-1M'
+        lookingFor = '//atlas/rucio/user/hito:user.hito.xrootd.'+s.name+'-1M'
         s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
         f.write(s.comm1)
     f.close()
