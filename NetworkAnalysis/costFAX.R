@@ -1,4 +1,4 @@
-toEPS<-FALSE
+toEPS<-T
 reload<-FALSE
 days<-5
 
@@ -105,6 +105,7 @@ if (reload){
     if(toEPS) 	postscript(file = "FAX_rates_pie.eps")
 	 par(mfrow = c(1, 1))
 	 par(mar=c(1,1.5,1,1.5) )
+	 par(cex=1.2)
 	 slices<-hist(me$rate,breaks=c(0,1,10,100,15000),  plot=FALSE)$counts
 	 lbls <- c("< 1 MB/s", "1 - 10 MB/s", "10 - 100 MB/s",">100 MB/s")
 	 lbls <- paste(lbls, paste("\n",slices," links",sep=""))
