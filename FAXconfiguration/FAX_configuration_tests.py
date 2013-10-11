@@ -62,9 +62,10 @@ class site:
     comm1=''
      
     def __init__(self, fn, na, ho, re):
-        if na=='grif':
+        if na=='GRIF':
             na=fn
         self.fullname=fn
+        self.lname=na.lower()
         self.name=na
         self.host=ho
         self.redirector=re
@@ -107,7 +108,7 @@ try:
     res=json.load(f)
     for s in res:
         print  s["name"],s["rc_site"], s["endpoint"], s["redirector"]["endpoint"]
-        si=site(s["name"].lower(),s["rc_site"].lower(), s["endpoint"], s["redirector"]["endpoint"])
+        si=site(s["name"],s["rc_site"], s["endpoint"], s["redirector"]["endpoint"])
         sites.append(si)
 except:
     print "Unexpected error:", sys.exc_info()[0]    
@@ -167,7 +168,7 @@ print "================================= CHECK DIRECT ==========================
 with open('checkDirect.sh', 'w') as f: # first check that site itself gives it's own file
     for s in sites:
         logfile=s.name+'_to_'+s.name+'.log'
-        lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-1M'
+        lookingFor = 'user.HironoriIto.xrootd.'+s.lname+'/user.HironoriIto.xrootd.'+s.lname+'-1M'
         s.comm1='xrdcp -f -np -d 1 '+s.host+'//atlas/dq2/user/HironoriIto/'+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
         f.write(s.comm1)
     f.close()
@@ -208,7 +209,7 @@ with open('checkUpstream.sh', 'w') as f: # ask good sites for unexisting file
     for s in sites:
         if s.direct==0: continue
         logfile='upstreamFrom_'+s.name+'.log'
-        lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.unexisting-1M'
+        lookingFor = 'user.HironoriIto.xrootd.'+s.lname+'/user.HironoriIto.xrootd.unexisting-1M'
         comm='xrdcp -f -np -d 1 '+s.host+'//atlas/dq2/user/HironoriIto/'+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
         f.write(comm)            
     f.close()
@@ -245,7 +246,7 @@ with open('checkDownstream.sh', 'w') as f: # ask global redirectors for files be
     for s in sites:
         if s.direct==0: continue
         logfile='downstreamTo_'+s.name+'.log'
-        lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-1M'
+        lookingFor = 'user.HironoriIto.xrootd.'+s.lname+'/user.HironoriIto.xrootd.'+s.lname+'-1M'
         comm='xrdcp -f -np -d 1 root://'+s.redirector+'//atlas/dq2/user/HironoriIto/'+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
         f.write(comm)            
     f.close()
@@ -279,7 +280,7 @@ print "================================= CHECK RUCIO ===========================
 with open('checkRucio.sh', 'w') as f: # first check that site itself gives it's own file
     for s in sites:
         logfile='rucio_'+s.name+'.log'
-        lookingFor = '//atlas/rucio/user/hito:user.hito.xrootd.'+s.name+'-1M'
+        lookingFor = '//atlas/rucio/user/hito:user.hito.xrootd.'+s.lname+'-1M'
         s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
         f.write(s.comm1)
     f.close()
@@ -319,7 +320,7 @@ with open('checkDelays.sh', 'w') as f:
     for s in sites:
         if s.direct==0: continue
         logfile='checkDelays_'+s.name+'.log'
-        lookingFor = '//atlas/dq2/user/HironoriIto/user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name # +'-'+str(random.randint(0,100000))
+        lookingFor = '//atlas/dq2/user/HironoriIto/user.HironoriIto.xrootd.'+s.lname+'/user.HironoriIto.xrootd.'+s.lname # +'-'+str(random.randint(0,100000))
         s.comm1='/usr/bin/time -f"real: %e" xrdfs '+s.host.replace('root://','')+' locate -r '+lookingFor+' 2>'+logfile+' & \n'
         f.write(s.comm1)
     f.close()
@@ -357,7 +358,7 @@ with open('checkRedirectorDownstream.sh', 'w') as f:
         for s in sites:
             if s.direct==0: continue
             if s.redirector==r.address or r.name=='XROOTD_glrd' or r.name=='XROOTD_atlas-xrd-eu':
-                lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-1M'
+                lookingFor = 'user.HironoriIto.xrootd.'+s.lname+'/user.HironoriIto.xrootd.'+s.lname+'-1M'
                 comm='xrdcp -f -np -d 1 root://'+r.address+'//atlas/dq2/user/HironoriIto/'+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
                 f.write(comm)
                 thereIsUnderlayingWorkingSite=True
@@ -405,7 +406,7 @@ with open('checkRedirectorUpstream.sh', 'w') as f:
         for s in sites:
             if s.direct==0: continue
             if s.redirector==r.address or r.name=='XROOTD_glrd' or r.name=='XROOTD_atlas-xrd-eu':
-                lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-1M'
+                lookingFor = 'user.HironoriIto.xrootd.'+s.lname+'/user.HironoriIto.xrootd.'+s.lname+'-1M'
                 comm='xrdcp -f -np -d 1 root://'+r.address+'//atlas/dq2/user/HironoriIto/'+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
                 f.write(comm)
                 thereIsOverlayingWorkingSite=True
@@ -450,7 +451,7 @@ with open('checkSecurity.sh', 'w') as f: # deletes proxy and then tries to direc
     for s in sites:
         if s.direct==0: continue
         logfile='checkSecurity_'+s.name+'.log'
-        lookingFor = 'user.HironoriIto.xrootd.'+s.name+'/user.HironoriIto.xrootd.'+s.name+'-1M'
+        lookingFor = 'user.HironoriIto.xrootd.'+s.lname+'/user.HironoriIto.xrootd.'+s.lname+'-1M'
         s.comm1='xrdcp -f -np -d 1 '+s.host+'//atlas/dq2/user/HironoriIto/'+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
         f.write(s.comm1)
     f.close()
@@ -509,7 +510,7 @@ try:
             m['server_site']="MWT2"
         found=0
         for s in sites:
-            if s.name==m['server_site'].lower():
+            if s.lname==m['server_site'].lower():
                 s.monitor=1
                 found=1
         if not found:
