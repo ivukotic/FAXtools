@@ -1,8 +1,12 @@
-endpoint=root://fax.mwt2.org
+endpoint=root://uct2-s6.uchicago.edu:1094
 SITE=MWT2rucio
 R=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/root/5.34.10-x86_64-slc5-gcc4.3/bin/root
 kom1="$R -q -b \"list.C(\\\""
 kom2="\\\")\" >> $SITE.log &"
+
+FAIL=0
+
+echo "starting"
 
 eval $kom1$endpoint/pnfs/uchicago.edu/atlasdatadisk//rucio/user/flegger/17/56/NTUP_SMWZ.00987986._000010.MWT2.root.1$kom2
 eval $kom1$endpoint/pnfs/uchicago.edu/atlasdatadisk//rucio/user/flegger/14/7d/NTUP_SMWZ.00987986._000006.MWT2.root.1$kom2
@@ -36,7 +40,22 @@ eval $kom1$endpoint/pnfs/uchicago.edu/atlasdatadisk//rucio/user/flegger/f5/6e/NT
 eval $kom1$endpoint/pnfs/uchicago.edu/atlasdatadisk//rucio/user/flegger/b5/e2/NTUP_SMWZ.00986520._000002.MWT2.root.1$kom2
 eval $kom1$endpoint/pnfs/uchicago.edu/atlasdatadisk//rucio/user/flegger/5d/3f/NTUP_SMWZ.01007411._000113.MWT2.root.1$kom2
 
+for job in `jobs -p`
+do
+echo $job
+    wait $job || let "FAIL+=1"
+done
+
+echo $FAIL
+
+if [ "$FAIL" == "0" ];
+then
+echo "YAY!"
+else
+echo "FAIL! ($FAIL)"
+fi
 exit 0
+
 eval $kom1$endpoint/pnfs/uchicago.edu/atlasdatadisk//rucio/user/flegger/36/95/NTUP_SMWZ.01007411._000102.MWT2.root.2$kom2
 eval $kom1$endpoint/pnfs/uchicago.edu/atlasdatadisk//rucio/user/flegger/55/fc/NTUP_SMWZ.01007411._000121.MWT2.root.2$kom2
 eval $kom1$endpoint/pnfs/uchicago.edu/atlasdatadisk//rucio/user/flegger/d0/9d/NTUP_SMWZ.01007411._000048.MWT2.root.1$kom2

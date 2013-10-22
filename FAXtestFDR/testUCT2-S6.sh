@@ -1,8 +1,13 @@
-endpoint=root://fax.mwt2.org
+endpoint=root://uct2-s6.uchicago.edu:1094
 SITE=MWT2
 R=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/root/5.34.10-x86_64-slc5-gcc4.3/bin/root
 kom1="$R -q -b \"list.C(\\\""
-kom2="\\\")\" >> $SITE.log"
+kom2="\\\")\" >> $SITE.log &"
+
+FAIL=0
+
+echo "starting"
+
 eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV.00211697.physics_Muons.merge.NTUP_SMWZ.f479_m1228_p1067_p1141_tid00987986_00/NTUP_SMWZ.00987986._000010.$SITE.root.1$kom2
 eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV.00211697.physics_Muons.merge.NTUP_SMWZ.f479_m1228_p1067_p1141_tid00987986_00/NTUP_SMWZ.00987986._000006.$SITE.root.1$kom2
 eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV.00211697.physics_Muons.merge.NTUP_SMWZ.f479_m1228_p1067_p1141_tid00987986_00/NTUP_SMWZ.00987986._000008.$SITE.root.1$kom2
@@ -34,6 +39,23 @@ eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV
 eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV.00211522.physics_Muons.merge.NTUP_SMWZ.f479_m1228_p1067_p1141_tid00986520_00/NTUP_SMWZ.00986520._000001.$SITE.root.1$kom2
 eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV.00211522.physics_Muons.merge.NTUP_SMWZ.f479_m1228_p1067_p1141_tid00986520_00/NTUP_SMWZ.00986520._000002.$SITE.root.1$kom2
 eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV.00212172.physics_Muons.merge.NTUP_SMWZ.f479_m1228_p1067_p1141_tid01007411_00/NTUP_SMWZ.01007411._000113.$SITE.root.1$kom2
+
+for job in `jobs -p`
+do
+echo $job
+    wait $job || let "FAIL+=1"
+done
+
+echo $FAIL
+
+if [ "$FAIL" == "0" ];
+then
+echo "YAY!"
+else
+echo "FAIL! ($FAIL)"
+fi
+exit 0
+
 eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV.00212172.physics_Muons.merge.NTUP_SMWZ.f479_m1228_p1067_p1141_tid01007411_00/NTUP_SMWZ.01007411._000102.$SITE.root.2$kom2
 eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV.00212172.physics_Muons.merge.NTUP_SMWZ.f479_m1228_p1067_p1141_tid01007411_00/NTUP_SMWZ.01007411._000121.$SITE.root.2$kom2
 eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV.00212172.physics_Muons.merge.NTUP_SMWZ.f479_m1228_p1067_p1141_tid01007411_00/NTUP_SMWZ.01007411._000048.$SITE.root.1$kom2
