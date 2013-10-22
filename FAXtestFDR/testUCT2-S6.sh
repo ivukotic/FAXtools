@@ -40,22 +40,6 @@ eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV
 eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV.00211522.physics_Muons.merge.NTUP_SMWZ.f479_m1228_p1067_p1141_tid00986520_00/NTUP_SMWZ.00986520._000002.$SITE.root.1$kom2
 eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV.00212172.physics_Muons.merge.NTUP_SMWZ.f479_m1228_p1067_p1141_tid01007411_00/NTUP_SMWZ.01007411._000113.$SITE.root.1$kom2
 
-for job in `jobs -p`
-do
-echo $job
-    wait $job || let "FAIL+=1"
-done
-
-echo $FAIL
-
-if [ "$FAIL" == "0" ];
-then
-echo "YAY!"
-else
-echo "FAIL! ($FAIL)"
-fi
-exit 0
-
 eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV.00212172.physics_Muons.merge.NTUP_SMWZ.f479_m1228_p1067_p1141_tid01007411_00/NTUP_SMWZ.01007411._000102.$SITE.root.2$kom2
 eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV.00212172.physics_Muons.merge.NTUP_SMWZ.f479_m1228_p1067_p1141_tid01007411_00/NTUP_SMWZ.01007411._000121.$SITE.root.2$kom2
 eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV.00212172.physics_Muons.merge.NTUP_SMWZ.f479_m1228_p1067_p1141_tid01007411_00/NTUP_SMWZ.01007411._000048.$SITE.root.1$kom2
@@ -769,3 +753,21 @@ eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV
 eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV.00211787.physics_Muons.merge.NTUP_SMWZ.f479_m1228_p1067_p1141_tid00990029_00/NTUP_SMWZ.00990029._000114.$SITE.root.1$kom2
 eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV.00211787.physics_Muons.merge.NTUP_SMWZ.f479_m1228_p1067_p1141_tid00990029_00/NTUP_SMWZ.00990029._000032.$SITE.root.1$kom2
 eval $kom1$endpoint//atlas/dq2/user/flegger/$SITE/user.flegger.$SITE.data12_8TeV.00211787.physics_Muons.merge.NTUP_SMWZ.f479_m1228_p1067_p1141_tid00990029_00/NTUP_SMWZ.00990029._000072.$SITE.root.1$kom2
+
+
+for job in `jobs -p`
+do
+echo $job
+    wait $job || let "FAIL+=1"
+done
+
+echo $FAIL
+
+if [ "$FAIL" == "0" ];
+then
+echo "YAY!"
+else
+echo "FAIL! ($FAIL)"
+fi
+exit 0
+

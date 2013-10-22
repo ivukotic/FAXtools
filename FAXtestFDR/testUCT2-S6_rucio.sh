@@ -38,23 +38,6 @@ eval $kom1$endpoint//atlas/rucio/user/flegger:NTUP_SMWZ.00986521._000013.MWT2.ro
 eval $kom1$endpoint//atlas/rucio/user/flegger:NTUP_SMWZ.00986520._000003.MWT2.root.1$kom2
 eval $kom1$endpoint//atlas/rucio/user/flegger:NTUP_SMWZ.00986520._000001.MWT2.root.1$kom2
 eval $kom1$endpoint//atlas/rucio/user/flegger:NTUP_SMWZ.00986520._000002.MWT2.root.1$kom2
-
-for job in `jobs -p`
-do
-echo $job
-    wait $job || let "FAIL+=1"
-done
-
-echo $FAIL
-
-if [ "$FAIL" == "0" ];
-then
-echo "YAY!"
-else
-echo "FAIL! ($FAIL)"
-fi
-exit 0
-
 eval $kom1$endpoint//atlas/rucio/user/flegger:NTUP_SMWZ.01007411._000113.MWT2.root.1$kom2
 eval $kom1$endpoint//atlas/rucio/user/flegger:NTUP_SMWZ.01007411._000102.MWT2.root.2$kom2
 eval $kom1$endpoint//atlas/rucio/user/flegger:NTUP_SMWZ.01007411._000121.MWT2.root.2$kom2
@@ -775,3 +758,19 @@ eval $kom1$endpoint//atlas/rucio/user/flegger:NTUP_SMWZ.00990029._000094.MWT2.ro
 eval $kom1$endpoint//atlas/rucio/user/flegger:NTUP_SMWZ.00990029._000114.MWT2.root.1$kom2
 eval $kom1$endpoint//atlas/rucio/user/flegger:NTUP_SMWZ.00990029._000032.MWT2.root.1$kom2
 eval $kom1$endpoint//atlas/rucio/user/flegger:NTUP_SMWZ.00990029._000072.MWT2.root.1$kom2
+
+for job in `jobs -p`
+do
+echo $job
+    wait $job || let "FAIL+=1"
+done
+
+echo $FAIL
+
+if [ "$FAIL" == "0" ];
+then
+echo "YAY!"
+else
+echo "FAIL! ($FAIL)"
+fi
+exit 0

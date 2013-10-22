@@ -40,22 +40,6 @@ eval $kom1$endpoint/pnfs/uchicago.edu/atlasdatadisk//rucio/user/flegger/f5/6e/NT
 eval $kom1$endpoint/pnfs/uchicago.edu/atlasdatadisk//rucio/user/flegger/b5/e2/NTUP_SMWZ.00986520._000002.MWT2.root.1$kom2
 eval $kom1$endpoint/pnfs/uchicago.edu/atlasdatadisk//rucio/user/flegger/5d/3f/NTUP_SMWZ.01007411._000113.MWT2.root.1$kom2
 
-for job in `jobs -p`
-do
-echo $job
-    wait $job || let "FAIL+=1"
-done
-
-echo $FAIL
-
-if [ "$FAIL" == "0" ];
-then
-echo "YAY!"
-else
-echo "FAIL! ($FAIL)"
-fi
-exit 0
-
 eval $kom1$endpoint/pnfs/uchicago.edu/atlasdatadisk//rucio/user/flegger/36/95/NTUP_SMWZ.01007411._000102.MWT2.root.2$kom2
 eval $kom1$endpoint/pnfs/uchicago.edu/atlasdatadisk//rucio/user/flegger/55/fc/NTUP_SMWZ.01007411._000121.MWT2.root.2$kom2
 eval $kom1$endpoint/pnfs/uchicago.edu/atlasdatadisk//rucio/user/flegger/d0/9d/NTUP_SMWZ.01007411._000048.MWT2.root.1$kom2
@@ -769,3 +753,19 @@ eval $kom1$endpoint/pnfs/uchicago.edu/atlasdatadisk//rucio/user/flegger/ee/11/NT
 eval $kom1$endpoint/pnfs/uchicago.edu/atlasdatadisk//rucio/user/flegger/1d/03/NTUP_SMWZ.00990029._000114.MWT2.root.1$kom2
 eval $kom1$endpoint/pnfs/uchicago.edu/atlasdatadisk//rucio/user/flegger/80/f2/NTUP_SMWZ.00990029._000032.MWT2.root.1$kom2
 eval $kom1$endpoint/pnfs/uchicago.edu/atlasdatadisk//rucio/user/flegger/b4/c3/NTUP_SMWZ.00990029._000072.MWT2.root.1$kom2
+
+for job in `jobs -p`
+do
+echo $job
+    wait $job || let "FAIL+=1"
+done
+
+echo $FAIL
+
+if [ "$FAIL" == "0" ];
+then
+echo "YAY!"
+else
+echo "FAIL! ($FAIL)"
+fi
+exit 0
