@@ -1,8 +1,8 @@
 endpoint=root://uct2-s6.uchicago.edu:1094
-SITE=MWT2rucio
+SITE=MWT2
 R=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/root/5.34.10-x86_64-slc5-gcc4.3/bin/root
 kom1="$R -q -b \"list.C(\\\""
-kom2="\\\")\" >> $SITE.log &"
+kom2="\\\")\" >> $SITE_pnfs.log &"
 
 FAIL=0
 
