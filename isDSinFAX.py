@@ -7,15 +7,12 @@ try:
 except ImportError:
         import json
 
-import argparse
- 
-parser = argparse.ArgumentParser(description='Checks if dataset is accessible through FAX.')
-parser.add_argument('dataset', type=str, help='Dataset name')
-parser.add_argument('-af','--accessfile', action='store_const', const='1', help='try to open the first root file of the dataset using root. ')
-parser.add_argument('-aa','--accessall', action='store_const', const='1', help='try to open all the root files of the dataset using root. ')
 
-args = vars(parser.parse_args())
-
+if (len(sys.argv)!=2 or sys.argv[1]=='-h'): 
+    print "Checks if dataset is accessible through FAX.\nUsage: isDSinFAX.py <dataset name>"
+    sys.exit(0)
+DS=sys.argv[1]
+        
 try:
     import dq2.clientapi.cli.cliutil
     from dq2.common.cli.DQDashboardTool import DQDashboardTool
@@ -105,7 +102,6 @@ except:
     print "Unexpected error:", sys.exc_info()[0]    
 
 
-DS=args['dataset']
 
 com=Command('dq2-ls -r '+ DS + ' > fax.tmp' )
 com.run(300)
