@@ -167,7 +167,7 @@ print 'creating scripts to execute'
 oldgLFNpref='//atlas/dq2/user/ivukotic/xrootd/'
 dsNAMEpref='user.ivukotic.xrootd.'
 fnNAMEpref='/user.ivukotic.xrootd.'
-
+workingDir='/afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/'
 print "================================= CHECK DIRECT =================================================="
     
 with open('checkDirect.sh', 'w') as f: # first check that site itself gives it's own file
@@ -180,7 +180,7 @@ with open('checkDirect.sh', 'w') as f: # first check that site itself gives it's
 
 #sys.exit(0)
 print 'executing all of the xrdcps in parallel. 5 min timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkDirect.sh")    
+com = Command("source " + workingDir + "checkDirect.sh")    
 com.run(timeouts)
 time.sleep(sleeps)
 
@@ -220,7 +220,7 @@ with open('checkUpstream.sh', 'w') as f: # ask good sites for unexisting file
     f.close()
     
 print 'executing all of the redirection xrdcps in parallel. 5 min timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkUpstream.sh")    
+com = Command("source " + workingDir + "checkUpstream.sh")    
 com.run(timeouts)
 time.sleep(sleeps)
 
@@ -257,7 +257,7 @@ with open('checkDownstream.sh', 'w') as f: # ask global redirectors for files be
     f.close()
 
 print 'executing all of the redirection xrdcps in parallel. 5 min timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkDownstream.sh")    
+com = Command("source " + workingDir + "checkDownstream.sh")    
 com.run(timeouts)
 time.sleep(sleeps)
 
@@ -293,7 +293,7 @@ with open('checkRucio.sh', 'w') as f: # first check that site itself gives it's 
 
 #sys.exit(0)
 print 'executing all of the xrdcps in parallel. 1 min timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkRucio.sh")    
+com = Command("source " + workingDir + "checkRucio.sh")    
 com.run(58)
 time.sleep(60)
 
@@ -333,7 +333,7 @@ with open('checkDelays.sh', 'w') as f:
 
 #sys.exit(0)
 print 'executing all of the xrd lookups in parallel. 1 min timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkDelays.sh")
+com = Command("source " + workingDir + "checkDelays.sh")
 com.run(60)
 time.sleep(sleeps)
 
@@ -375,7 +375,7 @@ with open('checkRedirectorDownstream.sh', 'w') as f:
 
 #sys.exit(0)
 print 'executing all of the xrdcps  in parallel. 5 min timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkRedirectorDownstream.sh")
+com = Command("source " + workingDir + "checkRedirectorDownstream.sh")
 com.run(timeouts)
 time.sleep(sleeps)
 
@@ -423,7 +423,7 @@ with open('checkRedirectorUpstream.sh', 'w') as f:
 
 #sys.exit(0)
 print 'executing all of the xrdcps  in parallel. 5 min timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkRedirectorUpstream.sh")
+com = Command("source " + workingDir + "checkRedirectorUpstream.sh")
 com.run(timeouts)
 time.sleep(sleeps)
 
@@ -464,7 +464,7 @@ with open('checkSecurity.sh', 'w') as f: # deletes proxy and then tries to direc
 
 #sys.exit(0)
 print 'executing all of the xrdcps in parallel. 5 min timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkSecurity.sh")
+com = Command("source " + workingDir + "checkSecurity.sh")
 com.run(timeouts)
 time.sleep(sleeps)
 
