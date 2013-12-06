@@ -160,22 +160,29 @@ for s in sites: s.prnt(-1) # print all
 print 'creating scripts to execute'
     
 
+# oldgLFNpref='//atlas/dq2/user/HironoriIto/'
+# dsNAMEpref='user.HironoriIto.xrootd.'
+# fnNAMEpref='/user.HironoriIto.xrootd.'
 
+oldgLFNpref='//atlas/dq2/user/ivukotic/xrootd/'
+dsNAMEpref='user.ivukotic.xrootd.'
+fnNAMEpref='/user.ivukotic.xrootd.'
+workingDir='/afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/'
+OKmessage='Read: Hole in the cache: offs=0, len=1048576'
 
-    
 print "================================= CHECK DIRECT =================================================="
     
 with open('checkDirect.sh', 'w') as f: # first check that site itself gives it's own file
     for s in sites:
         logfile=s.name+'_to_'+s.name+'.log'
-        lookingFor = 'user.HironoriIto.xrootd.'+s.lname+'/user.HironoriIto.xrootd.'+s.lname+'-1M'
-        s.comm1='xrdcp -f -np -d 1 '+s.host+'//atlas/dq2/user/HironoriIto/'+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
+        lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
+        s.comm1='xrdcp -f -np -d 1 '+s.host+oldgLFNpref+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
         f.write(s.comm1)
     f.close()
 
 #sys.exit(0)
 print 'executing all of the xrdcps in parallel. 5 min timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkDirect.sh")    
+com = Command("source " + workingDir + "checkDirect.sh")    
 com.run(timeouts)
 time.sleep(sleeps)
 
@@ -190,7 +197,7 @@ for s in sites:  # this is file to be asked for
         succ=False
         for l in lines:
             # print l
-            if l.count("Read: Hole in the cache: offs=0, len=1310720")>0:
+            if l.count(OKmessage)>0:
                 succ=True
                 break
         if succ==True:
@@ -209,13 +216,13 @@ with open('checkUpstream.sh', 'w') as f: # ask good sites for unexisting file
     for s in sites:
         if s.direct==0: continue
         logfile='upstreamFrom_'+s.name+'.log'
-        lookingFor = 'user.HironoriIto.xrootd.'+s.lname+'/user.HironoriIto.xrootd.unexisting-1M'
-        comm='xrdcp -f -np -d 1 '+s.host+'//atlas/dq2/user/HironoriIto/'+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
+        lookingFor = dsNAMEpref+s.lname+fnNAMEpref + 'unexisting-1M'
+        comm='xrdcp -f -np -d 1 '+s.host+oldgLFNpref+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
         f.write(comm)            
     f.close()
     
 print 'executing all of the redirection xrdcps in parallel. 5 min timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkUpstream.sh")    
+com = Command("source " + workingDir + "checkUpstream.sh")    
 com.run(timeouts)
 time.sleep(sleeps)
 
@@ -246,13 +253,13 @@ with open('checkDownstream.sh', 'w') as f: # ask global redirectors for files be
     for s in sites:
         if s.direct==0: continue
         logfile='downstreamTo_'+s.name+'.log'
-        lookingFor = 'user.HironoriIto.xrootd.'+s.lname+'/user.HironoriIto.xrootd.'+s.lname+'-1M'
-        comm='xrdcp -f -np -d 1 root://'+s.redirector+'//atlas/dq2/user/HironoriIto/'+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
+        lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
+        comm='xrdcp -f -np -d 1 root://'+s.redirector+oldgLFNpref+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
         f.write(comm)            
     f.close()
 
 print 'executing all of the redirection xrdcps in parallel. 5 min timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkDownstream.sh")    
+com = Command("source " + workingDir + "checkDownstream.sh")    
 com.run(timeouts)
 time.sleep(sleeps)
 
@@ -265,7 +272,7 @@ for s in sites:
         succ=False
         reds=[]
         for l in lines:
-            if l.count("Read: Hole in the cache: offs=0, len=1310720")>0:
+            if l.count(OKmessage)>0:
                 succ=True
                 s.downstream=1
         if succ==False: 
@@ -280,14 +287,15 @@ print "================================= CHECK RUCIO ===========================
 with open('checkRucio.sh', 'w') as f: # first check that site itself gives it's own file
     for s in sites:
         logfile='rucio_'+s.name+'.log'
-        lookingFor = '//atlas/rucio/user/hito:user.hito.xrootd.'+s.lname+'-1M'
+        # lookingFor = '//atlas/rucio/user/hito:user.hito.xrootd.'+s.lname+'-1M'
+        lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
         s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
         f.write(s.comm1)
     f.close()
 
 #sys.exit(0)
 print 'executing all of the xrdcps in parallel. 1 min timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkRucio.sh")    
+com = Command("source " + workingDir + "checkRucio.sh")    
 com.run(58)
 time.sleep(60)
 
@@ -301,7 +309,7 @@ for s in sites:  # this is file to be asked for
         succ=False
         for l in lines:
             # print l
-            if l.count("Read: Hole in the cache: offs=0, len=1310720")>0:
+            if l.count(OKmessage)>0:
                 succ=True
                 break
         if succ==True:
@@ -320,14 +328,14 @@ with open('checkDelays.sh', 'w') as f:
     for s in sites:
         if s.direct==0: continue
         logfile='checkDelays_'+s.name+'.log'
-        lookingFor = '//atlas/dq2/user/HironoriIto/user.HironoriIto.xrootd.'+s.lname+'/user.HironoriIto.xrootd.'+s.lname # +'-'+str(random.randint(0,100000))
+        lookingFor = oldgLFNpref+dsNAMEpref+s.lname+fnNAMEpref+s.lname # +'-'+str(random.randint(0,100000))
         s.comm1='/usr/bin/time -f"real: %e" xrdfs '+s.host.replace('root://','')+' locate -r '+lookingFor+' 2>'+logfile+' & \n'
         f.write(s.comm1)
     f.close()
 
 #sys.exit(0)
 print 'executing all of the xrd lookups in parallel. 1 min timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkDelays.sh")
+com = Command("source " + workingDir + "checkDelays.sh")
 com.run(60)
 time.sleep(sleeps)
 
@@ -358,8 +366,8 @@ with open('checkRedirectorDownstream.sh', 'w') as f:
         for s in sites:
             if s.direct==0: continue
             if s.redirector==r.address or r.name=='XROOTD_glrd' or r.name=='XROOTD_atlas-xrd-eu':
-                lookingFor = 'user.HironoriIto.xrootd.'+s.lname+'/user.HironoriIto.xrootd.'+s.lname+'-1M'
-                comm='xrdcp -f -np -d 1 root://'+r.address+'//atlas/dq2/user/HironoriIto/'+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
+                lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
+                comm='xrdcp -f -np -d 1 root://'+r.address+oldgLFNpref+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
                 f.write(comm)
                 thereIsUnderlayingWorkingSite=True
                 break
@@ -369,7 +377,7 @@ with open('checkRedirectorDownstream.sh', 'w') as f:
 
 #sys.exit(0)
 print 'executing all of the xrdcps  in parallel. 5 min timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkRedirectorDownstream.sh")
+com = Command("source " + workingDir + "checkRedirectorDownstream.sh")
 com.run(timeouts)
 time.sleep(sleeps)
 
@@ -385,7 +393,7 @@ for r in redirectors:
         lines=f.readlines()
         succ=False
         for l in lines:
-            if l.count("Read: Hole in the cache: offs=0, len=1310720")>0:
+            if l.count(OKmessage)>0:
                 succ=True
                 r.downstream=True
         if succ==False: 
@@ -406,8 +414,8 @@ with open('checkRedirectorUpstream.sh', 'w') as f:
         for s in sites:
             if s.direct==0: continue
             if s.redirector==r.address or r.name=='XROOTD_glrd' or r.name=='XROOTD_atlas-xrd-eu':
-                lookingFor = 'user.HironoriIto.xrootd.'+s.lname+'/user.HironoriIto.xrootd.'+s.lname+'-1M'
-                comm='xrdcp -f -np -d 1 root://'+r.address+'//atlas/dq2/user/HironoriIto/'+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
+                lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
+                comm='xrdcp -f -np -d 1 root://'+r.address+oldgLFNpref+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
                 f.write(comm)
                 thereIsOverlayingWorkingSite=True
                 break
@@ -417,7 +425,7 @@ with open('checkRedirectorUpstream.sh', 'w') as f:
 
 #sys.exit(0)
 print 'executing all of the xrdcps  in parallel. 5 min timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkRedirectorUpstream.sh")
+com = Command("source " + workingDir + "checkRedirectorUpstream.sh")
 com.run(timeouts)
 time.sleep(sleeps)
 
@@ -433,7 +441,7 @@ for r in redirectors:
         lines=f.readlines()
         succ=False
         for l in lines:
-            if l.count("Read: Hole in the cache: offs=0, len=1310720")>0:
+            if l.count(OKmessage)>0:
                 succ=True
                 r.upstream=True
         if succ==False: 
@@ -451,14 +459,14 @@ with open('checkSecurity.sh', 'w') as f: # deletes proxy and then tries to direc
     for s in sites:
         if s.direct==0: continue
         logfile='checkSecurity_'+s.name+'.log'
-        lookingFor = 'user.HironoriIto.xrootd.'+s.lname+'/user.HironoriIto.xrootd.'+s.lname+'-1M'
-        s.comm1='xrdcp -f -np -d 1 '+s.host+'//atlas/dq2/user/HironoriIto/'+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
+        lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
+        s.comm1='xrdcp -f -np -d 1 '+s.host+oldgLFNpref+lookingFor+' - > /dev/null 2>'+logfile+' & \n'
         f.write(s.comm1)
     f.close()
 
 #sys.exit(0)
 print 'executing all of the xrdcps in parallel. 5 min timeout.'
-com = Command("source /afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/checkSecurity.sh")
+com = Command("source " + workingDir + "checkSecurity.sh")
 com.run(timeouts)
 time.sleep(sleeps)
 
@@ -474,7 +482,7 @@ for s in sites:  # this is file to be asked for
         succ=False
         for l in lines:
             # print l
-            if l.count("Read: Hole in the cache: offs=0, len=1310720")>0:
+            if l.count(OKmessage)>0:
                 succ=True
                 break
         if succ==True:
