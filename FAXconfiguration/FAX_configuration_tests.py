@@ -177,8 +177,8 @@ with open('checkDirect.sh', 'w') as f: # first check that site itself gives it's
         logfile=s.name+'_to_'+s.name+'.log'
         lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
         s.comm1='xrdcp -f -np -d 1 '+s.host+oldgLFNpref+lookingFor+' - > /dev/null 2>>'+logfile+' & \n'
-        f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile)
-        f.write('echo "========================================================================" >> ' + logfile)
+        f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
+        f.write('echo "========================================================================" >> ' + logfile + '\n')
         f.write(s.comm1)
     f.close()
 
@@ -220,8 +220,8 @@ with open('checkUpstream.sh', 'w') as f: # ask good sites for unexisting file
         logfile='upstreamFrom_'+s.name+'.log'
         lookingFor = dsNAMEpref+s.lname+fnNAMEpref + 'unexisting-1M'
         comm='xrdcp -f -np -d 1 '+s.host+oldgLFNpref+lookingFor+' - > /dev/null 2>>'+logfile+' & \n'
-        f.write('echo "command executed:\n ' + s.comm + '" >> ' + logfile)
-        f.write('echo "========================================================================" >> ' + logfile)
+        f.write('echo "command executed:\n ' + s.comm + '" >> ' + logfile + '\n')
+        f.write('echo "========================================================================" >> ' + logfile + '\n')
         f.write(comm)            
     f.close()
     
@@ -259,8 +259,8 @@ with open('checkDownstream.sh', 'w') as f: # ask global redirectors for files be
         logfile='downstreamTo_'+s.name+'.log'
         lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
         comm='xrdcp -f -np -d 1 root://'+s.redirector+oldgLFNpref+lookingFor+' - > /dev/null 2>>'+logfile+' & \n'
-        f.write('echo "command executed:\n ' + s.comm + '" >> ' + logfile)
-        f.write('echo "========================================================================" >> ' + logfile)
+        f.write('echo "command executed:\n ' + s.comm + '" >> ' + logfile + '\n')
+        f.write('echo "========================================================================" >> ' + logfile + '\n')
         f.write(comm)            
     f.close()
 
@@ -296,8 +296,8 @@ with open('checkRucio.sh', 'w') as f: # first check that site itself gives it's 
         # lookingFor = '//atlas/rucio/user/hito:user.hito.xrootd.'+s.lname+'-1M'
         lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
         s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' - > /dev/null 2>>'+logfile+' & \n'
-        f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile)
-        f.write('echo "========================================================================" >> ' + logfile)
+        f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
+        f.write('echo "========================================================================" >> ' + logfile + '\n')
         f.write(s.comm1)
     f.close()
 
@@ -338,8 +338,8 @@ with open('checkDelays.sh', 'w') as f:
         logfile='checkDelays_'+s.name+'.log'
         lookingFor = oldgLFNpref+dsNAMEpref+s.lname+fnNAMEpref+s.lname # +'-'+str(random.randint(0,100000))
         s.comm1='/usr/bin/time -f"real: %e" xrdfs '+s.host.replace('root://','')+' locate -r '+lookingFor+' 2>>'+logfile+' & \n'
-        f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile)
-        f.write('echo "========================================================================" >> ' + logfile)
+        f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
+        f.write('echo "========================================================================" >> ' + logfile + '\n')
         f.write(s.comm1)
     f.close()
 
@@ -378,8 +378,8 @@ with open('checkRedirectorDownstream.sh', 'w') as f:
             if s.redirector==r.address or r.name=='XROOTD_glrd' or r.name=='XROOTD_atlas-xrd-eu':
                 lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
                 comm='xrdcp -f -np -d 1 root://'+r.address+oldgLFNpref+lookingFor+' - > /dev/null 2>>'+logfile+' & \n'
-                f.write('echo "command executed:\n ' + s.comm + '" >> ' + logfile)
-                f.write('echo "========================================================================" >> ' + logfile)
+                f.write('echo "command executed:\n ' + s.comm + '" >> ' + logfile + '\n')
+                f.write('echo "========================================================================" >> ' + logfile + '\n')
                 f.write(comm)
                 thereIsUnderlayingWorkingSite=True
                 break
@@ -428,8 +428,8 @@ with open('checkRedirectorUpstream.sh', 'w') as f:
             if s.redirector==r.address or r.name=='XROOTD_glrd' or r.name=='XROOTD_atlas-xrd-eu':
                 lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
                 comm='xrdcp -f -np -d 1 root://'+r.address+oldgLFNpref+lookingFor+' - > /dev/null 2>>'+logfile+' & \n'
-                f.write('echo "command executed:\n ' + s.comm + '" >> ' + logfile)
-                f.write('echo "========================================================================" >> ' + logfile)
+                f.write('echo "command executed:\n ' + s.comm + '" >> ' + logfile + '\n')
+                f.write('echo "========================================================================" >> ' + logfile + '\n')
                 f.write(comm)
                 thereIsOverlayingWorkingSite=True
                 break
@@ -475,8 +475,8 @@ with open('checkSecurity.sh', 'w') as f: # deletes proxy and then tries to direc
         logfile='checkSecurity_'+s.name+'.log'
         lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
         s.comm1='xrdcp -f -np -d 1 '+s.host+oldgLFNpref+lookingFor+' - > /dev/null 2>>'+logfile+' & \n'
-        f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile)
-        f.write('echo "========================================================================" >> ' + logfile)
+        f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
+        f.write('echo "========================================================================" >> ' + logfile + '\n')
         f.write(s.comm1)
     f.close()
 
