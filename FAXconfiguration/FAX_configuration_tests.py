@@ -467,9 +467,11 @@ for r in redirectors:
 
 print "================================= CHECK X509 ================================================"
 
-with open('checkSecurity.sh', 'w') as f: # deletes proxy and then tries to directly access the files
+with open('checkSecurity.sh', 'w') as f: 
     f.write('export KRB5CCNAME=/nocredentials \n')
-    f.write('rm -f /tmp/x509* \n')
+    f.write('rm -f /tmp/x509* \n') #deletes all existing proxies
+    #creates a proxy without ATLAS VO role
+    f.write('voms-proxy-init -cert /afs/cern.ch/user/i/ivukotic/.globus/usercert.pem -key /afs/cern.ch/user/i/ivukotic/.globus/userkey.pem -pwstdin < /afs/cern.ch/user/i/ivukotic/gridlozinka.txt \n')
     for s in sites:
         if s.direct==0: continue
         logfile='checkSecurity_'+s.name+'.log'
