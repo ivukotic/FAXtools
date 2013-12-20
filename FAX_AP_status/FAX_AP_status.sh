@@ -15,14 +15,9 @@ export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
 source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh
 
 localSetupFAX
-#localSetupGLite
-#localSetupPython 2.6.5-x86_64-slc5-gcc43
 
 voms-proxy-init -cert /afs/cern.ch/user/i/ivukotic/.globus/usercert.pem -key /afs/cern.ch/user/i/ivukotic/.globus/userkey.pem -voms atlas -pwstdin < /afs/cern.ch/user/i/ivukotic/gridlozinka.txt
 
-#asetup 17.8.0,noTest
-
-#source /afs/cern.ch/project/xrootd/software/setup.sh test/3.3.3-rc1/x86_64-slc6-gcc45-opt
 
 cd $WD
 python FAX_AP_status.py
@@ -30,5 +25,8 @@ python FAX_AP_status.py
 cp checkAP_*.log /afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/.
 
 killall -9 xrdfs
+
+
+python FAX_FailOver.py
 
 echo "Done." 
