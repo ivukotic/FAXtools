@@ -2,7 +2,11 @@
 # uncomment to debug 
 # uset -x
 
-export AtlasSetup=/afs/cern.ch/atlas/software/dist/AtlasSetup
+export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
+source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh
+localSetupFAX
+
+voms-proxy-init -cert /afs/cern.ch/user/i/ivukotic/.globus/usercert.pem -key /afs/cern.ch/user/i/ivukotic/.globus/userkey.pem -voms atlas -pwstdin < /afs/cern.ch/user/i/ivukotic/gridlozinka.txt
 
 echo "deleting old files..."
 
@@ -11,13 +15,13 @@ WD=/afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/
 cd $WD
 rm check*.sh *.log
 
-source /afs/cern.ch/project/gd/LCG-share/current/etc/profile.d/grid_env.sh; 
+#source /afs/cern.ch/project/gd/LCG-share/current/etc/profile.d/grid_env.sh; 
 
-source $AtlasSetup/scripts/asetup.sh 17.8.0,noTest
+#source $AtlasSetup/scripts/asetup.sh 17.8.0,noTest
 
-voms-proxy-init -cert /afs/cern.ch/user/i/ivukotic/.globus/usercert.pem -key /afs/cern.ch/user/i/ivukotic/.globus/userkey.pem -voms atlas -pwstdin < /afs/cern.ch/user/i/ivukotic/gridlozinka.txt
+#voms-proxy-init -cert /afs/cern.ch/user/i/ivukotic/.globus/usercert.pem -key /afs/cern.ch/user/i/ivukotic/.globus/userkey.pem -voms atlas -pwstdin < /afs/cern.ch/user/i/ivukotic/gridlozinka.txt
 
-source /afs/cern.ch/project/xrootd/software/setup.sh test/3.3.3-rc1/x86_64-slc6-gcc45-opt
+#source /afs/cern.ch/project/xrootd/software/setup.sh test/3.3.3-rc1/x86_64-slc6-gcc45-opt
 
 cd $WD
 python FAX_configuration_tests.py

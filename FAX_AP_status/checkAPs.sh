@@ -17,7 +17,7 @@ xrdfs xrootd.esc.qmul.ac.uk:1094 query stats a >checkAP_uki-lt2-qmul.log &
 xrdfs gk06.atlas-swt2.org:1094 query stats a >checkAP_swt2_cpb.log & 
 xrdfs atl-prod09.slac.stanford.edu:1094 query stats a >checkAP_wt2.log & 
 xrdfs up.pleiades.uni-wuppertal.de:1094 query stats a >checkAP_wuppertalprod.log & 
-xrdfs fax.mwt2.org:1094 query stats a >checkAP_mwt2.log & 
+xrdfs uct2-int.mwt2.org:1094 query stats a >checkAP_mwt2.log & 
 xrdfs xrootd-mppmu.grid.lrz.de:2094 query stats a >checkAP_mppmu.log & 
 xrdfs t2-atlas-xrootd.desy.de query stats a >checkAP_desy-hh.log & 
 xrdfs hepgrid11.ph.liv.ac.uk query stats a >checkAP_uki-northgrid-liv-hep.log & 
@@ -33,12 +33,15 @@ xrdfs f01-140-115-e.gridka.de:1094 query stats a >checkAP_fzk-lcg2.log &
 xrdfs lcg-xrd.ifh.de:1094 query stats a >checkAP_desy-zn.log & 
 xrdfs sedoor1.bfg.uni-freiburg.de query stats a >checkAP_uni-freiburg.log & 
 xrdfs xrootd-atlas-proxy.gridpp.rl.ac.uk:1094 query stats a >checkAP_ral-lcg2.log & 
-xrdfs xrootd-at1.pic.es:1094 query stats a >checkAP_pic.log & 
 xrdfs se-xrootd.goegrid.gwdg.de:1094 query stats a >checkAP_goegrid.log & 
 xrdfs f-dpm000.grid.sinica.edu.tw:11000 query stats a >checkAP_taiwan-lcg2.log & 
 xrdfs xrootd-atlas.cr.cnaf.infn.it:1094 query stats a >checkAP_infn-t1.log & 
-xrdfs xrootd-at2.pic.es:1094 query stats a >checkAP_ifae.log & 
 xrdfs lpsc-se-dpm-server.in2p3.fr:11000 query stats a >checkAP_in2p3-lpsc.log & 
+xrdfs se.reef.man.poznan.pl:1094 query stats a >checkAP_psnc.log & 
+xrdfs dpm.cyf-kr.edu.pl:1094 query stats a >checkAP_cyfronet-lcg2.log & 
+xrdfs lcgse0.shef.ac.uk:1094 query stats a >checkAP_uki-northgrid-shef-hep.log & 
+xrdfs se2.ppgrid1.rhul.ac.uk:1094 query stats a >checkAP_uki-lt2-rhul.log & 
+xrdfs grid05.unige.ch:1094 query stats a >checkAP_unige-dpnc.log & 
 xrdfs atlas-xrd-ru.cern.ch:1094 query stats a >checkAP_XROOTD-atlas-xrd-ru.log & 
 xrdfs atlas-xrd-eu.cern.ch:1094 query stats a >checkAP_XROOTD_atlas-xrd-eu.log & 
 xrdfs glrd.usatlas.org:1094 query stats a >checkAP_XROOTD_glrd.log & 
