@@ -169,12 +169,14 @@ dsNAMEpref='user.ivukotic.xrootd.'
 fnNAMEpref='/user.ivukotic.xrootd.'
 workingDir='/afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/'
 OKmessage='Read: Hole in the cache: offs=0, len=1048576'
+ts=datetime.datetime.now()
+logpostfix=ts.strftime("_%Y-%m-%dT%H%M")+'.log'
 
 print "================================= CHECK DIRECT =================================================="
     
 with open('checkDirect.sh', 'w') as f: # first check that site itself gives it's own file
     for s in sites:
-        logfile=s.name+'_to_'+s.name+'.log'
+        logfile=s.name+'_to_'+s.name+logpostfix
         lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
         s.comm1='xrdcp -f -np -d 1 '+s.host+oldgLFNpref+lookingFor+' - > /dev/null 2>>'+logfile+' & \n'
         f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
@@ -193,7 +195,7 @@ print 'checking log files'
 
 # checking which sites gave their own file directly
 for s in sites:  # this is file to be asked for
-    logfile=s.name+'_to_'+s.name+'.log'
+    logfile=s.name+'_to_'+s.name+logpostfix
     with open(logfile, 'r') as f:
         lines=f.readlines()
         succ=False
@@ -217,7 +219,7 @@ print "================================= CHECK UPSTREAM ========================
 with open('checkUpstream.sh', 'w') as f: # ask good sites for unexisting file
     for s in sites:
         if s.direct==0: continue
-        logfile='upstreamFrom_'+s.name+'.log'
+        logfile='upstreamFrom_'+s.name+logpostfix
         lookingFor = dsNAMEpref+s.lname+fnNAMEpref + 'unexisting-1M'
         comm='xrdcp -f -np -d 1 '+s.host+oldgLFNpref+lookingFor+' - > /dev/null 2>>'+logfile+' & \n'
         f.write('echo "command executed:\n ' + comm + '" >> ' + logfile + '\n')
@@ -233,7 +235,7 @@ time.sleep(sleeps)
 
 for s in sites:
     if s.direct==0: continue
-    logfile='upstreamFrom_'+s.name+'.log'
+    logfile='upstreamFrom_'+s.name+logpostfix
     with open(logfile, 'r') as f:
         print logfile
         lines=f.readlines()        
@@ -256,7 +258,7 @@ print "================================= CHECK DOWNSTREAM ======================
 with open('checkDownstream.sh', 'w') as f: # ask global redirectors for files belonging to good sites
     for s in sites:
         if s.direct==0: continue
-        logfile='downstreamTo_'+s.name+'.log'
+        logfile='downstreamTo_'+s.name+logpostfix
         lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
         comm='xrdcp -f -np -d 1 root://'+s.redirector+oldgLFNpref+lookingFor+' - > /dev/null 2>>'+logfile+' & \n'
         f.write('echo "command executed:\n ' + comm + '" >> ' + logfile + '\n')
@@ -271,7 +273,7 @@ time.sleep(sleeps)
 
 for s in sites:
     if s.direct==0: continue
-    logfile='downstreamTo_'+s.name+'.log'
+    logfile='downstreamTo_'+s.name+logpostfix
     with open(logfile, 'r') as f:
         print 'Checking file: ', logfile
         lines=f.readlines()
@@ -292,7 +294,7 @@ print "================================= CHECK RUCIO ===========================
     
 with open('checkRucio.sh', 'w') as f: # first check that site itself gives it's own file
     for s in sites:
-        logfile='rucio_'+s.name+'.log'
+        logfile='rucio_'+s.name+logpostfix
         # lookingFor = '//atlas/rucio/user/hito:user.hito.xrootd.'+s.lname+'-1M'
         lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
         s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+' - > /dev/null 2>>'+logfile+' & \n'
@@ -311,7 +313,7 @@ print 'checking log files'
 
 # checking which sites gave their own file directly
 for s in sites:  # this is file to be asked for
-    logfile='rucio_'+s.name+'.log'
+    logfile='rucio_'+s.name+logpostfix
     with open(logfile, 'r') as f:
         lines=f.readlines()
         succ=False
@@ -335,7 +337,7 @@ print "================================= CHECK DELAYS ==========================
 with open('checkDelays.sh', 'w') as f: 
     for s in sites:
         if s.direct==0: continue
-        logfile='checkDelays_'+s.name+'.log'
+        logfile='checkDelays_'+s.name+logpostfix
         lookingFor = oldgLFNpref+dsNAMEpref+s.lname+fnNAMEpref+s.lname # +'-'+str(random.randint(0,100000))
         s.comm1='/usr/bin/time -f"real: %e" xrdfs '+s.host.replace('root://','')+' locate -r '+lookingFor+' 2>>'+logfile+' & \n'
         f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
@@ -355,7 +357,7 @@ print 'checking log files'
 # checking sites delays
 for s in sites:
     if s.direct==0: continue
-    logfile='checkDelays_'+s.name+'.log'
+    logfile='checkDelays_'+s.name+logpostfix
     with open(logfile, 'r') as f:
         lines=f.readlines()
         for l in lines:
@@ -371,7 +373,7 @@ print "================================= CHECK REDIRECTOR DOWNSTREAM ===========
                 
 with open('checkRedirectorDownstream.sh', 'w') as f:
     for r in redirectors:
-        logfile='checkRedirectorDownstream_'+r.name.upper()+'.log'
+        logfile='checkRedirectorDownstream_'+r.name.upper()+logpostfix
         thereIsUnderlayingWorkingSite=False
         for s in sites:
             if s.direct==0: continue
@@ -399,7 +401,7 @@ print 'checking log files'
 # checking sites delays
 for r in redirectors:
     if r.status&1: continue
-    logfile='checkRedirectorDownstream_'+r.name.upper()+'.log'
+    logfile='checkRedirectorDownstream_'+r.name.upper()+logpostfix
     with open(logfile, 'r') as f:
         print 'Checking file: ', logfile
         lines=f.readlines()
@@ -421,7 +423,7 @@ print "================================= CHECK REDIRECTOR UPSTREAM =============
                 
 with open('checkRedirectorUpstream.sh', 'w') as f:
     for r in redirectors:
-        logfile='checkRedirectorUpstream_'+r.name.upper()+'.log'
+        logfile='checkRedirectorUpstream_'+r.name.upper()+logpostfix
         thereIsOverlayingWorkingSite=False
         for s in sites:
             if s.direct==0: continue
@@ -449,7 +451,7 @@ print 'checking log files'
 # checking sites delays
 for r in redirectors:
     if r.status&1: continue
-    logfile='checkRedirectorUpstream_'+r.name.upper()+'.log'
+    logfile='checkRedirectorUpstream_'+r.name.upper()+logpostfix
     with open(logfile, 'r') as f:
         print 'Checking file: ', logfile
         lines=f.readlines()
@@ -474,7 +476,7 @@ with open('checkSecurity.sh', 'w') as f:
     f.write('voms-proxy-init -cert /afs/cern.ch/user/i/ivukotic/.globus/usercert.pem -key /afs/cern.ch/user/i/ivukotic/.globus/userkey.pem -pwstdin < /afs/cern.ch/user/i/ivukotic/gridlozinka.txt \n')
     for s in sites:
         if s.direct==0: continue
-        logfile='checkSecurity_'+s.name+'.log'
+        logfile='checkSecurity_'+s.name+logpostfix
         lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
         s.comm1='xrdcp -f -np -d 1 '+s.host+oldgLFNpref+lookingFor+' - > /dev/null 2>>'+logfile+' & \n'
         f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
@@ -494,7 +496,7 @@ print 'checking log files'
 # checking which sites gave their own file directly
 for s in sites:  # this is file to be asked for
     if s.direct==0: continue
-    logfile='checkSecurity_'+s.name+'.log'
+    logfile='checkSecurity_'+s.name+logpostfix
     with open(logfile, 'r') as f:
         lines=f.readlines()
         succ=False
@@ -518,11 +520,11 @@ for s in sites: s.prnt(0)  #print only real sites
 print "================================= CHECK MONITORING =================================================="
     
 print 'Geting info from Dashboard ...' 
-ts=datetime.datetime.now()
-ts=ts.replace(microsecond=0)
-ts=ts.replace(second=0)
-fr=str(ts-datetime.timedelta(0,5*3600)).replace(" ","+").replace(":","%3A")
-to=str(ts).replace(" ","+").replace(":","%3A")
+ts1=datetime.datetime.now()
+ts1=ts1.replace(microsecond=0)
+ts1=ts1.replace(second=0)
+fr=str(ts1-datetime.timedelta(0,5*3600)).replace(" ","+").replace(":","%3A")
+to=str(ts1).replace(" ","+").replace(":","%3A")
 try:
     ur="http://dashb-atlas-xrootd-transfers.cern.ch/dashboard/request.py/test-details.json?client=voatlas106.cern.ch&from_date="+fr+"&to_date="+to
     req = urllib2.Request(ur, None)
@@ -549,7 +551,6 @@ except:
 
 
 print '--------------------------------- Uploading site results ---------------------------------'
-ts=datetime.datetime.now()
 ts=ts.replace(microsecond=0)
 
 for s in sites:

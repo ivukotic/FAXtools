@@ -13,24 +13,25 @@ echo "deleting old files..."
 WD=/afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/
 
 cd $WD
-rm check*.sh *.log
-
-#source /afs/cern.ch/project/gd/LCG-share/current/etc/profile.d/grid_env.sh; 
-
-#source $AtlasSetup/scripts/asetup.sh 17.8.0,noTest
-
-#voms-proxy-init -cert /afs/cern.ch/user/i/ivukotic/.globus/usercert.pem -key /afs/cern.ch/user/i/ivukotic/.globus/userkey.pem -voms atlas -pwstdin < /afs/cern.ch/user/i/ivukotic/gridlozinka.txt
-
-#source /afs/cern.ch/project/xrootd/software/setup.sh test/3.3.3-rc1/x86_64-slc6-gcc45-opt
+rm check*.sh *.log *.zip
 
 cd $WD
 python FAX_configuration_tests.py
 
-
+#copy to afs web space
 cp *.log /afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/.
+
+#upload to FAXBOX
+#da=$(date +"%Y-%m-%d %H:%M")
+#zip SSB_FAX_endpoints_logs-$da.zip *.log
+#xrdcp SSB_FAX_endpoints_logs-$da.zip root://faxbox.usatlas.org//user/ivukotic
+
+#copy to MWT2 web space
+scp *.log uct2-int.mwt2.org:/home/ivukotic/public_html/LOGS
 
 killall -9 xrdcp
 
 killall -9 xrdfs
 
+killall -9 scp
 echo "Done." 
