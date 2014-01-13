@@ -172,7 +172,7 @@ OKmessage='Read: Hole in the cache: offs=0, len=1048576'
 ts=datetime.datetime.now()
 logpostfix=ts.strftime("_%Y-%m-%dT%H%M")+'.log'
 # redstring=' - > /dev/null 2>>'
-redstring='- 2>&1 >/dev/null | cat >'
+redstring=' - 2>&1 >/dev/null | cat >'
 
 print "================================= CHECK DIRECT =================================================="
     
