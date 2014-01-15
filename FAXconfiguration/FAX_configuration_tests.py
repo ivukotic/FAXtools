@@ -160,9 +160,6 @@ for s in sites: s.prnt(-1) # print all
 print 'creating scripts to execute'
     
 
-# oldgLFNpref='//atlas/dq2/user/HironoriIto/'
-# dsNAMEpref='user.HironoriIto.xrootd.'
-# fnNAMEpref='/user.HironoriIto.xrootd.'
 
 oldgLFNpref='//atlas/dq2/user/ivukotic/xrootd/'
 dsNAMEpref='user.ivukotic.xrootd.'
@@ -222,8 +219,9 @@ with open('checkUpstream.sh', 'w') as f: # ask good sites for unexisting file
     for s in sites:
         if s.direct==0: continue
         logfile='upstreamFrom_'+s.name+logpostfix
-        lookingFor = dsNAMEpref+s.lname+fnNAMEpref + 'unexisting-1M'
-        comm='xrdcp -f -np -d 1 '+s.host+oldgLFNpref+lookingFor+redstring+logfile+' & \n'
+        # lookingFor = dsNAMEpref+s.lname+fnNAMEpref + 'unexisting-1M'
+        lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'unexisting-1M'
+        comm='xrdcp -f -np -d 1 '+s.host+lookingFor+redstring+logfile+' & \n'
         f.write('echo "command executed:\n ' + comm + '" >> ' + logfile + '\n')
         f.write('echo "========================================================================" >> ' + logfile + '\n')
         f.write(comm)            
@@ -261,8 +259,10 @@ with open('checkDownstream.sh', 'w') as f: # ask global redirectors for files be
     for s in sites:
         if s.direct==0: continue
         logfile='downstreamTo_'+s.name+logpostfix
-        lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
-        comm='xrdcp -f -np -d 1 root://'+s.redirector+oldgLFNpref+lookingFor+redstring+logfile+' & \n'
+        # lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
+        lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
+        # comm='xrdcp -f -np -d 1 root://'+s.redirector+oldgLFNpref+lookingFor+redstring+logfile+' & \n'
+        comm='xrdcp -f -np -d 1 root://'+s.redirector+lookingFor+redstring+logfile+' & \n'
         f.write('echo "command executed:\n ' + comm + '" >> ' + logfile + '\n')
         f.write('echo "========================================================================" >> ' + logfile + '\n')
         f.write(comm)            
