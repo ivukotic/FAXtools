@@ -69,17 +69,17 @@ class site:
         self.name=na
         self.host=ho
         self.redirector=re
-        self.rucio=0
+        # self.rucio=0
     
     def prnt(self, what):
         if (what>=0 and self.redirector!=what): return
         print '------------------------------------\nfullname:',self.fullname
         print 'redirector:', self.redirector, '\tname:', self.name, '\thost:', self.host
-        print 'responds:', self.direct, '\t rucio:', self.rucio, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t security:', self.security, '\t delay:', self.delay, '\t monitored:', self.monitor
+        print 'responds:', self.direct, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t security:', self.security, '\t delay:', self.delay, '\t monitored:', self.monitor
         
     def status(self):
        s=0
-       s=s|(self.rucio<<5)
+       # s=s|(self.rucio<<5)
        s=s|(self.monitor<<4)
        s=s|(self.security<<3)
        s=s|(self.downstream<<2)
@@ -176,8 +176,9 @@ print "================================= CHECK DIRECT ==========================
 with open('checkDirect.sh', 'w') as f: # first check that site itself gives it's own file
     for s in sites:
         logfile=s.name+'_to_'+s.name+logpostfix
-        lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
-        s.comm1='xrdcp -f -np -d 1 '+s.host+oldgLFNpref+lookingFor+redstring+logfile+' & \n'
+        # lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
+        lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
+        s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+redstring+logfile+' & \n'
         f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
         f.write('echo "========================================================================" >> ' + logfile + '\n')
         f.write(s.comm1)
@@ -219,7 +220,6 @@ with open('checkUpstream.sh', 'w') as f: # ask good sites for unexisting file
     for s in sites:
         if s.direct==0: continue
         logfile='upstreamFrom_'+s.name+logpostfix
-        # lookingFor = dsNAMEpref+s.lname+fnNAMEpref + 'unexisting-1M'
         lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'unexisting-1M'
         comm='xrdcp -f -np -d 1 '+s.host+lookingFor+redstring+logfile+' & \n'
         f.write('echo "command executed:\n ' + comm + '" >> ' + logfile + '\n')
@@ -259,9 +259,7 @@ with open('checkDownstream.sh', 'w') as f: # ask global redirectors for files be
     for s in sites:
         if s.direct==0: continue
         logfile='downstreamTo_'+s.name+logpostfix
-        # lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
         lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
-        # comm='xrdcp -f -np -d 1 root://'+s.redirector+oldgLFNpref+lookingFor+redstring+logfile+' & \n'
         comm='xrdcp -f -np -d 1 root://'+s.redirector+lookingFor+redstring+logfile+' & \n'
         f.write('echo "command executed:\n ' + comm + '" >> ' + logfile + '\n')
         f.write('echo "========================================================================" >> ' + logfile + '\n')
@@ -292,47 +290,46 @@ for s in sites:
         print 'OK'
                 
                 
-print "================================= CHECK RUCIO =================================================="
-    
-with open('checkRucio.sh', 'w') as f: # first check that site itself gives it's own file
-    for s in sites:
-        logfile='rucio_'+s.name+logpostfix
-        # lookingFor = '//atlas/rucio/user/hito:user.hito.xrootd.'+s.lname+'-1M'
-        lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
-        s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+redstring+logfile+' & \n'
-        f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
-        f.write('echo "========================================================================" >> ' + logfile + '\n')
-        f.write(s.comm1)
-    f.close()
-
-#sys.exit(0)
-print 'executing all of the xrdcps in parallel. 1 min timeout.'
-com = Command("source " + workingDir + "checkRucio.sh")    
-com.run(58)
-time.sleep(60)
-
-print 'checking log files'
-
-# checking which sites gave their own file directly
-for s in sites:  # this is file to be asked for
-    logfile='rucio_'+s.name+logpostfix
-    with open(logfile, 'r') as f:
-        lines=f.readlines()
-        succ=False
-        for l in lines:
-            # print l
-            if l.count(OKmessage)>0:
-                succ=True
-                break
-        if succ==True:
-            print logfile, "works"
-            s.rucio=1
-        else:
-            print logfile, "problem"
-            
-for s in sites: s.prnt(0)  #print only real sites
-
-#sys.exit(0)
+# print "================================= CHECK RUCIO =================================================="
+#     
+# with open('checkRucio.sh', 'w') as f: # first check that site itself gives it's own file
+#     for s in sites:
+#         logfile='rucio_'+s.name+logpostfix
+#         lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
+#         s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+redstring+logfile+' & \n'
+#         f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
+#         f.write('echo "========================================================================" >> ' + logfile + '\n')
+#         f.write(s.comm1)
+#     f.close()
+# 
+# #sys.exit(0)
+# print 'executing all of the xrdcps in parallel. 1 min timeout.'
+# com = Command("source " + workingDir + "checkRucio.sh")    
+# com.run(58)
+# time.sleep(60)
+# 
+# print 'checking log files'
+# 
+# # checking which sites gave their own file directly
+# for s in sites:  # this is file to be asked for
+#     logfile='rucio_'+s.name+logpostfix
+#     with open(logfile, 'r') as f:
+#         lines=f.readlines()
+#         succ=False
+#         for l in lines:
+#             # print l
+#             if l.count(OKmessage)>0:
+#                 succ=True
+#                 break
+#         if succ==True:
+#             print logfile, "works"
+#             s.rucio=1
+#         else:
+#             print logfile, "problem"
+#             
+# for s in sites: s.prnt(0)  #print only real sites
+# 
+# #sys.exit(0)
 
 print "================================= CHECK DELAYS ================================================"
 
@@ -340,7 +337,8 @@ with open('checkDelays.sh', 'w') as f:
     for s in sites:
         if s.direct==0: continue
         logfile='checkDelays_'+s.name+logpostfix
-        lookingFor = oldgLFNpref+dsNAMEpref+s.lname+fnNAMEpref+s.lname # +'-'+str(random.randint(0,100000))
+        # lookingFor = oldgLFNpref+dsNAMEpref+s.lname+fnNAMEpref+s.lname # +'-'+str(random.randint(0,100000))
+        lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
         s.comm1='/usr/bin/time -f"real: %e" xrdfs '+s.host.replace('root://','')+' locate -r '+lookingFor+' 2>>'+logfile+' & \n'
         f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
         f.write('echo "========================================================================" >> ' + logfile + '\n')
@@ -380,8 +378,9 @@ with open('checkRedirectorDownstream.sh', 'w') as f:
         for s in sites:
             if s.direct==0: continue
             if s.redirector==r.address or r.name=='XROOTD_glrd' or r.name=='XROOTD_atlas-xrd-eu':
-                lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
-                comm='xrdcp -f -np -d 1 root://'+r.address+oldgLFNpref+lookingFor+redstring+logfile+' & \n'
+                # lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
+                lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
+                comm='xrdcp -f -np -d 1 root://'+r.address+lookingFor+redstring+logfile+' & \n'
                 f.write('echo "command executed:\n ' + comm + '" >> ' + logfile + '\n')
                 f.write('echo "========================================================================" >> ' + logfile + '\n')
                 f.write(comm)
@@ -430,8 +429,9 @@ with open('checkRedirectorUpstream.sh', 'w') as f:
         for s in sites:
             if s.direct==0: continue
             if s.redirector==r.address or r.name=='XROOTD_glrd' or r.name=='XROOTD_atlas-xrd-eu':
-                lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
-                comm='xrdcp -f -np -d 1 root://'+r.address+oldgLFNpref+lookingFor+redstring+logfile+' & \n'
+                # lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
+                lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
+                comm='xrdcp -f -np -d 1 root://'+r.address+lookingFor+redstring+logfile+' & \n'
                 f.write('echo "command executed:\n ' + comm + '" >> ' + logfile + '\n')
                 f.write('echo "========================================================================" >> ' + logfile + '\n')
                 f.write(comm)
@@ -479,8 +479,9 @@ with open('checkSecurity.sh', 'w') as f:
     for s in sites:
         if s.direct==0: continue
         logfile='checkSecurity_'+s.name+logpostfix
-        lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
-        s.comm1='xrdcp -f -np -d 1 '+s.host+oldgLFNpref+lookingFor+redstring+logfile+' & \n'
+        # lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
+        lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
+        s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+redstring+logfile+' & \n'
         f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
         f.write('echo "========================================================================" >> ' + logfile + '\n')
         f.write(s.comm1)
