@@ -475,7 +475,7 @@ with open('checkSecurity.sh', 'w') as f:
     f.write('export KRB5CCNAME=/nocredentials \n')
     f.write('rm -f /tmp/x509* \n') #deletes all existing proxies
     #creates a proxy without ATLAS VO role
-    f.write('voms-proxy-init -cert /afs/cern.ch/user/i/ivukotic/.globus/usercert.pem -key /afs/cern.ch/user/i/ivukotic/.globus/userkey.pem -pwstdin < /afs/cern.ch/user/i/ivukotic/gridlozinka.txt \n')
+    f.write('voms-proxy-init -cert /afs/cern.ch/user/i/ivukotic/.globus/usercert_slac.pem -key /afs/cern.ch/user/i/ivukotic/.globus/userkey_slac.pem -pwstdin < /afs/cern.ch/user/i/ivukotic/gridlozinka.txt \n')
     for s in sites:
         if s.direct==0: continue
         logfile='checkSecurity_'+s.name+logpostfix
