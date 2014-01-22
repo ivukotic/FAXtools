@@ -19,11 +19,11 @@ rm *.zip
 python FAX_configuration_tests.py
 
 #copy to afs web space
-cp *.log /afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/.
+#cp *.log /afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/.
 
 #upload to FAXBOX
-da=$(date +"%Y-%m-%dT%H%M")
-zip SSB_FAX_endpoints_logs-$da.zip *.log
+#da=$(date +"%Y-%m-%dT%H%M")
+#zip SSB_FAX_endpoints_logs-$da.zip *.log
 #xrdcp SSB_FAX_endpoints_logs-$da.zip root://faxbox.usatlas.org//user/ivukotic
 
 #copy to MWT2 web space
