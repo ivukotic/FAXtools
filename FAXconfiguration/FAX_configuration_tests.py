@@ -381,7 +381,6 @@ with open('checkRedirectorDownstream.sh', 'w') as f:
                 # lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
                 lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
                 comm='xrdcp -f -np -d 1 root://'+r.address+lookingFor+redstring+logfile+' & \n'
-bolt.physics.indiana.edu,149.165.236.67 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAvxDCQXeYleGBK02OzmT/gROPfp3L4r5rY05BZh7DJ4Nx3Qjbunv5g5zkKSNi4U/hhFpmL+5TGkINB8JK4rGJPTIcXdkRRIbDyaDYkuy1wn1di9OsqdEhPfM8VQZiGe+aHBUl1j7Ti3wXEwosv2eX/U76xx1EhPtgPXPP9myr66FCEju53LD5y0a6/Yreu3MqeHcJsTn0DEIzYuLRAFHuRg2Bkz1uHiFwIEoXPgyg3/NGsm+v8YOmH7mVW1itEqX3O04JiYfBBf51+yIkNFq7X4RELJp54zAgTHKYd9hHcKhvqv5TYDV0uTQlAfP60JwJPfPnBrUOCDviusT4tDT/HQ==
                 f.write('echo "command executed:\n ' + comm + '" >> ' + logfile + '\n')
                 f.write('echo "========================================================================" >> ' + logfile + '\n')
                 f.write(comm)
