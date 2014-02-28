@@ -1,7 +1,7 @@
 #!/bin/zsh
 # uncomment to debug 
 # uset -x
-
+export RUCIO_ACCOUNT=ivukotic
 export AtlasSetup=/afs/cern.ch/atlas/software/dist/AtlasSetup
 
 echo "deleting old files..."
