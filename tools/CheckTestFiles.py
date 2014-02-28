@@ -42,40 +42,30 @@ sites={}
 
 
 try:
-    req = urllib2.Request("http://atlas-agis-api.cern.ch/request/site/query/list/?json", None)
+    req = urllib2.Request("http://atlas-agis-api.cern.ch/request/site/query/list/?json&vo_name=atlas", None)
     opener = urllib2.build_opener()
     f = opener.open(req)
     res=json.load(f)
     for s in res:
-        print  s["name"],s["rc_site"], s["endpoint"], s["tier_level"], s["ddmendpoints"]
-        # si=site(s["name"],s["rc_site"], s["endpoint"], s["tier_level"], s["ddmendpoints"])
-        sites[s["name"]]=[s["rc_site"], s["endpoint"], s["tier_level"], s["ddmendpoints"]]
+        if  s["tier_level"]>2 or len(s["ddmendpoints"])==0 : continue
+        print  s["name"],s["rc_site"],  s["tier_level"], len(s["ddmendpoints"])
+        # si=site(s["name"],s["rc_site"], s["tier_level"], s["ddmendpoints"])
+        sites[s["name"]]=[s["rc_site"],  s["tier_level"], s["ddmendpoints"]]
 except:
     print "Unexpected error:", sys.exc_info()[0]
 
 
-sitesToCheck=[]
-for i in (1,len(sys.argv)-1):
-    stc=sys.argv[i]
-    found=0
-    for s in sites:
-        if stc==s.name:
-            sitesToCheck.append(stc)
-            found=1
-    if not found:
-        print 'Unrecognized site name:', stc
-        
-print 'Sites To check:', sitesToCheck
-
-
 # read file list file
-sitesToCheck=[]
-with open("ALL_SITES.txt", 'r') as f:
-    lines=f.readlines()
-    for l in lines:
-        sitesToCheck.append(l.rstrip())
-        # print l
-        
+# sitesToCheck=[]
+# with open("ALL_SITES.txt", 'r') as f:
+#     lines=f.readlines()
+#     for l in lines:
+#         sitesToCheck.append(l.rstrip())
+#         # print l
+
+com = Command('dq2-ls -r user.ivukotic.xrootd.* > datasets.txt')     
+com = Command(c) 
+     
 # for s in sites:
 #     if s.name not in sitesToCheck: continue
 #     sname=s.name.upper()
