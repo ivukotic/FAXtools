@@ -36,7 +36,7 @@ class Command(object):
 def createDataset(name):
     print "Creating a new dataset..."
     com = Command('./createTestFiles.sh '+name)
-    print com.run(200)
+    print com.run(600)
     
 def subscribeDataset(name,to):
     print "Subscribing the dataset to:", to
@@ -56,28 +56,21 @@ sites={}
 
 
 try:
-    req = urllib2.Request("http://atlas-agis-api.cern.ch/request/site/query/list/?json&vo_name=atlas", None)
+    req = urllib2.Request("http://atlas-agis-api.cern.ch/request/site/query/list/?json&vo_name=atlas&state=ACTIVE", None)
     opener = urllib2.build_opener()
     f = opener.open(req)
     res=json.load(f)
     for s in res:
         if  s["tier_level"]>2 or len(s["ddmendpoints"])==0 : continue
         print  s["name"],s["rc_site"],  s["tier_level"], s["ddmendpoints"]
+        if s["name"]=='ru-Moscow-SINP-LCG2': continue
         sites[s["name"]]=[s["rc_site"],  s["tier_level"], s["ddmendpoints"]]
 except:
     print "Unexpected error:", sys.exc_info()[0]
 
 
-# read file list file
-# sitesToCheck=[]
-# with open("ALL_SITES.txt", 'r') as f:
-#     lines=f.readlines()
-#     for l in lines:
-#         sitesToCheck.append(l.rstrip())
-#         # print l
-
 com = Command('dq2-ls -r user.ivukotic.xrootd.* > datasets.txt')     
-#com.run(300)
+com.run(600)
 
 exi={}
 with open("datasets.txt", 'r') as f:
