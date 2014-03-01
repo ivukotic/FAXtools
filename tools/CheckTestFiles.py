@@ -121,14 +121,18 @@ print "================================="
 print toFix
 
 for name in toFix:
-    print "Fixing site:", name
+    print "----------------------\nFixing site:", name, 
     n=name.lower()
     if toFix[name]==0:
         createDataset(n)
         subscribeDataset(n, n.upper()+'_DATADISK')
     if toFix[name]==1:
         subscribeDataset(n, n.upper()+'_DATADISK')
+    if toFix[name]==2:
+        print 'will wait for copy to arrive.'
     if toFix[name]==3:
-        for dd in exi[name.lower()]:
-            if dd.count(name.upper())==0: 
+        print "Deleting extraneous copies..."
+        for dd in exi[n]:
+            print dd
+            if dd.count(n.upper())==0: 
                 deleteDataset(n, dd)
