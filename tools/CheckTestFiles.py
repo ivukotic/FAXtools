@@ -70,7 +70,7 @@ except:
 
 
 com = Command('dq2-ls -r user.ivukotic.xrootd.* > datasets.txt')     
-com.run(600)
+print com.run(600)
 
 exi={}
 with open("datasets.txt", 'r') as f:
