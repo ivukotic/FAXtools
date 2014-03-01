@@ -33,6 +33,20 @@ class Command(object):
         return self.process.returncode
     
     
+def createDataset(name):
+    print "Creating a new dataset..."
+    com = Command('./createTestFiles.sh '+name)
+    print com.run(200)
+    
+def subscribeDataset(name,to):
+    print "Subscribing the dataset to:", to
+    com = Command('dq2-register-subscription user.ivukotic.xrootd.' + name + ' ' + to)
+    print com.run(200)
+
+def deleteDataset(name, at):
+    print "Deleting the replica at:", at
+    com = Command('dq2-delete-replicas user.ivukotic.xrootd.'+name+' '+ at )
+    print com.run(200)
     
 
 print 'Geting site list from AGIS...'
@@ -48,8 +62,7 @@ try:
     res=json.load(f)
     for s in res:
         if  s["tier_level"]>2 or len(s["ddmendpoints"])==0 : continue
-        print  s["name"],s["rc_site"],  s["tier_level"], len(s["ddmendpoints"])
-        # si=site(s["name"],s["rc_site"], s["tier_level"], s["ddmendpoints"])
+        print  s["name"],s["rc_site"],  s["tier_level"], s["ddmendpoints"]
         sites[s["name"]]=[s["rc_site"],  s["tier_level"], s["ddmendpoints"]]
 except:
     print "Unexpected error:", sys.exc_info()[0]
@@ -64,19 +77,65 @@ except:
 #         # print l
 
 com = Command('dq2-ls -r user.ivukotic.xrootd.* > datasets.txt')     
-com = Command(c) 
-     
-# for s in sites:
-#     if s.name not in sitesToCheck: continue
-#     sname=s.name.upper()
-#     for f in files:
-#         nfile=f.replace("root://fax.mwt2.org",s.host).replace("MWT2",sname)
-#         print nfile
-#         c='root -q -b "list.C(\\"'+nfile+'\\")" >> '+sname+'.log'
-#         com = Command(c)    
-#         if (com.run(60)!=0):
-#             s.fails+=1
-#         else:
-#             s.successes+=1
-#     print sname, "\tsuccesses:",s.successes,"\t\tfails:" ,s.fails,"\t\tsuccess rate: ",s.successes*100./(s.successes+s.fails)," %"
-        
+#com.run(300)
+
+exi={}
+with open("datasets.txt", 'r') as f:
+    lines=f.readlines()
+    for l in lines:
+        l=l.strip()
+        if l.count("INCOMPLETE"): continue
+        if l.startswith('user.ivukotic.xrootd.'):
+            cs=l.replace('user.ivukotic.xrootd.','').replace(':','').split('.')
+            cs=cs[0]
+        if l.startswith('COMPLETE:'):
+            ddms=l.replace('COMPLETE: ','')
+            exi[cs]=ddms.split()
+
+print exi
+
+toFix={}
+for name in sites:
+    found=0
+    for ename in exi:
+        if name.lower()!=ename: continue
+        found+=1
+        dfound=0
+        for ddm in sites[name][2].keys():
+            if ddm in exi[ename]:
+                dfound+=1
+                
+    print "Site:",name,    
+    if found==0:
+        print "has no test dataset."
+        toFix[name]=0
+    else:
+        if dfound==0:
+            print "has no test dataset delivered.",
+            toFix[name]=1
+            if len(exi[name.lower()])>0:
+                print "dataset exists at other place.",exi[name.lower()]
+                toFix[name]=2
+            else:
+                print
+        else:
+            if len(exi[name.lower()])>1:
+                print "dataset exists at additional place.",exi[name.lower()]
+                toFix[name]=3
+            else:
+                print 'is OK.'
+print "================================="
+print toFix
+
+for name in toFix:
+    print "Fixing site:", name
+    n=name.lower()
+    if toFix[name]==0:
+        createDataset(n)
+        subscribeDataset(n, n.upper()+'_DATADISK')
+    if toFix[name]==1:
+        subscribeDataset(n, n.upper()+'_DATADISK')
+    if toFix[name]==3:
+        for dd in exi[name.lower()]:
+            if dd.count(name.upper())==0: 
+                deleteDataset(n, dd)
