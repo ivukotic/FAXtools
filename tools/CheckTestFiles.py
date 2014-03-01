@@ -83,7 +83,7 @@ with open("datasets.txt", 'r') as f:
             cs=cs[0]
         if l.startswith('COMPLETE:'):
             ddms=l.replace('COMPLETE: ','')
-            exi[cs]=ddms.split()
+            exi[cs]=ddms.split(',')
 
 print exi
 
@@ -118,7 +118,7 @@ for name in sites:
             else:
                 print 'is OK.'
 print "================================="
-print toFix
+#print toFix
 
 for name in toFix:
     print "----------------------\nFixing site:", name, 
