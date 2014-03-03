@@ -40,14 +40,20 @@ def createDataset(name):
     
 def subscribeDataset(name,to):
     print "Subscribing the dataset to:", to
-    com = Command('dq2-register-subscription user.ivukotic.xrootd.' + name + ' ' + to)
+    com = Command('dq2-register-subscription user.ivukotic.xrootd.' + name.lower() + ' ' + to)
     print com.run(200)
-
+    if sites[name][3] in t1ddm:
+        print "Subscribing the dataset to:", t1ddm[sites[name][3]]
+        com = Command('dq2-register-subscription user.ivukotic.xrootd.' + name.lower() + ' ' + t1ddm[sites[name][3]])
+        print com.run(200)
+    
 def deleteDataset(name, at):
     print "Deleting the replica at:", at
     com = Command('dq2-delete-replicas user.ivukotic.xrootd.'+name+' '+ at )
     print com.run(200)
     
+
+t1ddm={'US':'BNL-ATLAS','DE':'FZK-LCG2', 'FR':'IN2P3-CC', 'IT':'INFN-T1', 'ND':'NDGF-T1', 'NL':'NIKHEF-ELPROD', 'UK':'RAL-LCG2', 'RU':'RRC-KI-T1', 'CA':'TRIUMF-LCG2', 'TW':'Taiwan-LCG2','ES':'pic' }
 
 print 'Geting site list from AGIS...'
 
@@ -62,9 +68,9 @@ try:
     res=json.load(f)
     for s in res:
         if  s["tier_level"]>2 or len(s["ddmendpoints"])==0 : continue
-        print  s["name"],s["rc_site"],  s["tier_level"], s["ddmendpoints"]
+        print  s["name"],s["rc_site"],  s["tier_level"], len(s["ddmendpoints"]), s["cloud"]
         if s["name"]=='ru-Moscow-SINP-LCG2': continue
-        sites[s["name"]]=[s["rc_site"],  s["tier_level"], s["ddmendpoints"]]
+        sites[s["name"]]=[s["rc_site"],  s["tier_level"], s["ddmendpoints"], s["cloud"]]
 except:
     print "Unexpected error:", sys.exc_info()[0]
 
@@ -125,9 +131,9 @@ for name in toFix:
     n=name.lower()
     if toFix[name]==0:
         createDataset(n)
-        subscribeDataset(n, n.upper()+'_DATADISK')
+        subscribeDataset(name, n.upper()+'_DATADISK')
     if toFix[name]==1:
-        subscribeDataset(n, n.upper()+'_DATADISK')
+        subscribeDataset(name, n.upper()+'_DATADISK')
     if toFix[name]==2:
         print 'will wait for copy to arrive.'
     if toFix[name]==3:
