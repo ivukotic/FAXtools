@@ -75,8 +75,8 @@ except:
     print "Unexpected error:", sys.exc_info()[0]
 
 
-#com = Command('dq2-ls -r user.ivukotic.xrootd.* > datasets.txt')     
-#print com.run(600)
+com = Command('dq2-ls -r user.ivukotic.xrootd.* > datasets.txt')     
+print com.run(600)
 
 exi={}
 with open("datasets.txt", 'r') as f:
