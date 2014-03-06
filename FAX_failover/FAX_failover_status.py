@@ -10,7 +10,8 @@ except ImportError:
 	import json
 
 
-hours=2
+interval=6 # in hours
+limit=10 # jobs in the interval
 
 FAXfailovers={}
 
@@ -22,15 +23,13 @@ class det:
         self.FAXfsize=0
         self.FAXfilesNot=0
         self.FAXfsizeNot=0
-        self.TOTfinished=0
-        self.TOTfailed=0
     def toString(self):
-        ret = "finished: "+str(self.FAXfinished)+"/"+str(self.TOTfinished)
-        ret+= "\tfailed: "+str(self.FAXfailed)+"/"+str(self.TOTfailed)
+        ret = "finished: "+str(self.FAXfinished)
+        ret+= "\tfailed: "+str(self.FAXfailed)
         return ret+"\tfiles: "+str(self.FAXfiles)+"\tfsize: "+str(self.FAXfsize)+"\tfilesNOT: "+str(self.FAXfilesNot)+"\tfsizeNOT: "+str(self.FAXfsizeNot)
 
 
-link="http://pandamon.cern.ch/fax/failover?hours="+str(hours)
+link="http://pandamon.cern.ch/fax/failover?hours="+str(interval)
 
 buf = cStringIO.StringIO()
 
@@ -44,7 +43,7 @@ js= buf.getvalue()
 buf.close()
 
 try:
-    res=simplejson.loads(js)
+    res=json.loads(js)
     res=res["pm"][0]['json']['info']
     for r in res:
         # print r
@@ -61,63 +60,83 @@ try:
         d.FAXfsize+=r[7]
         d.FAXfsizeNot+=r[8]
         
-except simplejson.scanner.JSONDecodeError:
+except json.scanner.JSONDecodeError:
     print "Decoding Error"
 except:
     print "Unexpected error:", sys.exc_info()[0]
     
     
-# sites=[]; # each site contains [name, host, redirector]
-# 
-# class site:    
-#     name=''
-#     fullname=''
-#     host=''
-#     redirector=''
-#     direct=0
-#     upstream=0
-#     downstream=0
-#     security=0
-#     delay=0
-#     monitor=0
-#     version=''
-#     site=''
-#      
-#     def __init__(self, fn, na, ho, re):
-#         if na=='grif':
-#             na=fn
-#         self.fullname=fn
-#         self.name=na
-#         self.host=ho
-#         self.redirector=re
-#     
-#     def prnt(self, what):
-#         if (what>=0 and self.redirector!=what): return
-#         print '------------------------------------\nfullname:',self.fullname
-#         print 'redirector:', self.redirector, '\tname:', self.name, '\thost:', self.host
-#         print 'responds:', self.direct, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t security:', self.security, '\t delay:', self.delay, '\t monitored:', self.monitor
-#         
-# 
-# 
-# 
-# try:
-#     req = urllib2.Request("http://atlas-agis-api.cern.ch/request/service/query/get_se_services/?json&state=ACTIVE&flavour=XROOTD", None)
-#     opener = urllib2.build_opener()
-#     f = opener.open(req)
-#     res=json.load(f)
-#     for s in res:
-#         print  s["name"],s["rc_site"], s["endpoint"], s["redirector"]["endpoint"]
-#         si=site(s["name"].lower(),s["rc_site"].lower(), s["endpoint"], s["redirector"]["endpoint"])
-#         sites.append(si)
-# except:
-#     print "Unexpected error:", sys.exc_info()[0]    
-#     
-# 
-# for s in sites: s.prnt(-1) # print all
-#     
-# 
-#         
-# 
+sites={};
+
+class site:    
+
+    def __init__(self, em, qu):        
+        self.email=em
+        self.queues=qu
+        self.found=0
+    
+    def prnt(self):
+        print 'emails:', self.email
+        print 'queues:', self.queues
+
+
+try:
+    req = urllib2.Request("http://atlas-agis-api.cern.ch/request/site/query/list/?json&vo_name=atlas&state=ACTIVE", None)
+    opener = urllib2.build_opener()
+    f = opener.open(req)
+    res=json.load(f)
+    for s in res:
+        # print  s["name"], s["emailContact"], s["presources"]
+        queues=[]
+        for sit in s["presources"].itervalues():
+            queues.extend(sit.keys())
+        sites[s["name"]] = site( s["emailContact"].split(','), queues )
+        
+except:
+    print "Unexpected error:", sys.exc_info()[0]    
+    
+
+# for s in sites: 
+#     print '------------------------------------'
+#     print s
+#     sites[s].prnt()
+
+
+
+for FFqueue, FFvalues in FAXfailovers.items():
+    if FFvalues.FAXfinished + FFvalues.FAXfailed > limit:
+        for Ss,Sd in sites.items():
+            if FFqueue in Sd.queues:
+                Sd.found+=1 
+
+        
+towrite={}
+    
+for Ss,Sd in sites.items():
+    if Sd.found==0: continue
+    sdict={}
+    print "-------------------------------------"
+    print Ss, Sd.email
+    sdict["to"]=Sd.email
+    sdict["subject"]="Unusually high number of jobs failing over to FAX at "+Ss
+    sdict["body"]="Dear Site responsible(s),\n\n\tAn automated script found that unusually large number of jobs running at your site is using the failover-to-FAX mechanism. "
+    sdict["body"]+="This kind of message is generated when more than "+str(limit)+" jobs of at least one of the queues failover to FAX during last "+str(interval)+" hours. "
+    sdict["body"]+="Jobs that failed-over tried to get the job's input data in a regular way three times and failed. While a part (or even all) of these jobs finished successfully, your understanding of why this happened could make "+Ss+" even more efficient in the future.\n\n"
+    sdict["body"]+="\tHere is a list of all the queues that had failed-over jobs:\n"
+    print "All the queues from your site: "
+    for sq in Sd.queues:
+        for FFqueue, FFvalues in FAXfailovers.items():
+            if sq!=FFqueue: continue
+            print sq, FFvalues.toString()
+            sdict["body"]+=sq+" "+FFvalues.toString()
+    sdict["body"]+="\n\n\tFurther details can be found here: "+link
+    towrite[Ss] = sdict
+        
+f1 = open('FAX_failover_mails.json','w')
+f1.write(json.dumps(towrite))
+f1.close()      
+            
+
 # print '--------------------------------- Writing SEs for twiki ----------------------------'
 # with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiSitesStatus.log', 'w') as f: 
 #     f.write('| *name* | *address* | *version* | *site* |\n')
