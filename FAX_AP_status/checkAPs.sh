@@ -7,7 +7,7 @@ xrdfs vobox0004.m45.ihep.su:1094 query stats a >checkAP_ru-protvino-ihep.log &
 xrdfs atlasse.lnf.infn.it:1094 query stats a >checkAP_infn-frascati.log & 
 xrdfs t2-dpm-01.na.infn.it:1094 query stats a >checkAP_infn-napoli-atlas.log & 
 xrdfs grid-cert-03.roma1.infn.it:1094 query stats a >checkAP_infn-roma1.log & 
-xrdfs vm180.jinr.ru:1094 query stats a >checkAP_jinr-lcg2.log & 
+xrdfs lcgsexrda.jinr.ru:1094 query stats a >checkAP_jinr-lcg2.log & 
 xrdfs xrootd-lrz-lmu.grid.lrz.de:1094 query stats a >checkAP_lrz-lmu.log & 
 xrdfs atlas-cm4.bu.edu:1094 query stats a >checkAP_bu_atlas_tier2.log & 
 xrdfs tier2-03.ochep.ou.edu:1094 query stats a >checkAP_ou_ochep_swt2.log & 
