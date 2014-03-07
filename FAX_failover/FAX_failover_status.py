@@ -11,7 +11,7 @@ except ImportError:
 
 
 interval=6 # in hours
-limit=10 # jobs in the interval
+limit=100 # jobs in the interval
 
 FAXfailovers={}
 
@@ -26,7 +26,7 @@ class det:
     def toString(self):
         ret = "finished: "+str(self.FAXfinished)
         ret+= "\tfailed: "+str(self.FAXfailed)
-        return ret+"\tfiles: "+str(self.FAXfiles)+"\tfsize: "+str(self.FAXfsize)+"\tfilesNOT: "+str(self.FAXfilesNot)+"\tfsizeNOT: "+str(self.FAXfsizeNot)
+        return ret+"\tdelivered using FAX - files: "+str(self.FAXfiles)+"\tsize: "+str(self.FAXfsize)
 
 
 link="http://pandamon.cern.ch/fax/failover?hours="+str(interval)
@@ -128,7 +128,7 @@ for Ss,Sd in sites.items():
         for FFqueue, FFvalues in FAXfailovers.items():
             if sq!=FFqueue: continue
             print sq, FFvalues.toString()
-            sdict["body"]+=sq+" "+FFvalues.toString()
+            sdict["body"]+=sq+" \t "+FFvalues.toString()
     sdict["body"]+="\n\n\tFurther details can be found here: "+link
     towrite[Ss] = sdict
         
