@@ -1,6 +1,9 @@
+#!/usr/bin/env python
 import urllib2
-import simplejson
 import datetime
+
+try: import simplejson as json
+except ImportError: import json
 
 ur      ='http://dashb-atlas-data.cern.ch/dashboard/request.py/details.json?state=COPIED&limit=5000'
 activity='&activity=6'
