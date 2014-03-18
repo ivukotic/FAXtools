@@ -8,6 +8,9 @@ try: import simplejson as json
 except ImportError: import json
 
 debug=1
+SRC = 'RAL-LCG2' # or 'ANY'
+DST = 'MWT2'
+timeout=3600
 
 class Command(object):
 
@@ -60,9 +63,7 @@ class site:
         def prn(self):
                 print "#", self.name, "\tendpoint:",self.endpoint, "\tdirect: ",self.direct
                 
-SRC = 'RAL-LCG2'
-DST = 'MWT2'
-timeout=3600
+
 
 
 print "# geting FAX endpoints information from SSB..."
@@ -116,21 +117,24 @@ v=html.split(',')
 tid=v[0]
 fn=v[1]
 fsize=v[2]
+source=v[3]
 
 endpoint=""
-if SRC not in Sites:
-    print "site:",SRC, "not federated."
+if source not in Sites:
+    print "site:",source, "not federated."
 else:
-    if Sites[SRC].direct==5:
-        endpoint=Sites[SRC].getEndpoint()
+    if Sites[source].direct==5:
+        endpoint=Sites[source].getEndpoint()
     else:
-        print "site:",SRC,"in red ATM."
+        print "site:",source,"in red, ATM."
             
 com = Command('/usr/bin/time -f "real: %e" xrdcp -d 1 -f '+endpoint+'//atlas/rucio/'+ fn + ' /dev/null > logfile.txt ')
 com.run(timeout)
 
-
-
+with open('logfile.txt', 'r') as f:
+    lines=f.readlines()
+    print lines
+    
 #uploading transfer
 url="http://ivukotic.web.cern.ch/ivukotic/FTS/addFAX.asp?"
 url+="TID="+tid
