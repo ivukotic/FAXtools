@@ -131,17 +131,24 @@ else:
 com = Command('/usr/bin/time -f "real: %e" -a -o "logfile.txt" xrdcp -d 1 -f '+endpoint+'//atlas/rucio/'+ fn + ' /dev/null 2&>1 > logfile.txt ')
 com.run(timeout)
 
+success=0
 with open('logfile.txt', 'r') as f:
     lines=f.readlines()
-    print lines
-    
-#uploading transfer
-url="http://ivukotic.web.cern.ch/ivukotic/FTS/addFAX.asp?"
-url+="TID="+tid
-url+="&FAXTIME="+str(100)
+    for line in lines:
+        if line.count("real:")>0 and success:
+            rt=line.replace("real: ","")    
+            #uploading transfer
+            url="http://ivukotic.web.cern.ch/ivukotic/FTS/addFAX.asp?"
+            url+="TID="+tid
+            url+="&FAXTIME="+rt
+            print url
+            req = urllib2.Request(url)
+            opener = urllib2.build_opener()
+            f = opener.open(req)
+            
+        if line.count('BytesSubmitted=')>0:
+            si=line.split()[0].split("=")[1]
+            print si
+            if si==fsize:
+                success=1
 
-print url
-    
-req = urllib2.Request(url)
-opener = urllib2.build_opener()
-f = opener.open(req)
