@@ -29,7 +29,7 @@ class Command(object):
 
 SRC = 'RAL-LCG2'
 DST = 'MWT2'
-
+redirector='root://fax.mwt2.org:1094'
 timeout=3600
 
 url="http://ivukotic.web.cern.ch/ivukotic/FTS/getFTS.asp?"
@@ -47,8 +47,9 @@ tid=v[0]
 fn=v[1]
 fsize=v[2]
 
-com = Command('/usr/bin/time -f "real: %e" ls ' + fn + '  ')
+com = Command('/usr/bin/time -f "real: %e" xrdcp -d 1 '+redirector+'//atlas/rucio/'+ fn + ' > logfile.txt ')
 com.run(timeout)
+
 
 
 #uploading transfer
