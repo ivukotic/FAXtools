@@ -47,7 +47,7 @@ tid=v[0]
 fn=v[1]
 fsize=v[2]
 
-com = Command('/usr/bin/time -f "real: %e" xrdcp -d 1 '+redirector+'//atlas/rucio/'+ fn + ' > logfile.txt ')
+com = Command('/usr/bin/time -f "real: %e" xrdcp -d 1 '+redirector+'//atlas/rucio/'+ fn + ' /dev/null > logfile.txt ')
 com.run(timeout)
 
 
