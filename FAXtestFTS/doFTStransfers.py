@@ -1,7 +1,13 @@
 #!/usr/bin/env python
-import subprocess, threading, os, sys
+import subprocess, threading, os, sys, time
 import urllib2
-import datetime
+from  datetime import datetime
+from datetime import timedelta
+
+try: import simplejson as json
+except ImportError: import json
+
+debug=1
 
 class Command(object):
 
@@ -27,10 +33,74 @@ class Command(object):
 
 
 
+class site:
+        def __init__(self,na):
+                self.name=na
+                self.direct=0
+                self.endpoint=''
+        def getEndpoint(self):
+            if self.endpoint!='': return self.endpoint
+            print "# looking up endpoint",self.name," address in AGIS..."
+            try:
+                url="http://atlas-agis-api.cern.ch/request/service/query/get_se_services/?json&state=ACTIVE&flavour=XROOTD&rc_site="+self.name
+                print url
+                req = urllib2.Request(url, None)
+                opener = urllib2.build_opener()
+                f = opener.open(req, timeout=20)
+                res=json.load(f)
+                if debug: print "# found corresponding endpoint: ",res[0]["endpoint"]
+                self.endpoint=res[0]["endpoint"]
+                return self.endpoint
+            except urllib2.HTTPError:
+                print "# Can't connect to AGIS to get endpoint address."
+                sys.exit(4)
+            except:
+                print "# Can't connect to AGIS to get endpoint address.", sys.exc_info()[0]
+                sys.exit(41)
+        def prn(self):
+                print "#", self.name, "\tendpoint:",self.endpoint, "\tdirect: ",self.direct
+                
 SRC = 'RAL-LCG2'
 DST = 'MWT2'
-redirector='root://fax.mwt2.org:1094'
 timeout=3600
+
+
+print "# geting FAX endpoints information from SSB..."
+url="http://dashb-atlas-ssb.cern.ch/dashboard/request.py/getplotdata?time=1&dateFrom=&dateTo=&sites=all&clouds=all&batch=1&columnid=10083"
+try:
+    response=urllib2.Request(url,None)
+    opener = urllib2.build_opener()
+    f = opener.open(response, timeout=20)
+    data = json.load(f)
+    data=data["csvdata"]
+except urllib2.HTTPError:
+        print "# Can't connect to SSB."
+        sys.exit(2)
+except:
+    print "# Can't connect to SSB.", sys.exc_info()[0]
+    sys.exit(21)
+
+Sites=dict()
+
+curtime=datetime.now()
+cuttime=curtime-timedelta(0,5*3600)
+
+for si in data:
+        n=si['VOName']
+        if n not in Sites:
+                s=site(n)
+                Sites[n]=s
+        st= datetime(*(time.strptime(si["Time"], '%Y-%m-%dT%H:%M:%S')[0:6]))
+        et= datetime(*(time.strptime(si["EndTime"], '%Y-%m-%dT%H:%M:%S')[0:6]))
+        if et<cuttime: continue  # throws away too early measurements
+        if st<cuttime: st=cuttime # cuts to exact cutoff time
+        if et>curtime: # current state
+                et=curtime
+                Sites[n].direct=si['COLOR']
+
+for s in Sites:
+    Sites[s].prn()
+
 
 url="http://ivukotic.web.cern.ch/ivukotic/FTS/getFTS.asp?"
 url+="SRC="+SRC
@@ -47,7 +117,16 @@ tid=v[0]
 fn=v[1]
 fsize=v[2]
 
-com = Command('/usr/bin/time -f "real: %e" xrdcp -d 1 '+redirector+'//atlas/rucio/'+ fn + ' /dev/null > logfile.txt ')
+endpoint=""
+if SRC not in Sites:
+    print "site:",SRC, "not federated."
+else:
+    if Sites[SRC].direct==5:
+        endpoint=Sites[SRC].getEndpoint()
+    else:
+        print "site:",SRC,"in red ATM."
+            
+com = Command('/usr/bin/time -f "real: %e" xrdcp -d 1 -f '+endpoint+'//atlas/rucio/'+ fn + ' /dev/null > logfile.txt ')
 com.run(timeout)
 
 
