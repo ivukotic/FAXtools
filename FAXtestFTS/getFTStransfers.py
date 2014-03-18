@@ -18,7 +18,7 @@ ur=ur+activity+dest+dfrom+dto
 req = urllib2.Request(ur)
 opener = urllib2.build_opener()
 f = opener.open(req)
-sj = simplejson.load(f)
+sj = json.load(f)
 
 details=sj["details"]
 

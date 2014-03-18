@@ -3,9 +3,6 @@ import subprocess, threading, os, sys
 import urllib2
 import datetime
 
-try: import simplejson as json
-except ImportError: import json
-
 class Command(object):
 
     def __init__(self, cmd):
