@@ -128,7 +128,7 @@ else:
     else:
         print "site:",source,"in red, ATM."
             
-com = Command('/usr/bin/time -f "real: %e" xrdcp -d 1 -f '+endpoint+'//atlas/rucio/'+ fn + ' /dev/null 2>> logfile.txt ')
+com = Command('/usr/bin/time -f "real: %e" -a -o "logfile.txt" xrdcp -d 1 -f '+endpoint+'//atlas/rucio/'+ fn + ' /dev/null 2&>1 > logfile.txt ')
 com.run(timeout)
 
 with open('logfile.txt', 'r') as f:
