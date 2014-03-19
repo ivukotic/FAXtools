@@ -10,7 +10,7 @@ activity='&activity=6'
 dest    ='&dst_site=%22MWT2%22'
 dtto=datetime.datetime.utcnow()
 dto     =  '&to_date='+str(dtto).replace(':','%3A') .replace(' ','T').split('.')[0]
-interval = datetime.timedelta(minutes=200)
+interval = datetime.timedelta(minutes=10)
 dtfr=dtto-interval
 dfrom   ='&from_date='+str(dtfr).replace(':','%3A') .replace(' ','T').split('.')[0]
 ur=ur+activity+dest+dfrom+dto
