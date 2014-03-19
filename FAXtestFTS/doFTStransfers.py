@@ -141,11 +141,11 @@ while (True):
             if line.count("real:")>0 and success:
                 rt=line.replace("real: ","")    
                 #uploading transfer
-                url="http://ivukotic.web.cern.ch/ivukotic/FTS/addFAX.asp?"
-                url+="TID="+tid
-                url+="&FAXTIME="+rt
-                if debug: print url
-                req = urllib2.Request(url)
+                aurl="http://ivukotic.web.cern.ch/ivukotic/FTS/addFAX.asp?"
+                aurl+="TID="+tid
+                aurl+="&FAXTIME="+rt
+                if debug: print aurl
+                req = urllib2.Request(aurl)
                 opener = urllib2.build_opener()
                 f = opener.open(req)
             
