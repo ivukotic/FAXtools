@@ -8,7 +8,7 @@ try: import simplejson as json
 except ImportError: import json
 
 debug=1
-SRC = 'RAL-LCG2' # or 'ANY'
+SRC = 'ANY' # or 'ANY'
 DST = 'MWT2'
 timeout=3600
 
