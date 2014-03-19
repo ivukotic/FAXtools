@@ -111,7 +111,7 @@ print url
 while (True):
     response = urllib2.urlopen(url)
     html = response.read()
-    print html
+    print "got transfer:", html
     response.close()  
 
     v=html.split(',')
@@ -144,7 +144,7 @@ while (True):
                 url="http://ivukotic.web.cern.ch/ivukotic/FTS/addFAX.asp?"
                 url+="TID="+tid
                 url+="&FAXTIME="+rt
-                print url
+                if debug: print url
                 req = urllib2.Request(url)
                 opener = urllib2.build_opener()
                 f = opener.open(req)
