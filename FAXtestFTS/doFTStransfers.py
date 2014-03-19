@@ -108,47 +108,50 @@ url+="SRC="+SRC
 url+="&DST="+DST
 print url
 
-response = urllib2.urlopen(url)
-html = response.read()
-print html
-response.close()  
+while (True):
+    response = urllib2.urlopen(url)
+    html = response.read()
+    print html
+    response.close()  
 
-v=html.split(',')
-tid=v[0]
-fn=v[1]
-fsize=v[2]
-source=v[3]
+    v=html.split(',')
+    tid=v[0]
+    fn=v[1]
+    fsize=v[2]
+    source=v[3]
 
-endpoint=""
-if source not in Sites:
-    print "site:",source, "not federated."
-else:
-    if Sites[source].direct==5:
-        endpoint=Sites[source].getEndpoint()
+    if tid=='null': break
+    
+    endpoint=""
+    if source not in Sites:
+        print "site:",source, "not federated."
     else:
-        print "site:",source,"in red, ATM."
+        if Sites[source].direct==5:
+            endpoint=Sites[source].getEndpoint()
+        else:
+            print "site:",source,"in red, ATM."
             
-com = Command('/usr/bin/time -f "real: %e" -a -o "logfile.txt" xrdcp -d 1 -f '+endpoint+'//atlas/rucio/'+ fn + ' /dev/null &> logfile.txt ')
-com.run(timeout)
+    com = Command('/usr/bin/time -f "real: %e" -a -o "logfile.txt" xrdcp -d 1 -f '+endpoint+'//atlas/rucio/'+ fn + ' /dev/null &> logfile.txt ')
+    com.run(timeout)
 
-success=0
-with open('logfile.txt', 'r') as f:
-    lines=f.readlines()
-    for line in lines:
-        if line.count("real:")>0 and success:
-            rt=line.replace("real: ","")    
-            #uploading transfer
-            url="http://ivukotic.web.cern.ch/ivukotic/FTS/addFAX.asp?"
-            url+="TID="+tid
-            url+="&FAXTIME="+rt
-            print url
-            req = urllib2.Request(url)
-            opener = urllib2.build_opener()
-            f = opener.open(req)
+    success=0
+    with open('logfile.txt', 'r') as f:
+        lines=f.readlines()
+        for line in lines:
+            if line.count("real:")>0 and success:
+                rt=line.replace("real: ","")    
+                #uploading transfer
+                url="http://ivukotic.web.cern.ch/ivukotic/FTS/addFAX.asp?"
+                url+="TID="+tid
+                url+="&FAXTIME="+rt
+                print url
+                req = urllib2.Request(url)
+                opener = urllib2.build_opener()
+                f = opener.open(req)
             
-        if line.count('BytesSubmitted=')>0:
-            si=line.split()[0].split("=")[1]
-            print si
-            if si==fsize:
-                success=1
+            if line.count('BytesSubmitted=')>0:
+                si=line.split()[0].split("=")[1]
+                print si
+                if si==fsize:
+                    success=1
 
