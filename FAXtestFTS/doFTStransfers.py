@@ -125,6 +125,7 @@ while (True):
     endpoint=""
     if source not in Sites:
         print "site:",source, "not federated."
+        continue
     else:
         if Sites[source].direct==5:
             endpoint=Sites[source].getEndpoint()
