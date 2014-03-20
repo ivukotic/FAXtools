@@ -131,7 +131,7 @@ while (True):
         else:
             print "site:",source,"in red, ATM."
             
-    com = Command('/usr/bin/time -f "real: %e" -a -o -np "logfile.txt" xrdcopy -d 1 -f -S 4 '+endpoint+'//atlas/rucio/'+ fn + ' /dev/null &> logfile.txt ')
+    com = Command('/usr/bin/time -f "real: %e" -a -o -np "logfile.txt" xrdcopy -d 1 -f  '+endpoint+'//atlas/rucio/'+ fn + ' /dev/null &> logfile.txt ')
     com.run(timeout)
 
     success=0
