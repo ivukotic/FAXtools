@@ -122,6 +122,9 @@ while (True):
     source=v[3]
 
     if source=='BNL-OSG2': source='BNL-ATLAS'
+    if source=='SLACXRD':  source='WT2'
+    if source=='NET2':     source='BU_ATLAS_Tier2'
+    if source=='MWT2_UC':  source='MWT2'
 
     if tid=='null': break
     
