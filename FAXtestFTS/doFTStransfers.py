@@ -8,7 +8,7 @@ try: import simplejson as json
 except ImportError: import json
 
 debug=1
-SRC = 'ANY' # or 'ANY'
+SRC = 'BNL-OSG2' # or 'ANY'
 DST = 'MWT2'
 timeout=3600
 
@@ -121,6 +121,8 @@ while (True):
     fsize=v[2]
     source=v[3]
 
+    if source=='BNL-OSG2': source='BNL-ATLAS'
+
     if tid=='null': break
     
     endpoint=""
@@ -133,7 +135,7 @@ while (True):
         else:
             print "site:",source,"in red, ATM."
             
-    #com = Command('/usr/bin/time -f "real: %e" -a -o "logfile.txt" xrdcopy  -np -d 1 -f '+endpoint+'//atlas/rucio/'+ fn + ' /dev/null &> logfile.txt ')
+    #com = Command('/usr/bin/time -f "real: %e" -a -o "logfile.txt" xrdcopy  -np -d 1 -f -S 4 '+endpoint+'//atlas/rucio/'+ fn + ' /dev/null &> logfile.txt ')
     com = Command('/usr/bin/time -f "real: %e" -a -o "logfile.txt" xrdcp  -np -d 1 -f '+endpoint+'//atlas/rucio/'+ fn + ' /dev/null &> logfile.txt ')
     com.run(timeout)
 
