@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import subprocess, threading, os, sys, time
 import stomp, logging, datetime, ConfigParser, random
-import urllib2
+import urllib, urllib2
 
 try: import simplejson as json
 except ImportError: import json
@@ -60,7 +60,7 @@ class site:
     delay=0
     monitor=0
     comm1=''
-     
+    
     def __init__(self, fn, na, ho, re):
         if na=='GRIF':
             na=fn
@@ -76,7 +76,7 @@ class site:
         print '------------------------------------\nfullname:',self.fullname
         print 'redirector:', self.redirector, '\tname:', self.name, '\thost:', self.host
         print 'responds:', self.direct, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t security:', self.security, '\t delay:', self.delay, '\t monitored:', self.monitor
-        
+    
     def status(self):
        s=0
        # s=s|(self.rucio<<5)
@@ -290,46 +290,6 @@ for s in sites:
         print 'OK'
                 
                 
-# print "================================= CHECK RUCIO =================================================="
-#     
-# with open('checkRucio.sh', 'w') as f: # first check that site itself gives it's own file
-#     for s in sites:
-#         logfile='rucio_'+s.name+logpostfix
-#         lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
-#         s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+redstring+logfile+' & \n'
-#         f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
-#         f.write('echo "========================================================================" >> ' + logfile + '\n')
-#         f.write(s.comm1)
-#     f.close()
-# 
-# #sys.exit(0)
-# print 'executing all of the xrdcps in parallel. 1 min timeout.'
-# com = Command("source " + workingDir + "checkRucio.sh")    
-# com.run(58)
-# time.sleep(60)
-# 
-# print 'checking log files'
-# 
-# # checking which sites gave their own file directly
-# for s in sites:  # this is file to be asked for
-#     logfile='rucio_'+s.name+logpostfix
-#     with open(logfile, 'r') as f:
-#         lines=f.readlines()
-#         succ=False
-#         for l in lines:
-#             # print l
-#             if l.count(OKmessage)>0:
-#                 succ=True
-#                 break
-#         if succ==True:
-#             print logfile, "works"
-#             s.rucio=1
-#         else:
-#             print logfile, "problem"
-#             
-# for s in sites: s.prnt(0)  #print only real sites
-# 
-# #sys.exit(0)
 
 print "================================= CHECK DELAYS ================================================"
 
@@ -596,3 +556,9 @@ with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiRedirecto
         print "Unexpected error:", sys.exc_info()[0]
     fi.close()
 
+print '-------------------------------- Writing to GAE -------------------------------------------'
+
+for s in sites:
+    data = dict(epName=s.name, epStatus=str(s.status()), epAddress=s.host)
+    u = urllib2.urlopen('http://1-dot-waniotest.appspot.com/wanio', urllib.urlencode(data))
+    print u.read(), u.code
