@@ -337,8 +337,7 @@ with open('checkRedirectorDownstream.sh', 'w') as f:
         thereIsUnderlayingWorkingSite=False
         for s in sites:
             if s.direct==0: continue
-            if s.redirector==r.address or r.name=='XROOTD_glrd' or r.name=='XROOTD_atlas-xrd-eu':
-                # lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
+            if s.redirector==r.address or r.name=='XROOTD_atlas-xrd-us' or r.name=='XROOTD_atlas-xrd-eu':
                 lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
                 comm='xrdcp -f -np -d 1 root://'+r.address+lookingFor+redstring+logfile+' & \n'
                 f.write('echo "command executed:\n ' + comm + '" >> ' + logfile + '\n')
@@ -359,7 +358,6 @@ time.sleep(sleeps)
 
 print 'checking log files'
 
-# checking sites delays
 for r in redirectors:
     if r.status&1: continue
     logfile='checkRedirectorDownstream_'+r.name.upper()+logpostfix
@@ -388,8 +386,7 @@ with open('checkRedirectorUpstream.sh', 'w') as f:
         thereIsOverlayingWorkingSite=False
         for s in sites:
             if s.direct==0: continue
-            if s.redirector==r.address or r.name=='XROOTD_glrd' or r.name=='XROOTD_atlas-xrd-eu':
-                # lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
+            if s.redirector!=r.address or r.name=='XROOTD_atlas-xrd-us' or r.name=='XROOTD_atlas-xrd-eu':
                 lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
                 comm='xrdcp -f -np -d 1 root://'+r.address+lookingFor+redstring+logfile+' & \n'
                 f.write('echo "command executed:\n ' + comm + '" >> ' + logfile + '\n')
@@ -409,8 +406,6 @@ time.sleep(sleeps)
 
 
 print 'checking log files'
-
-# checking sites delays
 for r in redirectors:
     if r.status&1: continue
     logfile='checkRedirectorUpstream_'+r.name.upper()+logpostfix
