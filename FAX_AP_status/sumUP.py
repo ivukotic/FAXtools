@@ -116,15 +116,16 @@ print 'faxSize ' , faxSize, float(faxSize)/totSize*100,"%"
 print 'totFiles' , totFiles
 print 'faxFiles' , faxFiles, float(faxFiles)/totFiles*100 ,"%"
 
-f = open('coverage.log', 'w')
-f.write('%TABLE{name="Table1"}%')
-f.write('|   | Sites | Files | Size [TB] |')
-f.write('| FAX | '+str(faxSites)+' | '+str(faxFiles)+' | '+str(faxSize)+' |')
-f.write('| Total | '+str(totSites)+' | '+str(totFiles)+' | '+str(totSize)+' |')
-f.write('| Coverage | '+str(round(faxSites/totSites*100))+' | '+str(round(faxFiles/totFiles*100))+' | '+str(round(faxSize/totSize*100))+' |')
-f.write('')
-f.write("""%CHART{name="bar1" table="Table1" type="bar" data="R4:C2..R4:C4" xaxis="R1:C2..R1:C4" legend="R4:C1" width="225" height="200" ymin="0" ymax="100" yaxis="on"}% """ )
-f.close()
+print '--------------------------------- Writing output for twiki ----------------------------'
+with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/coverage.log', 'w') as f:
+    f.write('%TABLE{name="Table1"}%')
+    f.write('|   | Sites | Files | Size [TB] |')
+    f.write('| FAX | '+str(faxSites)+' | '+str(faxFiles)+' | '+str(faxSize)+' |')
+    f.write('| Total | '+str(totSites)+' | '+str(totFiles)+' | '+str(totSize)+' |')
+    f.write('| Coverage | '+str(round(faxSites/totSites*100))+' | '+str(round(faxFiles/totFiles*100))+' | '+str(round(faxSize/totSize*100))+' |')
+    f.write('')
+    f.write("""%CHART{name="bar1" table="Table1" type="bar" data="R4:C2..R4:C4" xaxis="R1:C2..R1:C4" legend="R4:C1" width="225" height="200" ymin="0" ymax="100" yaxis="on"}% """ )
+    f.close()
 
 	  
 
