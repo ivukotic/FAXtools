@@ -2,6 +2,7 @@
 import subprocess, threading, os, sys, time
 import stomp, logging, datetime, ConfigParser, random
 import urllib, urllib2
+from random import shuffle
 
 try: import simplejson as json
 except ImportError: import json
@@ -337,7 +338,9 @@ with open('checkRedirectorDownstream.sh', 'w') as f:
         thereIsUnderlayingWorkingSite=False
         for s in sites:
             if s.direct==0: continue
-            if s.redirector==r.address or r.name=='XROOTD_atlas-xrd-us' or r.name=='XROOTD_atlas-xrd-eu':
+            if s.redirector==r.address \
+               or (r.name=='XROOTD_atlas-xrd-us' and s.redirector.count('usatlas')>0) \
+               or (r.name=='XROOTD_atlas-xrd-eu' and s.redirector.count('cern.ch')>0):
                 lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
                 comm='xrdcp -f -np -d 1 root://'+r.address+lookingFor+redstring+logfile+' & \n'
                 f.write('echo "command executed:\n ' + comm + '" >> ' + logfile + '\n')
@@ -384,9 +387,11 @@ with open('checkRedirectorUpstream.sh', 'w') as f:
     for r in redirectors:
         logfile='checkRedirectorUpstream_'+r.name.upper()+logpostfix
         thereIsOverlayingWorkingSite=False
-        for s in sites:
+        rsites=sites
+        shuffle(rsites)
+        for s in rsites:
             if s.direct==0: continue
-            if s.redirector!=r.address or r.name=='XROOTD_atlas-xrd-us' or r.name=='XROOTD_atlas-xrd-eu':
+            if ( s.redirector.count('usatlas')!=r.address.count('usatlas') ):
                 lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
                 comm='xrdcp -f -np -d 1 root://'+r.address+lookingFor+redstring+logfile+' & \n'
                 f.write('echo "command executed:\n ' + comm + '" >> ' + logfile + '\n')
