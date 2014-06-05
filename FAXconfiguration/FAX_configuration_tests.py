@@ -337,7 +337,7 @@ with open('checkRedirectorDownstream.sh', 'w') as f:
         logfile='checkRedirectorDownstream_'+r.name.upper()+logpostfix
         thereIsUnderlayingWorkingSite=False
         for s in sites:
-            if s.direct==0: continue
+            if s.direct==0 or s.downstream==1: continue
             if s.redirector==r.address \
                or (r.name=='XROOTD_atlas-xrd-us' and s.redirector.count('usatlas')>0) \
                or (r.name=='XROOTD_atlas-xrd-eu' and s.redirector.count('cern.ch')>0):
@@ -390,7 +390,7 @@ with open('checkRedirectorUpstream.sh', 'w') as f:
         rsites=sites
         shuffle(rsites)
         for s in rsites:
-            if s.direct==0: continue
+            if s.direct==0 or s.downstream==0: continue
             if ( s.redirector.count('usatlas')!=r.address.count('usatlas') ):
                 lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
                 comm='xrdcp -f -np -d 1 root://'+r.address+lookingFor+redstring+logfile+' & \n'
@@ -560,5 +560,10 @@ print '-------------------------------- Writing to GAE -------------------------
 
 for s in sites:
     data = dict(epName=s.name, epStatus=str(s.status()), epAddress=s.host)
+    u = urllib2.urlopen('http://1-dot-waniotest.appspot.com/wanio', urllib.urlencode(data))
+    print u.read(), u.code
+    
+for r in redirectors:
+    data = dict(reName=r.name, reStatus=str(r.status()), reAddress=r.address)
     u = urllib2.urlopen('http://1-dot-waniotest.appspot.com/wanio', urllib.urlencode(data))
     print u.read(), u.code
