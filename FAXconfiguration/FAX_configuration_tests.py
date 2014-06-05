@@ -564,6 +564,6 @@ for s in sites:
     print u.read(), u.code
     
 for r in redirectors:
-    data = dict(reName=r.name, reStatus=str(r.status()), reAddress=r.address)
+    data = dict(reName=r.name, reStatus=str(r.status), reAddress=r.address)
     u = urllib2.urlopen('http://1-dot-waniotest.appspot.com/wanio', urllib.urlencode(data))
     print u.read(), u.code
