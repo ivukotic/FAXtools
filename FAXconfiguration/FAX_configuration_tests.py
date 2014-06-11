@@ -332,7 +332,7 @@ with open('checkRedirectorDownstream.sh', 'w') as f:
         logfile='checkRedirectorDownstream_'+r.name.upper()+logpostfix
         thereIsUnderlayingWorkingSite=False
         for s in sites:
-            if s.direct==0 or s.downstream==1: continue
+            if s.direct==0 or s.downstream==0: continue
             if s.redirector==r.address \
                or (r.name=='XROOTD_atlas-xrd-us' and s.redirector.count('usatlas')>0) \
                or (r.name=='XROOTD_atlas-xrd-eu' and s.redirector.count('cern.ch')>0):
@@ -345,6 +345,7 @@ with open('checkRedirectorDownstream.sh', 'w') as f:
                 break
         if not thereIsUnderlayingWorkingSite:
             r.status|=1 # can not check downstream
+            print 'Will not be checking downstream redirection to:',r.name
     f.close()
 
 #sys.exit(0)
