@@ -161,15 +161,12 @@ for s in sites: s.prnt(-1) # print all
 print 'creating scripts to execute'
     
 
-
-oldgLFNpref='//atlas/dq2/user/ivukotic/xrootd/'
 dsNAMEpref='user.ivukotic.xrootd.'
 fnNAMEpref='/user.ivukotic.xrootd.'
 workingDir='/afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/'
 OKmessage='Read: Hole in the cache: offs=0, len=1048576'
 ts=datetime.datetime.now()
 logpostfix=ts.strftime("_%Y-%m-%dT%H%M")+'.log'
-# redstring=' - > /dev/null 2>>'
 redstring=' - 2>&1 >/dev/null | cat >'
 
 print "================================= CHECK DIRECT =================================================="
@@ -177,7 +174,6 @@ print "================================= CHECK DIRECT ==========================
 with open('checkDirect.sh', 'w') as f: # first check that site itself gives it's own file
     for s in sites:
         logfile=s.name+'_to_'+s.name+logpostfix
-        # lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
         lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
         s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+redstring+logfile+' & \n'
         f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
@@ -298,7 +294,6 @@ with open('checkDelays.sh', 'w') as f:
     for s in sites:
         if s.direct==0: continue
         logfile='checkDelays_'+s.name+logpostfix
-        # lookingFor = oldgLFNpref+dsNAMEpref+s.lname+fnNAMEpref+s.lname # +'-'+str(random.randint(0,100000))
         lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-10M'
         s.comm1='/usr/bin/time -f"real: %e" xrdfs '+s.host.replace('root://','')+' locate -r '+lookingFor+' 2>>'+logfile+' & \n'
         f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
