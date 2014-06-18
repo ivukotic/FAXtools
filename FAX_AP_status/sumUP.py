@@ -128,4 +128,11 @@ with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/coverage.log',
     f.close()
 
 	  
-
+for si in sites:
+    s=sites[si]
+    if s.tier==3 and s.fax==0: 
+        continue
+    if s.tier==4: 
+        continue
+    if s.fax==0 and (s.files+0.1)/totFiles*100>.50:
+        print si, str((s.files+0.1)/totFiles*100), s.prnt()
