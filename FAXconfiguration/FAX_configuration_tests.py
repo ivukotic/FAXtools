@@ -166,7 +166,7 @@ fnNAMEpref='/user.ivukotic.xrootd.'
 workingDir='/afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/'
 OKmessage='Read: Hole in the cache: offs=0, len=1048576'
 ts=datetime.datetime.now()
-logpostfix=ts.strftime("_%Y-%m-%dT%H%M")+'.log'
+logpostfix=ts.strftime("_%Y-%m-%dT%H00")+'.log'
 redstring=' - 2>&1 >/dev/null | cat >'
 
 print "================================= CHECK DIRECT =================================================="
