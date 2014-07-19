@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import subprocess, threading
-import os, sys, time
+import os, sys, time, datetime
 
 try: 
 	import simplejson as json
@@ -165,6 +165,7 @@ with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiSitesStat
     f.write('| *name* | *address* | *version* | *site* |\n')
     for s in sites:
         f.write('| '+s.name+' | '+s.host+' | '+s.version+ ' | '+s.site+ '|\n')
+    f.write("last update: "+datetime.datetime.utcnow().strftime("%A, %d. %B %Y %I:%M%p"))
     f.close()
 
 
@@ -176,5 +177,6 @@ with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiRedirecto
             fi.write('| '+r.name+' | '+r.address+' | '+r.version+ ' | '+r.site+ '|\n')
     except:
         print "Unexpected error:", sys.exc_info()[0]
+    fi.write("last update: "+datetime.datetime.utcnow().strftime("%A, %d. %B %Y %I:%M%p"))
     fi.close()
     
