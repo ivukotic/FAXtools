@@ -94,7 +94,7 @@ class redirector:
         self.address=address
         self.upstream=False
         self.downstream=False
-        self.status=0
+        self.status=0 # b001 - can not check, b010-no downstream, b1x0-no downstream 
     def prnt(self):
         print 'redirector: ', self.name, '\taddress: ', self.address, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t status:', self.status
 
@@ -531,6 +531,7 @@ with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiSites.log
         else:
             lin+='| %ICON{led-green}% | '
         f.write(lin+s.name+' | '+s.host+' |\n')
+    f.write("last update: "+datetime.datetime.utcnow().strftime("%A, %d. %B %Y %I:%M%p"))
     f.close()
 
 
@@ -550,6 +551,7 @@ with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiRedirecto
         print "got FAX redirectors from AGIS."
     except:
         print "Unexpected error:", sys.exc_info()[0]
+    fi.write("last update: "+datetime.datetime.utcnow().strftime("%A, %d. %B %Y %I:%M%p"))
     fi.close()
 
 print '-------------------------------- Writing to GAE -------------------------------------------'
