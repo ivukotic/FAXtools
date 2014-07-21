@@ -41,8 +41,16 @@ def sendRed (message):
        conn.disconnect()
     except Exception:
         'Exception on disconnect'
-
-
+def isMsgOK(l):
+    if l.count('[SUCCESS]')==0: return False
+    if l.count('Close returned from')==0: return False
+    return True
+def findRedirection(l):
+    if l.count('Creating new channel to:')==0: return ''
+    w = l.split('Creating new channel to:')
+    r=w[1].split()
+    return r[0]
+    
 timeouts=300
 sleeps=250
 
@@ -164,7 +172,7 @@ print 'creating scripts to execute'
 dsNAMEpref='user.ivukotic.xrootd.'
 fnNAMEpref='/user.ivukotic.xrootd.'
 workingDir='/afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/'
-OKmessage='Read: Hole in the cache: offs=0, len=1048576'
+cpcomm='xrdcp -d 2 -f -np '
 ts=datetime.datetime.now()
 logpostfix=ts.strftime("_%Y-%m-%dT%H00")+'.log'
 redstring=' - 2>&1 >/dev/null | cat >'
@@ -175,7 +183,7 @@ with open('checkDirect.sh', 'w') as f: # first check that site itself gives it's
     for s in sites:
         logfile=s.name+'_to_'+s.name+logpostfix
         lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
-        s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+redstring+logfile+' & \n'
+        s.comm1 = cpcomm + s.host + lookingFor + redstring + logfile + ' & \n'
         f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
         f.write('echo "========================================================================" >> ' + logfile + '\n')
         f.write(s.comm1)
@@ -198,7 +206,7 @@ for s in sites:  # this is file to be asked for
         succ=False
         for l in lines:
             # print l
-            if l.count(OKmessage)>0:
+            if isMsgOK(l):
                 succ=True
                 break
         if succ==True:
@@ -218,7 +226,7 @@ with open('checkUpstream.sh', 'w') as f: # ask good sites for unexisting file
         if s.direct==0: continue
         logfile='upstreamFrom_'+s.name+logpostfix
         lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'unexisting-1M'
-        comm='xrdcp -f -np -d 1 '+s.host+lookingFor+redstring+logfile+' & \n'
+        comm = cpcomm + s.host + lookingFor + redstring + logfile + ' & \n'
         f.write('echo "command executed:\n ' + comm + '" >> ' + logfile + '\n')
         f.write('echo "========================================================================" >> ' + logfile + '\n')
         f.write(comm)            
@@ -238,9 +246,8 @@ for s in sites:
         lines=f.readlines()        
         reds=[]
         for l in lines:
-            if l.count("Received redirection")>0:
-                red=l[l.find("[")+1 : l.find("]")]
-                reds.append(red.split(':')[0])
+            red=findRedirection(l)
+            if red!='': reds.append(red.split(':')[0])
         print 'redirections:',reds
         if s.redirector.split(':')[0]  in reds:
             s.upstream=1
@@ -257,7 +264,7 @@ with open('checkDownstream.sh', 'w') as f: # ask global redirectors for files be
         if s.direct==0: continue
         logfile='downstreamTo_'+s.name+logpostfix
         lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
-        comm='xrdcp -f -np -d 1 root://'+s.redirector+lookingFor+redstring+logfile+' & \n'
+        comm = cpcomm + ' root://'+s.redirector + lookingFor + redstring + logfile + ' & \n'
         f.write('echo "command executed:\n ' + comm + '" >> ' + logfile + '\n')
         f.write('echo "========================================================================" >> ' + logfile + '\n')
         f.write(comm)            
@@ -277,7 +284,7 @@ for s in sites:
         succ=False
         reds=[]
         for l in lines:
-            if l.count(OKmessage)>0:
+            if isMsgOK(l):
                 succ=True
                 s.downstream=1
         if succ==False: 
@@ -337,7 +344,7 @@ with open('checkRedirectorDownstream.sh', 'w') as f:
                or (r.name=='XROOTD_atlas-xrd-us' and s.redirector.count('usatlas')>0) \
                or (r.name=='XROOTD_atlas-xrd-eu' and s.redirector.count('cern.ch')>0):
                 lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
-                comm='xrdcp -f -np -d 1 root://'+r.address+lookingFor+redstring+logfile+' & \n'
+                comm = cpcomm + ' root://'+r.address+lookingFor+redstring+logfile+' & \n'
                 f.write('echo "command executed:\n ' + comm + '" >> ' + logfile + '\n')
                 f.write('echo "========================================================================" >> ' + logfile + '\n')
                 f.write(comm)
@@ -365,7 +372,7 @@ for r in redirectors:
         lines=f.readlines()
         succ=False
         for l in lines:
-            if l.count(OKmessage)>0:
+            if isMsgOK(l):
                 succ=True
                 r.downstream=True
         if succ==False: 
@@ -389,7 +396,7 @@ with open('checkRedirectorUpstream.sh', 'w') as f:
             if s.direct==0 or s.downstream==0: continue
             if ( s.redirector.count('usatlas')!=r.address.count('usatlas') ):
                 lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
-                comm='xrdcp -f -np -d 1 root://'+r.address+lookingFor+redstring+logfile+' & \n'
+                comm = cpcomm + ' root://'+r.address+lookingFor+redstring+logfile+' & \n'
                 f.write('echo "command executed:\n ' + comm + '" >> ' + logfile + '\n')
                 f.write('echo "========================================================================" >> ' + logfile + '\n')
                 f.write(comm)
@@ -415,7 +422,7 @@ for r in redirectors:
         lines=f.readlines()
         succ=False
         for l in lines:
-            if l.count(OKmessage)>0:
+            if isMsgOK(l):
                 succ=True
                 r.upstream=True
         if succ==False: 
@@ -437,7 +444,7 @@ with open('checkSecurity.sh', 'w') as f:
         logfile='checkSecurity_'+s.name+logpostfix
         # lookingFor = dsNAMEpref+s.lname+fnNAMEpref+s.lname+'-1M'
         lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
-        s.comm1='xrdcp -f -np -d 1 '+s.host+lookingFor+redstring+logfile+' & \n'
+        s.comm1 = cpcomm + s.host+lookingFor+redstring+logfile+' & \n'
         f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
         f.write('echo "========================================================================" >> ' + logfile + '\n')
         f.write(s.comm1)
