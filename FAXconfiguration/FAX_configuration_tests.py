@@ -468,7 +468,7 @@ for s in sites:  # this is file to be asked for
         succ=False
         for l in lines:
             # print l
-            if l.count(OKmessage)>0:
+            if isMsgOK(l):
                 succ=True
                 break
         if succ==True:
