@@ -108,8 +108,6 @@ class redirector:
 
 print 'Geting site list from AGIS...' 
 
-
-
 try:
     req = urllib2.Request("http://atlas-agis-api.cern.ch/request/service/query/get_se_services/?json&state=ACTIVE&flavour=XROOTD", None)
     opener = urllib2.build_opener()
@@ -173,7 +171,7 @@ dsNAMEpref='user.ivukotic.xrootd.'
 fnNAMEpref='/user.ivukotic.xrootd.'
 workingDir='/afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/'
 cpcomm='xrdcp -d 2 -f -np '
-ts=datetime.datetime.now()
+ts=datetime.datetime.utcnow()
 logpostfix=ts.strftime("_%Y-%m-%dT%H00")+'.log'
 redstring=' - 2>&1 >/dev/null | cat >'
 
@@ -486,7 +484,7 @@ for s in sites: s.prnt(0)  #print only real sites
 print "================================= CHECK MONITORING =================================================="
     
 print 'Geting info from Dashboard ...' 
-ts1=datetime.datetime.now()
+ts1=datetime.datetime.utcnow()
 ts1=ts1.replace(microsecond=0)
 ts1=ts1.replace(second=0)
 fr=str(ts1-datetime.timedelta(0,5*3600)).replace(" ","+").replace(":","%3A")
