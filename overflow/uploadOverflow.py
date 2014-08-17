@@ -5,6 +5,9 @@ import urllib2, urllib
 try: import simplejson as json
 except ImportError: import json
 
+print '-----------------------STARTING--------------'
+print datetime.datetime.now()
+
 headers={ 'Content-Type': 'application/json' }
 
 try:
@@ -15,9 +18,11 @@ try:
     f.close()
     cleaned=[]
     for j in res:
+        if j['jobstatus']=='cancelled': continue
         if j['jobstatus']=='activated': continue
         if j['jobstatus']=='running': continue
         if j['jobstatus']=='holding': continue
+        if j['jobstatus']=='defined': continue
         print j['pandaid'],j['jeditaskid'], j['jobstatus'],j['currentpriority'], j['computingsite'],j['produsername'],j['creationtime'],j['waittime'],j['starttime'],j['duration'],j['cpuconsumptiontime']
         jo=[j['pandaid'],j['jeditaskid'], j['jobstatus'],j['currentpriority'], j['computingsite'],j['produsername'],j['creationtime'],j['waittime'],j['starttime'],j['duration'],j['cpuconsumptiontime']]
         cleaned.append(jo)
