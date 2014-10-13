@@ -5,7 +5,10 @@ export LD_LIBRARY_PATH="/afs/cern.ch/sw/lcg/external/Python/2.6.5/x86_64-slc5-gc
 
 source /afs/cern.ch/user/a/agis/public/AGISClient/latest/setup.py26.sh
 
-cd /data/adcmusr3/
-python  collectFAXtopology.py
+cd ~/FAXtools/adcmusr3/
+python collectFAXtopology.py
 
+python collectFAXredirectors.py
+
+python generateInstantMails.py
 
