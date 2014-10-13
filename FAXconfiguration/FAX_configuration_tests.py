@@ -563,10 +563,10 @@ print '-------------------------------- Writing to GAE -------------------------
 
 for s in sites:
     data = dict(epName=s.name, epStatus=str(s.status()), epAddress=s.host)
-    u = urllib2.urlopen('http://1-dot-waniotest.appspot.com/wanio', urllib.urlencode(data))
+    u = urllib2.urlopen('http://waniotest.appspot.com/wanio', urllib.urlencode(data))
     print u.read(), u.code
     
 for r in redirectors:
     data = dict(reName=r.name, reStatus=str(r.status), reAddress=r.address)
-    u = urllib2.urlopen('http://1-dot-waniotest.appspot.com/wanio', urllib.urlencode(data))
+    u = urllib2.urlopen('http://waniotest.appspot.com/wanio', urllib.urlencode(data))
     print u.read(), u.code
