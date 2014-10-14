@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import os,sys time, datetime
+import os,sys, time, datetime
 import urllib, urllib2
 
 try: import simplejson as json
@@ -19,7 +19,7 @@ for i in downtimes_ongoing:
                print "Affected site:", i, afs
                downed.add(i)
 
-json_data = json.dumps(downed)
+json_data = json.dumps(list(downed))
 print json_data
 
 try:
