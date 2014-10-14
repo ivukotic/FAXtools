@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-import sys
-import time, datetime
-import json
-import socket
+import os,sys time, datetime
 import urllib, urllib2
+
+try: import simplejson as json
+except ImportError: import json
 
 from agisconf import agis
 
@@ -19,5 +19,17 @@ for i in downtimes_ongoing:
                print "Affected site:", i, afs
                downed.add(i)
 
+json_data = json.dumps(downed)
+print json_data
 
+try:
+    req = urllib2.Request("http://waniotest.appspot.com/OfflineInfo",json_data,{ 'Content-Type': 'application/json' })
+    opener = urllib2.build_opener()
+    f = opener.open(req,timeout=50)
+    res=f.read()
+    print res
+    f.close()
+except:
+    print "# Can't upload to GAE", sys.exc_info()[0]
+    
 print 'done'
