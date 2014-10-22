@@ -161,8 +161,8 @@ for sn,s in Sites.items():
 if totFailedDirect>25 or totFailedUp>25 or totFailedDown>25:
 	print "XXXXXXXXXXXXXXXX PROBLEM XXXXXXXXXXXXXXXXXX"
 	print "X    A LARGE NUMBER OF FAILED TESTS       X"
-        print "X    RECHECK MANUALY.                     X"
-        print "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    print "X    RECHECK MANUALY.                     X"
+    print "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 	sys.exit(1)
 
 

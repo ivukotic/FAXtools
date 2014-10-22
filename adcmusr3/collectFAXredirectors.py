@@ -11,7 +11,7 @@ from datetime import datetime
 global messages
 messages=[]
 
-hostalias='dashb-test-mb.cern.ch'
+hostalias='dashb-mb.cern.ch'
 s=socket.gethostbyname_ex(hostalias)
 print 'aliases: ', s[2]
 allhosts=[]
@@ -41,7 +41,7 @@ class site:
 for host in allhosts:
 # Connect to the stompserver, listen to the queue for 2 seconds, print the messages and disconnect
     try:
-        conn = stomp.Connection(host, use_ssl=True, ssl_key_file='/etc/grid-security/hostkey.pem', ssl_cert_file='/etc/grid-security/hostcert.pem')
+        conn = stomp.Connection(host, use_ssl=True, ssl_key_file='/afs/cern.ch/user/a/adcmusr3/.globus/Request2014/hostkey.pem', ssl_cert_file='/afs/cern.ch/user/a/adcmusr3/.globus/Request2014/hostcert.pem')
         conn.set_listener('MyConsumer', MyListener())
         conn.start()
         conn.connect()
