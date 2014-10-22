@@ -7,8 +7,8 @@ localSetupAGIS
 
 
 cd ~/FAXtools/adcmusr3/
-python collectFAXtopology.py /data/www/FAX/
+python collectFAXtopology.py /data/www/FAX
 
-python collectFAXredirectors.py /data/www/FAX/
+python collectFAXredirectors.py /data/www/FAX
 
-python generateInstantMails.py /data/www/FAX/
+python generateInstantMails.py /data/www/FAX

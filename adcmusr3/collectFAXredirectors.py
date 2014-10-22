@@ -73,7 +73,7 @@ print 'writing red_address.json'
 #site=' http://athena-infoioperformance.web.cern.ch/athena-infoIOperformance/logs/FAXconfiguration/'
 site=' http://www.mwt2.org/ssb/'
 
-f1 = open(outputdir+'red_address.json','w')
+f1 = open(outputdir+'/red_address.json','w')
 for s in sites:
     js=s.times+' '+s.name+' '+s.address
     if s.status&1: 
@@ -86,7 +86,7 @@ f1.close()
 
 print 'writing red_upstream.json'
 
-f2 = open(outputdir+'red_upstream.json','w')
+f2 = open(outputdir+'/red_upstream.json','w')
 for s in sites:
     js=s.times+' '+s.name
     log='checkRedirectorUpstream_'+s.name
@@ -99,7 +99,7 @@ f2.close()
 
 print 'writing red_downstream.json'
    
-f3 = open(outputdir+'red_downstream.json','w')
+f3 = open(outputdir+'/red_downstream.json','w')
 for s in sites:
     js=s.times+' '+s.name
     log='checkRedirectorDownstream_'+s.name
@@ -131,7 +131,7 @@ for s in sites:
                 content[cloud]=[]   
             content[cloud].append({si.name:msg})
 
-f6 = open(outputdir+'red_mailing.json','w')
+f6 = open(outputdir+'/red_mailing.json','w')
 f6.write(json.dumps(content))
 f6.close()
 
