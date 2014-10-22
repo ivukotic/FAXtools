@@ -1,9 +1,10 @@
 #!/bin/sh
 
-export PATH="/afs/cern.ch/sw/lcg/external/Python/2.6.5/x86_64-slc5-gcc43-opt/bin:$PATH"
-export LD_LIBRARY_PATH="/afs/cern.ch/sw/lcg/external/Python/2.6.5/x86_64-slc5-gcc43-opt/lib:$LD_LIBRARY_PATH"
+export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
+source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh
+export RUCIO_ACCOUNT=adcmusr3
+localSetupAGIS
 
-source /afs/cern.ch/user/a/agis/public/AGISClient/latest/setup.py26.sh
 
 cd ~/FAXtools/adcmusr3/
 python collectFAXtopology.py
@@ -11,4 +12,3 @@ python collectFAXtopology.py
 python collectFAXredirectors.py
 
 python generateInstantMails.py
-

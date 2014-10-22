@@ -4,7 +4,7 @@ import stomp
 import time, datetime
 import json
 import socket
-import urllib, urllib2
+#import urllib, urllib2
 
 from agisconf import agis
 
@@ -23,7 +23,7 @@ for i in downtimes_ongoing:
 global messages
 messages=[]
 
-hostalias='dashb-test-mb.cern.ch'
+hostalias='dashb-mb.cern.ch'
 s=socket.gethostbyname_ex(hostalias)
 print 'aliases: ', s[2]
 allhosts=[]
@@ -53,7 +53,7 @@ class site:
 for host in allhosts:
 # Connect to the stompserver, listen to the queue for 2 seconds, print the messages and disconnect
     try:                                                                                                                                                                                                                                        
-        conn = stomp.Connection(host, use_ssl=True, ssl_key_file='/etc/grid-security/hostkey.pem', ssl_cert_file='/etc/grid-security/hostcert.pem')
+        conn = stomp.Connection(host, use_ssl=True, ssl_key_file='/afs/cern.ch/user/a/adcmusr3/.globus/Request2014/hostkey.pem', ssl_cert_file='/afs/cern.ch/user/a/adcmusr3/.globus/Request2014/hostcert.pem')
         conn.set_listener('MyConsumer', MyListener())
         conn.start()
         conn.connect()
@@ -79,12 +79,11 @@ for host in allhosts:
                 s.status=999
             sites.append(s)        
 
-print 'writing direct.json'
+print 'writing direct.data'
 
-#site=' http://athena-infoioperformance.web.cern.ch/athena-infoIOperformance/logs/FAXconfiguration/'
 site=' http://www.mwt2.org/ssb/'
 
-f1 = open('direct.json','w')
+f1 = open('direct.data','w')
 for s in sites:
     js=s.times+' '+s.name
     log=s.name+'_to_'+s.name
@@ -95,9 +94,9 @@ for s in sites:
     f1.write(js)
 f1.close()        
 
-print 'writing upstream.json'
+print 'writing upstream.data'
 
-f2 = open('upstream.json','w')
+f2 = open('upstream.data','w')
 for s in sites:
     js=s.times+' '+s.name
     log='upstreamFrom_'+s.name
@@ -108,9 +107,9 @@ for s in sites:
     f2.write(js)
 f2.close()
 
-print 'writing downstream.json'
+print 'writing downstream.data'
    
-f3 = open('downstream.json','w')
+f3 = open('downstream.data','w')
 for s in sites:
     js=s.times+' '+s.name
     log='downstreamTo_'+s.name
@@ -121,9 +120,9 @@ for s in sites:
     f3.write(js)
 f3.close()
 
-print 'writing rucio.json'
+print 'writing rucio.data'
 
-f11 = open('rucio.json','w')
+f11 = open('rucio.data','w')
 for s in sites:
     js=s.times+' '+s.name
     log='rucio_'+s.name
@@ -135,9 +134,9 @@ for s in sites:
 f11.close()
 
 
-print 'writing security.json'
+print 'writing security.data'
 
-f4 = open('security.json','w')
+f4 = open('security.data','w')
 for s in sites:
     js=s.times+' '+s.name
     log='checkSecurity_'+s.name
@@ -148,9 +147,9 @@ for s in sites:
     f4.write(js)
 f4.close()
 
-print 'writing delays.json'
+print 'writing delays.data'
 
-f5 = open('delays.json','w')
+f5 = open('delays.data','w')
 for s in sites:
     js=s.times+' '+s.name
     log='checkDelays_'+s.name
@@ -188,7 +187,7 @@ f6 = open('mailing.json','w')
 f6.write(json.dumps(content))
 f6.close()
 
-print 'writing monitoring.json'
+print 'writing monitoring.data'
 ts=datetime.datetime.now()
 ts=ts.replace(microsecond=0)
 ts=ts.replace(second=0)
@@ -196,7 +195,7 @@ fr=str(ts-datetime.timedelta(0,5*3600)).replace(" ","+").replace(":","%3A")
 to=str(ts).replace(" ","+").replace(":","%3A")
 ur=" http://dashb-atlas-xrootd-transfers.cern.ch/dashboard/request.py/test-details.json?client=voatlas106.cern.ch&from_date="+fr+"&to_date="+to
 
-f7 = open('monitoring.json','w')
+f7 = open('monitoring.data','w')
 for s in sites:
     js=s.times+' '+s.name
     sta=' On green'
