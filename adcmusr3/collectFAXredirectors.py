@@ -14,7 +14,7 @@ print 'output will be stored in:', outputdir
 global messages
 messages=[]
 
-hostalias='dashb-mb.cern.ch'
+hostalias='dashb-test-mb.cern.ch'
 s=socket.gethostbyname_ex(hostalias)
 print 'aliases: ', s[2]
 allhosts=[]
