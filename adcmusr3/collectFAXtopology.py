@@ -8,6 +8,9 @@ import socket
 
 from agisconf import agis
 
+outputdir=sys.argv[1]
+print 'output will be stored in:', outputdir
+
 # getting downed sites
 # unneded statuslist = agis.get_site_status(activity='DDMFT')
 
@@ -83,7 +86,7 @@ print 'writing direct.data'
 
 site=' http://www.mwt2.org/ssb/'
 
-f1 = open('direct.data','w')
+f1 = open(outputdir+'direct.data','w')
 for s in sites:
     js=s.times+' '+s.name
     log=s.name+'_to_'+s.name
@@ -96,7 +99,7 @@ f1.close()
 
 print 'writing upstream.data'
 
-f2 = open('upstream.data','w')
+f2 = open(outputdir+'upstream.data','w')
 for s in sites:
     js=s.times+' '+s.name
     log='upstreamFrom_'+s.name
@@ -109,7 +112,7 @@ f2.close()
 
 print 'writing downstream.data'
    
-f3 = open('downstream.data','w')
+f3 = open(outputdir+'downstream.data','w')
 for s in sites:
     js=s.times+' '+s.name
     log='downstreamTo_'+s.name
@@ -122,7 +125,7 @@ f3.close()
 
 print 'writing rucio.data'
 
-f11 = open('rucio.data','w')
+f11 = open(outputdir+'rucio.data','w')
 for s in sites:
     js=s.times+' '+s.name
     log='rucio_'+s.name
@@ -136,7 +139,7 @@ f11.close()
 
 print 'writing security.data'
 
-f4 = open('security.data','w')
+f4 = open(outputdir+'security.data','w')
 for s in sites:
     js=s.times+' '+s.name
     log='checkSecurity_'+s.name
@@ -149,7 +152,7 @@ f4.close()
 
 print 'writing delays.data'
 
-f5 = open('delays.data','w')
+f5 = open(outputdir+'delays.data','w')
 for s in sites:
     js=s.times+' '+s.name
     log='checkDelays_'+s.name
@@ -183,7 +186,7 @@ for s in sites:
                 content[cloud]=[]   
             content[cloud].append({si.name:msg})
 
-f6 = open('mailing.json','w')
+f6 = open(outputdir+'mailing.json','w')
 f6.write(json.dumps(content))
 f6.close()
 
@@ -195,7 +198,7 @@ fr=str(ts-datetime.timedelta(0,5*3600)).replace(" ","+").replace(":","%3A")
 to=str(ts).replace(" ","+").replace(":","%3A")
 ur=" http://dashb-atlas-xrootd-transfers.cern.ch/dashboard/request.py/test-details.json?client=voatlas106.cern.ch&from_date="+fr+"&to_date="+to
 
-f7 = open('monitoring.data','w')
+f7 = open(outputdir+'monitoring.data','w')
 for s in sites:
     js=s.times+' '+s.name
     sta=' On green'

@@ -7,6 +7,9 @@ except ImportError: import json
 
 import urllib2
 
+outputdir=sys.argv[1]
+print 'output will be stored in:', outputdir
+
 hours=5
 cuthours=3
 limtime=timedelta(0,cuthours*3600)
@@ -142,7 +145,7 @@ for si in data:
 
 # lastReported
 try:
-	f1 = open('LastReported.json','r')
+	f1 = open(outputdir+'LastReported.json','r')
         prev=json.load(f1)
         for c in prev:
 		#print c, prev[c]
@@ -221,14 +224,14 @@ for sn,s in Sites.items():
                 s.lastReported[2]=1
 print alljson
 
-f1 = open('LastReported.json','w')
+f1 = open(outputdir+'LastReported.json','w')
 towrite=dict()
 for s in Sites.values():
 	towrite[s.name]=s.lastReported 
 f1.write(json.dumps(towrite))
 f1.close()
 
-f1 = open('InstantMailing.json','w')
+f1 = open(outputdir+'InstantMailing.json','w')
 f1.write(json.dumps(alljson))
 f1.close()
 
