@@ -108,9 +108,9 @@ for host in allhosts:
 
 lf.close()
 
-f1 = open(outputdir+'/cost.json','w')
-f2 = open(outputdir+'/costsource.json','w')
-f3 = open(outputdir+'/costdestination.json','w')
+f1 = open(outputdir+'/cost.data','w')
+f2 = open(outputdir+'/costsource.data','w')
+f3 = open(outputdir+'/costdestination.data','w')
 for s in allSites.siteD:
     rat="{0:.2f}".format(s.getRate())
     print s.prnt()+"  AvRate: " + rat,;  print s.rates 
