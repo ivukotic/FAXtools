@@ -1,14 +1,15 @@
 #!/bin/sh
-export PATH="/afs/cern.ch/sw/lcg/external/Python/2.6.5/x86_64-slc5-gcc43-opt/bin:$PATH"
-export LD_LIBRARY_PATH="/afs/cern.ch/sw/lcg/external/Python/2.6.5/x86_64-slc5-gcc43-opt/lib:$LD_LIBRARY_PATH"
 
-source /afs/cern.ch/user/a/agis/public/AGISClient/latest/setup.py26.sh
+export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
+source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh
+export RUCIO_ACCOUNT=adcmusr3
+localSetupAGIS
 
-cd /data/adcmusr3/
+cd ~/FAXtools/adcmusr3/
 
 rm cost*.log
 
 da=cost_$(date +"%Y-%m-%dT%H%M").log
-./collectCostMatrix.py $da
+./collectCostMatrix.py /data/www/FAX/ $da
 
 scp cost*.log ivukotic@uct2-int.mwt2.org:/home/ivukotic/public_html/LOGS

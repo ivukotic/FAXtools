@@ -11,6 +11,9 @@ statuslist = agis.get_site_status(activity='DDMFT')
 downtimes_ongoing = agis.list_downtimes(ongoing_time=datetime.utcnow())
 
 
+outputdir=sys.argv[1]
+print 'output will be stored in:', outputdir
+
 global messages
 messages=[]
 
@@ -69,13 +72,13 @@ class site:
 
 allSites=sites()
 
-logFile=sys.argv[1]
+logFile=sys.argv[2]
 lf = open(logFile, 'w')
 
 # Connect to all of the  stompservers, listen to the queue for 2 seconds, print the messages and disconnect
 for host in allhosts: 
     try:
-        conn = stomp.Connection(host, use_ssl=True, ssl_key_file='/etc/grid-security/hostkey.pem', ssl_cert_file='/etc/grid-security/hostcert.pem')
+        conn = stomp.Connection(host, use_ssl=True, ssl_key_file='/afs/cern.ch/user/a/adcmusr3/.globus/Request2014/hostkey.pem', ssl_cert_file='/afs/cern.ch/user/a/adcmusr3/.globus/Request2014/hostcert.pem')
         conn.set_listener('MyConsumer', MyListener())
         conn.start()
         conn.connect()
@@ -105,9 +108,9 @@ for host in allhosts:
 
 lf.close()
 
-f1 = open('cost.json','w')
-f2 = open('costsource.json','w')
-f3 = open('costdestination.json','w')
+f1 = open(outputdir+'/cost.json','w')
+f2 = open(outputdir+'/costsource.json','w')
+f3 = open(outputdir+'/costdestination.json','w')
 for s in allSites.siteD:
     rat="{0:.2f}".format(s.getRate())
     print s.prnt()+"  AvRate: " + rat,;  print s.rates 
