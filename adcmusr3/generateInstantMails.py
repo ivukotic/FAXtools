@@ -162,11 +162,11 @@ for sn,s in Sites.items():
         if s.upstream==3: totFailedUp+=1
         if s.downstream==3: totFailedDown+=1
 if totFailedDirect>25 or totFailedUp>25 or totFailedDown>25:
-	print "XXXXXXXXXXXXXXXX PROBLEM XXXXXXXXXXXXXXXXXX"
-	print "X    A LARGE NUMBER OF FAILED TESTS       X"
+    print "XXXXXXXXXXXXXXXX PROBLEM XXXXXXXXXXXXXXXXXX"
+    print "X    A LARGE NUMBER OF FAILED TESTS       X"
     print "X    RECHECK MANUALY.                     X"
     print "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-	sys.exit(1)
+    sys.exit(1)
 
 
 alljson={}
