@@ -22,7 +22,7 @@ s=socket.gethostbyname_ex(hostalias)
 print 'aliases: ', s[2]
 allhosts=[]
 for a in s[2]:
-    allhosts.append([(a, 6162)])
+    allhosts.append([(a, 61123)])
 queue = '/queue/faxmon.costMatrix'
 
 
