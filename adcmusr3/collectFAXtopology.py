@@ -6,6 +6,9 @@ import json
 import socket
 #import urllib, urllib2
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 from agisconf import agis
 
 outputdir=sys.argv[1]

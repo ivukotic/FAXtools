@@ -7,7 +7,7 @@ localSetupAGIS
 
 cd ~/FAXtools/adcmusr3/
 
-rm cost*.log
+rm cost*.log 
 
 da=cost_$(date +"%Y-%m-%dT%H%M").log
 ./collectCostMatrix.py /data/www/FAX $da

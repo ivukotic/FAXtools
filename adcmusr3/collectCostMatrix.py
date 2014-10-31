@@ -7,6 +7,9 @@ from agisconf import agis
 from datetime import datetime
 import socket
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 statuslist = agis.get_site_status(activity='DDMFT')
 downtimes_ongoing = agis.list_downtimes(ongoing_time=datetime.utcnow())
 
