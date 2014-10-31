@@ -65,8 +65,8 @@ for host in allhosts:
         conn.connect()
         conn.subscribe(destination = queue, ack = 'auto', headers = {})    
         time.sleep(2)  
-    finally:
         conn.disconnect()
+    finally:
         for message in messages:
             s=site()
             message=message.split('\n')
