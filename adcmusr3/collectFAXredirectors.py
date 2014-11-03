@@ -44,11 +44,11 @@ class site:
 for host in allhosts:
 # Connect to the stompserver, listen to the queue for 2 seconds, print the messages and disconnect
     try:
-        conn = stomp.Connection(host, use_ssl=True, ssl_key_file='/afs/cern.ch/user/a/adcmusr3/.globus/Request2014/hostkey.pem', ssl_cert_file='/afs/cern.ch/user/a/adcmusr3/.globus/Request2014/hostcert.pem')
+        conn = stomp.Connection(host, use_ssl=True, ssl_version=ssl.PROTOCOL_TLSv1, ssl_key_file='/afs/cern.ch/user/a/adcmusr3/.globus/Request2014/hostkey.pem', ssl_cert_file='/afs/cern.ch/user/a/adcmusr3/.globus/Request2014/hostcert.pem')
         conn.set_listener('MyConsumer', MyListener())
         conn.start()
         conn.connect()
-        conn.subscribe(destination = queue, ack = 'auto', headers = {})    
+        conn.subscribe(destination = queue, ack = 'auto', id="1", headers = {})    
         time.sleep(2)  
     finally:
         conn.disconnect()

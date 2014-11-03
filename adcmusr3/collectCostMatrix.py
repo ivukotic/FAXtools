@@ -85,7 +85,7 @@ for host in allhosts:
         conn.set_listener('MyConsumer', MyListener())
         conn.start()
         conn.connect()
-        conn.subscribe(destination = queue, ack = 'auto', headers = {})    
+        conn.subscribe(destination = queue, ack = 'auto', id="1", headers = {})    
         time.sleep(2)  
         conn.disconnect()
     finally:
