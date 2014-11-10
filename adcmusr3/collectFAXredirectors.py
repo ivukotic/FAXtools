@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import sys
-import stomp
+import stomp, ssl
 import time
 import json
 import socket
