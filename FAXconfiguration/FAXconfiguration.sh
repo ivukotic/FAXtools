@@ -28,6 +28,13 @@ python FAX_configuration_tests.py
 #zip SSB_FAX_endpoints_logs-$da.zip *.log
 #xrdcp SSB_FAX_endpoints_logs-$da.zip root://faxbox.usatlas.org//user/ivukotic
 
+#upload all the logs to GAE blobservice
+fl=""
+for f in *.log; do fl="$fl -F file=@$f"; done
+echo $fl
+upload_url=`curl http://waniotest.appspot.com/LogUpload.jsp`
+curl -vX POST $fl $upload_url
+
 #copy to MWT2 web space
 scp *.log uct2-int.mwt2.org:/home/ivukotic/public_html/LOGS
 
