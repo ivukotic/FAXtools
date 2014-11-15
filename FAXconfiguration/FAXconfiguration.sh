@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 # uncomment to debug 
 # uset -x
 
@@ -31,35 +31,39 @@ python FAX_configuration_tests.py
 echo "upload all the logs to GAE blobservice"
 date
 
-fl=""
-for f in *_to_*.log; do fl="$fl -F file=@$f"; done
+rv=" -F file=@"
 upload_url=`curl http://waniotest.appspot.com/LogUpload.jsp`
-curl -vX POST $fl $upload_url
 
-fl=""
-for f in downstreamTo_*.log; do fl="$fl -F file=@$f"; done
-upload_url=`curl http://waniotest.appspot.com/LogUpload.jsp`
-curl -vX POST $fl $upload_url
+echo -n "curl -vX POST  " > tr1.sh 
+for f in *_to_*.log; do echo -n "${rv}${f} " >> tr1.sh; done
+echo $upload_url >> tr1.sh
 
-fl=""
-for f in upstreamFrom_*.log; do fl="$fl -F file=@$f"; done
-upload_url=`curl http://waniotest.appspot.com/LogUpload.jsp`
-curl -vX POST $fl $upload_url
+echo -n "curl -vX POST  " > tr1.sh 
+for f in downstreamTo_*.log; do echo -n "${rv}${f} " >> tr1.sh; done
+echo $upload_url >> tr1.sh
 
-fl=""
-for f in checkSecurity*.log; do fl="$fl -F file=@$f"; done
-upload_url=`curl http://waniotest.appspot.com/LogUpload.jsp`
-curl -vX POST $fl $upload_url
+echo -n "curl -vX POST  " > tr1.sh 
+for f in upstreamFrom_*.log; do echo -n "${rv}${f} " >> tr1.sh; done
+echo $upload_url >> tr1.sh
 
-#fl=""
-#for f in checkDelays*.log; do fl="$fl -F file=@$f"; done
-#upload_url=`curl http://waniotest.appspot.com/LogUpload.jsp`
-#curl -vX POST $fl $upload_url
-#
-#fl=""
-#for f in checkRedirector*.log; do fl="$fl -F file=@$f"; done
-#upload_url=`curl http://waniotest.appspot.com/LogUpload.jsp`
-#curl -vX POST $fl $upload_url
+echo -n "curl -vX POST  " > tr1.sh 
+for f in checkSecurity*.log; do echo -n "${rv}${f} " >> tr1.sh; done
+echo $upload_url >> tr1.sh
+
+echo -n "curl -vX POST  " > tr1.sh 
+for f in checkDelays*.log; do echo -n "${rv}${f} " >> tr1.sh; done
+echo $upload_url >> tr1.sh
+
+echo -n "curl -vX POST  " > tr1.sh 
+for f in checkRedirector*.log; do echo -n "${rv}${f} " >> tr1.sh; done
+echo $upload_url >> tr1.sh
+
+chmod +x tr1.sh
+./tr1.sh
+
+#fl="";for f in *_to_*.log; do fl="$fl -F file=$f"; done
+#upload_url=`curl http://waniotest.appspot.com/LogUpload.jsp`; curl -vX POST $fl $upload_url
+
 
 date
 
