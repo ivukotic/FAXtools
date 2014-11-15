@@ -28,6 +28,8 @@ python FAX_configuration_tests.py
 #zip SSB_FAX_endpoints_logs-$da.zip *.log
 #xrdcp SSB_FAX_endpoints_logs-$da.zip root://faxbox.usatlas.org//user/ivukotic
 
+ls *.log
+
 echo "upload all the logs to GAE blobservice"
 date
 
@@ -42,7 +44,7 @@ echo -n "curl -vX POST  " >> tr1.sh
 for f in downstreamTo_*.log; do echo -n "${rv}${f} " >> tr1.sh; done
 echo $upload_url >> tr1.sh
 
-echo -n "curl -vX POST  " > tr1.sh 
+echo -n "curl -vX POST  " >> tr1.sh 
 for f in upstreamFrom_*.log; do echo -n "${rv}${f} " >> tr1.sh; done
 echo $upload_url >> tr1.sh
 
