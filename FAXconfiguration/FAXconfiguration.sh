@@ -38,7 +38,7 @@ echo -n "curl -vX POST  " > tr1.sh
 for f in *_to_*.log; do echo -n "${rv}${f} " >> tr1.sh; done
 echo $upload_url >> tr1.sh
 
-echo -n "curl -vX POST  " > tr1.sh 
+echo -n "curl -vX POST  " >> tr1.sh 
 for f in downstreamTo_*.log; do echo -n "${rv}${f} " >> tr1.sh; done
 echo $upload_url >> tr1.sh
 
@@ -46,15 +46,15 @@ echo -n "curl -vX POST  " > tr1.sh
 for f in upstreamFrom_*.log; do echo -n "${rv}${f} " >> tr1.sh; done
 echo $upload_url >> tr1.sh
 
-echo -n "curl -vX POST  " > tr1.sh 
+echo -n "curl -vX POST  " >> tr1.sh 
 for f in checkSecurity*.log; do echo -n "${rv}${f} " >> tr1.sh; done
 echo $upload_url >> tr1.sh
 
-echo -n "curl -vX POST  " > tr1.sh 
-for f in checkDelays*.log; do echo -n "${rv}${f} " >> tr1.sh; done
-echo $upload_url >> tr1.sh
+#echo -n "curl -vX POST  " >> tr1.sh 
+#for f in checkDelays*.log; do echo -n "${rv}${f} " >> tr1.sh; done
+#echo $upload_url >> tr1.sh
 
-echo -n "curl -vX POST  " > tr1.sh 
+echo -n "curl -vX POST  " >> tr1.sh 
 for f in checkRedirector*.log; do echo -n "${rv}${f} " >> tr1.sh; done
 echo $upload_url >> tr1.sh
 
