@@ -34,7 +34,7 @@ except:
 print json_data
 
 try:
-    req = urllib2.Request("http://1-dot-waniotest.appspot.com/CopyOverflow",json_data,{ 'Content-Type': 'application/json' })
+    req = urllib2.Request("http://waniotest.appspot.com/CopyOverflow",json_data,{ 'Content-Type': 'application/json' })
     opener = urllib2.build_opener()
     f = opener.open(req,timeout=50)
     res=f.read()
