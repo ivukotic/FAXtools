@@ -1,4 +1,4 @@
-<statistics tod="1418166136" ver="v4.1.1" src="test.injection:1094" tos="1418166072" pgm="xrootd" ins="anon" pid="12345" site="TEST">
+<statistics tod="STARTTIME" ver="v4.1.1" src="test.injection:1094" tos="1418166136" pgm="xrootd" ins="anon" pid="12345" site="TEST">
 <stats id="info">
     <host>test.edu</host>
     <port>1094</port>
