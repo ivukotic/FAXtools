@@ -1,13 +1,20 @@
 #!/usr/bin/env python
 import socket,time
+MBPS=100
 
 UDP_IP = "134.79.200.87"
 UDP_PORT = 9931
-interval=10
-remes=""" ver="v4.1.1" src="test.injection:1094" tos="1418166136" pgm="xrootd" ins="anon" pid="12345" site="TEST">
+interval=30
+totout=0
+totin=0
+CT=int(time.time())
+m0=' ver="v4.1.1" src="test.injection:1094" tos="'+str(CT)+'"'
+m1=""" pgm="xrootd" ins="anon" pid="12345" site="TEST">
 <stats id="info"><host>test.edu</host><port>1094</port><name>anon</name></stats>
 <stats id="buff"><reqs>10</reqs><mem>10000</mem><buffs>10</buffs><adj>0</adj></stats>
-<stats id="link"><num>8</num><maxn>8</maxn><tot>8</tot><in>1048576</in><out>104857600</out><ctime>0</ctime><tmo>34</tmo><stall>0</stall><sfps>0</sfps></stats>
+<stats id="link"><num>8</num><maxn>8</maxn><tot>8</tot><in>"""
+m2='</in><out>'
+m3="""</out><ctime>0</ctime><tmo>34</tmo><stall>0</stall><sfps>0</sfps></stats>
 <stats id="poll"><att>8</att><en>34</en><ev>34</ev><int>0</int></stats>
 <stats id="proc"><usr><s>0</s><u>50000</u></usr><sys><s>0</s><u>50000</u></sys></stats>
 <stats id="xrootd"><num>8</num><ops><open>51</open><rf>0</rf><rd>14</rd><pr>0</pr><rv>0</rv><rs>0</rs><wr>0</wr><sync>0</sync><getf>0</getf><putf>0</putf><misc>15</misc></ops><aio><num>0</num><max>0</max><rej>0</rej></aio><err>0</err><rdr>0</rdr><dly>47</dly><lgn><num>8</num><af>0</af><au>8</au><ua>0</ua></lgn></stats>
@@ -22,9 +29,10 @@ print "interval:", interval
 for i in range(100):
     ET=int(time.time())
     ST=ET-10
-    MESSAGE = '<statistics tod="'+str(ST)+'"'+remes+str(ET)+'</toe></stats></statistics>'
-    print i,"message:", MESSAGE
+    MESSAGE = '<statistics tod="'+str(ST)+'"'+m0+m1+str(totin)+m2+str(totout)+m3+str(ET)+'</toe></stats></statistics>'
+    print i # ,"message:", MESSAGE
     time.sleep(interval)
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
     sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
-
+    totin+=1024*1024*interval
+    totout+=MBPS*1024*1024*interval
