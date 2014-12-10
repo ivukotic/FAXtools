@@ -25,6 +25,6 @@ for i in range(100):
     MESSAGE = '<statistics tod="'+str(ST)+'"'+remes+str(ET)+'</toe></stats></statistics>'
     print i,"message:", MESSAGE
     time.sleep(interval)
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
-sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
+    sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
 
