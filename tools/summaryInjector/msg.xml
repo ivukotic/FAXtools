@@ -48,8 +48,7 @@
         <rs>0</rs>
         <wr>0</wr>
         <sync>0</sync>
-        <getf>0</getf>
-        <putf>0</putf>
+        <getf>0</getf><putf>0</putf>
         <misc>15</misc>
     </ops>
     <aio>
