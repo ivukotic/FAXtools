@@ -8,9 +8,8 @@ interval=30
 totout=0
 totin=0
 CT=int(time.time())
-m0=' ver="v4.1.1" src="test.injection:1094" tos="'+str(CT)+'"'
-m1=""" pgm="xrootd" ins="anon" pid="12345" site="TEST">
-<stats id="info"><host>test.edu</host><port>1094</port><name>anon</name></stats>
+m0=' ver="v4.1.1" src="test.injection:1094" tos="'+str(CT)+'" pgm="xrootd" ins="anon" pid="12345" site="TEST">'
+m1=""" <stats id="info"><host>"""+socket.gethostname()+"""test.edu</host><port>1094</port><name>anon</name></stats>
 <stats id="buff"><reqs>10</reqs><mem>10000</mem><buffs>10</buffs><adj>0</adj></stats>
 <stats id="link"><num>8</num><maxn>8</maxn><tot>8</tot><in>"""
 m2='</in><out>'
