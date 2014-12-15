@@ -49,6 +49,6 @@ with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiOverflowQ
     for k,v in queues.items():
         f.write('| *'+k+'* ||||\n')
         for q in v:
-            f.write('| '+q.name+' | '+str(q.sink)+ ' | '+q.source+ ' |\n')
+            f.write('| '+q.name+' | '+str(q.sink)+ ' | '+str(q.source)+ ' |\n')
 f.close()
 
