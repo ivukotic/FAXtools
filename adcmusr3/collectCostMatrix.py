@@ -54,10 +54,10 @@ class sites:
     def addSite(self,sit):
         for s in self.siteD:
             if s.fr==sit.fr and s.to==sit.to: 
-                print 'adding measurement to ', s.prnt()
+                if debug: print 'adding measurement to ', s.prnt()
                 s.addMeasurement(sit.rates[0], sit.timestamps[0])
                 return
-        print 'appended site'
+        if debug: print 'appended site'
         self.siteD.append(sit)
   
 class site:
@@ -105,14 +105,14 @@ for host in allhosts:
                 l=l.split(": ")
                 if len(l)<2: continue
                 l[1]=l[1].strip()
-                print l[0],l[1],"\t",
+                if debug: print l[0],l[1],"\t",
                 lf.write(l[0]+" "+l[1]+" \t")
                 if l[0]=='site_from': s.fr=l[1]
                 if l[0]=='site_to': s.to=l[1]
                 if l[0]=='metricName': continue
                 if l[0]=='rate': s.rates.append(float(l[1]))
                 if l[0]=='timestamp': s.timestamps.append( l[1] )
-            print 
+            if debug: print 
             lf.write("\n")
             allSites.addSite(s)
         messages=[]        
