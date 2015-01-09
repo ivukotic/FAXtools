@@ -67,7 +67,7 @@ class site:
         self.fr='def'
         self.to='def'
     def prnt(self):
-        return 'source:'+self.fr + ', destination:' + self.to +",measurements:"+str(len(self.rates))
+        return 'source:'+self.fr + ',destination:' + self.to +",measurements:"+str(len(self.rates))
     def addMeasurement(self, rate, timestamp):
         self.rates.append(rate)
         self.timestamps.append(timestamp)    
