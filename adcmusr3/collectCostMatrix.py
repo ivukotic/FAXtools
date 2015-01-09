@@ -8,21 +8,29 @@ from datetime import datetime
 import socket
 
 import logging
-logging.basicConfig(level=logging.DEBUG)
+
+debug=False
+
+if debug:
+    logging.basicConfig(level=logging.DEBUG)
+else:
+    logging.basicConfig(level=logging.ERROR)
 
 statuslist = agis.get_site_status(activity='DDMFT')
 downtimes_ongoing = agis.list_downtimes(ongoing_time=datetime.utcnow())
 
 
 outputdir=sys.argv[1]
-print 'output will be stored in:', outputdir
+if debug:
+    print 'output will be stored in:', outputdir
 
 global messages
 messages=[]
 
 hostalias='dashb-mb.cern.ch'
 s=socket.gethostbyname_ex(hostalias)
-print 'aliases: ', s[2]
+if debug: 
+    print 'aliases: ', s[2]
 allhosts=[]
 for a in s[2]:
     allhosts.append([(a, 61123)])
@@ -59,7 +67,7 @@ class site:
         self.fr='def'
         self.to='def'
     def prnt(self):
-        return self.fr + '->' + self.to +"  "+str(len(self.rates))+ " rates. "
+        return 'source:'+self.fr + ', destination:' + self.to +",measurements:"+str(len(self.rates))
     def addMeasurement(self, rate, timestamp):
         self.rates.append(rate)
         self.timestamps.append(timestamp)    
@@ -116,7 +124,9 @@ f2 = open(outputdir+'/costsource.data','w')
 f3 = open(outputdir+'/costdestination.data','w')
 for s in allSites.siteD:
     rat="{0:.2f}".format(s.getRate())
-    print s.prnt()+"  AvRate: " + rat,;  print s.rates 
+    print s.prnt()+",AvRate:" + rat;
+    if debug:
+        print s.rates 
     js=s.getTime()+' '+s.fr+'_to_'+s.to+' '+rat+' '
     jsou=s.getTime()+' '+s.fr+'_to_'+s.to+' '+s.fr+' white http://www.mwt2.org/ssb/'+logFile+'\n'
     jdes=s.getTime()+' '+s.fr+'_to_'+s.to+' '+s.to+' white http://www.mwt2.org/ssb/'+logFile+'\n'
