@@ -294,41 +294,42 @@ for s in sites:
                 
 
 print "================================= CHECK DELAYS ================================================"
-
-with open('checkDelays.sh', 'w') as f: 
-    for s in sites:
-        if s.direct==0: continue
-        logfile='checkDelays_'+s.name+logpostfix
-        lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-10M'
-        s.comm1='/usr/bin/time -f"real: %e" xrdfs '+s.host.replace('root://','')+' locate -r '+lookingFor+' 2>>'+logfile+' & \n'
-        f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
-        f.write('echo "========================================================================" >> ' + logfile + '\n')
-        f.write(s.comm1)
-    f.close()
-
-#sys.exit(0)
-print 'executing all of the xrd lookups in parallel. 1 min timeout.'
-com = Command("source " + workingDir + "checkDelays.sh")
-com.run(60)
-time.sleep(sleeps)
-
-
-print 'checking log files'
-
-# checking sites delays
-for s in sites:
-    if s.direct==0: continue
-    logfile='checkDelays_'+s.name+logpostfix
-    with open(logfile, 'r') as f:
-        lines=f.readlines()
-        for l in lines:
-            # print l
-            if l.startswith("real:"):
-                s.delay=float(l.split(":")[1])
-                print s.name+': '+str(s.delay)
-                break
-
-              
+print " this test is not run as we don't understand it's results.  "
+#
+# with open('checkDelays.sh', 'w') as f:
+#     for s in sites:
+#         if s.direct==0: continue
+#         logfile='checkDelays_'+s.name+logpostfix
+#         lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-10M'
+#         s.comm1='/usr/bin/time -f"real: %e" xrdfs '+s.host.replace('root://','')+' locate -r '+lookingFor+' 2>>'+logfile+' & \n'
+#         f.write('echo "command executed:\n ' + s.comm1 + '" >> ' + logfile + '\n')
+#         f.write('echo "========================================================================" >> ' + logfile + '\n')
+#         f.write(s.comm1)
+#     f.close()
+#
+# #sys.exit(0)
+# print 'executing all of the xrd lookups in parallel. 1 min timeout.'
+# com = Command("source " + workingDir + "checkDelays.sh")
+# com.run(60)
+# time.sleep(sleeps)
+#
+#
+# print 'checking log files'
+#
+# # checking sites delays
+# for s in sites:
+#     if s.direct==0: continue
+#     logfile='checkDelays_'+s.name+logpostfix
+#     with open(logfile, 'r') as f:
+#         lines=f.readlines()
+#         for l in lines:
+#             # print l
+#             if l.startswith("real:"):
+#                 s.delay=float(l.split(":")[1])
+#                 print s.name+': '+str(s.delay)
+#                 break
+#
+#
                 
 print "================================= CHECK REDIRECTOR DOWNSTREAM ================================================"
                 
@@ -482,33 +483,33 @@ for s in sites: s.prnt(0)  #print only real sites
 
     
 print "================================= CHECK MONITORING =================================================="
-    
-print 'Geting info from Dashboard ...' 
-ts1=datetime.datetime.utcnow()
-ts1=ts1.replace(microsecond=0)
-ts1=ts1.replace(second=0)
-fr=str(ts1-datetime.timedelta(0,5*3600)).replace(" ","+").replace(":","%3A")
-to=str(ts1).replace(" ","+").replace(":","%3A")
-try:
-    ur="http://dashb-atlas-xrootd-transfers.cern.ch/dashboard/request.py/test-details.json?client=voatlas106.cern.ch&from_date="+fr+"&to_date="+to
-    req = urllib2.Request(ur, None)
-    opener = urllib2.build_opener()
-    f = opener.open(req)
-    res=json.load(f)
-    res=res["testDetails"]
-    for m in res:
-        #print m
-        if m['server_site'].count("MWT2"):
-            m['server_site']="MWT2"
-        found=0
-        for s in sites:
-            if s.lname==m['server_site'].lower():
-                s.monitor=1
-                found=1
-        if not found:
-            print "can't connect this record with any site:\n", m
-except:
-    print "Unexpected error:", sys.exc_info()[0]    
+print "this test is turned off since dashboard link does not work any more and nobody was looking at the results."    
+# print 'Geting info from Dashboard ...'
+# ts1=datetime.datetime.utcnow()
+# ts1=ts1.replace(microsecond=0)
+# ts1=ts1.replace(second=0)
+# fr=str(ts1-datetime.timedelta(0,5*3600)).replace(" ","+").replace(":","%3A")
+# to=str(ts1).replace(" ","+").replace(":","%3A")
+# try:
+#     ur="http://dashb-atlas-xrootd-transfers.cern.ch/dashboard/request.py/test-details.json?client=voatlas106.cern.ch&from_date="+fr+"&to_date="+to
+#     req = urllib2.Request(ur, None)
+#     opener = urllib2.build_opener()
+#     f = opener.open(req)
+#     res=json.load(f)
+#     res=res["testDetails"]
+#     for m in res:
+#         #print m
+#         if m['server_site'].count("MWT2"):
+#             m['server_site']="MWT2"
+#         found=0
+#         for s in sites:
+#             if s.lname==m['server_site'].lower():
+#                 s.monitor=1
+#                 found=1
+#         if not found:
+#             print "can't connect this record with any site:\n", m
+# except:
+#     print "Unexpected error:", sys.exc_info()[0]
 
 
 

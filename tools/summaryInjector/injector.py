@@ -4,7 +4,7 @@ MBPS=100
 
 UDP_IP = "134.79.200.87"
 UDP_PORT = 9931
-interval=30
+interval=60
 totout=0
 totin=0
 CT=int(time.time())
@@ -25,7 +25,7 @@ print "UDP target IP:", UDP_IP
 print "UDP target port:", UDP_PORT
 print "interval:", interval
 
-for i in range(100):
+for i in range(180):
     ET=int(time.time())
     ST=ET-10
     MESSAGE = '<statistics tod="'+str(ST)+'"'+m0+m1+str(totin)+m2+str(totout)+m3+str(ET)+'</toe></stats></statistics>'
@@ -34,4 +34,6 @@ for i in range(100):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
     sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
     totin+=1024*1024*interval
-    totout+=MBPS*1024*1024*interval
+    totout+=((i/3*3)%30)*1024*1024*interval
+
+# this gives: 0 0 0 3 3 3 6 6 6 9 9 9 12 12 12 15 15 15 ... 27 27 27 0 0 0 3 3 3 ...
