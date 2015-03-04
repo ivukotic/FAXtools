@@ -11,7 +11,7 @@ print datetime.datetime.now()
 headers={ 'Content-Type': 'application/json' }
 
 try:
-    req = urllib2.Request("http://bigpanda.cern.ch/jobs/?transfertype=fax&hours=1", None, headers)
+    req = urllib2.Request("http://bigpanda.cern.ch/jobs/?transfertype=fax&limit=50000&hours=1", None, headers)
     opener = urllib2.build_opener()
     f = opener.open(req,timeout=50)
     res=json.load(f)
