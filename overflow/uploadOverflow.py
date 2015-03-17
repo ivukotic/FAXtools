@@ -11,7 +11,7 @@ print datetime.datetime.now()
 headers={ 'Content-Type': 'application/json' }
 
 try:
-    req = urllib2.Request("http://bigpanda.cern.ch/jobs/?transfertype=fax&limit=50000&hours=1", None, headers)
+    req = urllib2.Request("http://bigpanda.cern.ch/jobs/?transfertype=fax&limit=100000&hours=1", None, headers)
     opener = urllib2.build_opener()
     f = opener.open(req,timeout=50)
     res=json.load(f)
@@ -23,8 +23,9 @@ try:
         if j['jobstatus']=='running': continue
         if j['jobstatus']=='holding': continue
         if j['jobstatus']=='defined': continue
-        print j['pandaid'],j['jeditaskid'], j['jobstatus'],j['currentpriority'], j['computingsite'],j['produsername'],j['creationtime'],j['waittime'],j['starttime'],j['duration'],j['cpuconsumptiontime']
-        jo=[j['pandaid'],j['jeditaskid'], j['jobstatus'],j['currentpriority'], j['computingsite'],j['produsername'],j['creationtime'],j['waittime'],j['starttime'],j['duration'],j['cpuconsumptiontime']]
+        if j['jobstatus']=='merging': continue
+        print j['pandaid'],j['jeditaskid'], j['jobstatus'],j['currentpriority'], j['computingsite'],j['produsername'],j['creationtime'],j['waittime'],j['duration'],j['cpuconsumptiontime']
+        jo=[j['pandaid'],j['jeditaskid'], j['jobstatus'],j['currentpriority'], j['computingsite'],j['produsername'],j['creationtime'],j['waittime'],j['duration'],j['cpuconsumptiontime']]
         cleaned.append(jo)
     json_data = json.dumps(cleaned)
 
