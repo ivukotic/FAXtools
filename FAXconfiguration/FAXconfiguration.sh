@@ -70,7 +70,7 @@ chmod +x tr1.sh
 date
 
 #copy to MWT2 web space
-scp *.log uct2-int.mwt2.org:/home/ivukotic/public_html/LOGS
+#scp *.log uct2-int.mwt2.org:/home/ivukotic/public_html/LOGS
 
 killall -9 xrdcp
 
