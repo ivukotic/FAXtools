@@ -1,0 +1,1 @@
+flume-ng agent -c flume -f /home/ivukotic/FAXtools/CostCollector/CostCollector.properties -n cernAgent -C '/home/ivukotic/FAXtools/CostCollector'
