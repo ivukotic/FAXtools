@@ -63,10 +63,6 @@ echo $upload_url >> tr1.sh
 chmod +x tr1.sh
 ./tr1.sh
 
-#fl="";for f in *_to_*.log; do fl="$fl -F file=$f"; done
-#upload_url=`curl http://waniotest.appspot.com/LogUpload.jsp`; curl -vX POST $fl $upload_url
-
-
 date
 
 #copy to MWT2 web space
