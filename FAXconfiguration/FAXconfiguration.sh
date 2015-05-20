@@ -16,7 +16,7 @@ WD=/afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/
 cd $WD
 rm check*.sh 
 rm *.log 
-rm *.zip
+#rm *.zip
 
 python FAX_configuration_tests.py
 
@@ -36,7 +36,7 @@ date
 rv=" -F file=@"
 upload_url=`curl http://waniotest.appspot.com/LogUpload.jsp`
 
-echo -n "curl -vX POST  " > tr1.sh 
+echo -n "curl --show-error --silent -X  POST  " > tr1.sh 
 for f in *_to_*.log; do echo -n "${rv}${f} " >> tr1.sh; done
 echo $upload_url >> tr1.sh
 
