@@ -564,10 +564,16 @@ print '-------------------------------- Writing to GAE -------------------------
 
 for s in sites:
     data = dict(epName=s.name, epStatus=str(s.status()), epAddress=s.host)
-    u = urllib2.urlopen('http://waniotest.appspot.com/wanio', urllib.urlencode(data))
-    print u.read(), u.code
-    
+    try:
+        u = urllib2.urlopen('http://waniotest.appspot.com/wanio', urllib.urlencode(data))
+        print u.read(), u.code
+    except:
+        print "Error when uploading to GAE:", sys.exc_info()[0]
+            
 for r in redirectors:
     data = dict(reName=r.name, reStatus=str(r.status), reAddress=r.address)
-    u = urllib2.urlopen('http://waniotest.appspot.com/wanio', urllib.urlencode(data))
-    print u.read(), u.code
+    try:
+        u = urllib2.urlopen('http://waniotest.appspot.com/wanio', urllib.urlencode(data))
+        print u.read(), u.code
+    except:
+        print "Error when uploading to GAE:", sys.exc_info()[0]
