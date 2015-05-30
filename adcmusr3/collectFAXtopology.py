@@ -88,7 +88,7 @@ for host in allhosts:
 print 'writing direct.data'
 
 #site = 'http://www.mwt2.org/ssb/'
-site = 'http://waniotest.appspot.com/logs?lfn='
+site = ' http://waniotest.appspot.com/logs?lfn='
 
 f1 = open(outputdir+'/direct.data','w')
 for s in sites:
