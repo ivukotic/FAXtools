@@ -109,7 +109,7 @@ def dnsalias_to_nodes(redirector):
 
 for r in redirectors:
     dnsalias_to_nodes(r)
-    r.prnt()
+    # r.prnt()
     
 
 print 'Geting info'
