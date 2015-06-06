@@ -173,8 +173,8 @@ for r in redirectors:  # this is file to be asked for
 
 for r in redirectors: 
     for host in r.ips:
+        host.writeNew()
         if host.old!=None:
-            host.writeNew()
             if host.tos!=host.old.tos:
                 print "server got restarted!"
                 continue
