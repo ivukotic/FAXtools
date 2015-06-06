@@ -127,7 +127,7 @@ with open('getSummaryInfo.sh', 'w') as f: # ask redirectors for their data
             f.write(comm)            
     f.close()
 
-print 'executing all of the xrdcps in parallel. 5 min timeout.'
+print 'executing all of the xrdfs queries in parallel..'
 com = Command("source " + workingDir + "getSummaryInfo.sh")    
 com.run(timeouts)
 time.sleep(sleeps)    
