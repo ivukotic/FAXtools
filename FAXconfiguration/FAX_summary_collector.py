@@ -20,12 +20,12 @@ class redirector:
     def __init__(self, name, address):
         self.name=name
         self.address=address
-        self.upstream=False
-        self.downstream=False
-        self.status=0 # b001 - can not check, b010-no downstream, b1x0-no downstream 
+        # self.upstream=False
+        # self.downstream=False
+        # self.status=0 # b001 - can not check, b010-no downstream, b1x0-no downstream
         self.ips=[]
     def prnt(self):
-        print 'redirector: ', self.name, '\taddress: ', self.address, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t status:', self.status
+        print 'redirector: ', self.name, '\taddress: ', self.address #, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t status:', self.status
         for ip in self.ips: ip.prnt()
 
 class host:
@@ -51,8 +51,8 @@ class host:
         with open(fn, 'w') as f:
             pickle.dump(self, f)
     def prnt(self):
-        print 'ip:',self.ip, 'tos:',self.tos
-        print 'nconn:',self.nconn,'\t avg. conn time:', self.ctime, '\ttimeouts:',self.timeouts,'\terrors:',self.errors,'\tredirects:',self.redirects,'\tdelays:',self.delays
+        print '\tip:',self.ip, 'tos:',self.tos
+        print '\tnconn:',self.nconn,'\t avg. conn time:', self.ctime, '\ttimeouts:',self.timeouts,'\terrors:',self.errors,'\tredirects:',self.redirects,'\tdelays:',self.delays
 
 class Command(object):
     
