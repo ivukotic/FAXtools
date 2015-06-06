@@ -32,6 +32,12 @@ class host:
     def __init__(self, ip):
         self.ip=ip
         self.tos=0
+        self.nconn=0
+        self.ctime=0
+        self.timeouts=0
+        self.errors=0
+        self.redirects=0
+        self.delays=0
         self.loadPrevious()
     def loadPrevious(self):
         fn='previous_'+self.ip+'.state'
@@ -46,6 +52,7 @@ class host:
             pickle.dump(self, f)
     def prnt(self):
         print 'ip:',self.ip, 'tos:',self.tos
+        print 'nconn:',self.nconn,'\t avg. conn time:', self.ctime, '\ttimeouts:',self.timeouts,'\terrors:',self.errors,'\tredirects:',self.redirects,'\tdelays:',self.delays
 
 class Command(object):
     
@@ -72,8 +79,8 @@ class Command(object):
 
 workingDir='./' #'/afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/'
 redirectors=[]
-timeouts=5
-sleeps=10
+timeouts=3
+sleeps=5
 
 print 'Geting redirector list from AGIS...' 
 try:
@@ -135,18 +142,41 @@ for r in redirectors:  # this is file to be asked for
             if doc=='': continue
             print doc
             try:
-                print 'start parsig'
+                print 'start parsing'
                 dom = xml.dom.minidom.parseString(doc)
                 root_node = dom.documentElement
                 if root_node.tagName == 'statistics':
-                    n_tos = root_node.getAttributeNode('tos')
-                    host.tos = n_tos.nodeValue
-                    print 'tos >>>> ',n_tos.nodeValue
+                    host.tos = root_node.getAttributeNode('tos').nodeValue
+                    print 'tos >>>> ', host.tos
+                stats=root_node.getElementsByTagName("stats")
+                for s in stats:
+                    kind=s.getAttributeNode('id').nodeValue
+                    print kind
+                    if kind=='link':
+                        host.nconn = int(s.getElementsByTagName('num')[0].childNodes[0].data)
+                        host.ctime = int(s.getElementsByTagName('ctime')[0].childNodes[0].data)
+                        host.timeouts = int(s.getElementsByTagName('tmo')[0].childNodes[0].data)
+                    elif kind=='proc':
+                        pass
+                    elif kind=='xrootd':
+                        host.errors = int(s.getElementsByTagName('err')[0].childNodes[0].data)
+                        host.redirects = int(s.getElementsByTagName('rdr')[0].childNodes[0].data)
+                        host.delays = int(s.getElementsByTagName('dly')[0].childNodes[0].data)
             except Exception,e:
                 print "ERROR: cannot parse doc:"+str(e)
 
 for r in redirectors: 
     for host in r.ips:
-        host.writeNew()
+        if host.old!=None:
+            host.writeNew()
+            if host.tos!=host.old.tos:
+                print "server got restarted!"
+                continue
+            host.nconn -= host.old.nconn
+            host.ctime -= host.old.ctime
+            host.timeouts -= host.old.timeouts
+            host.errors -= host.old.errors
+            host.redirects -= host.old.redirects
+            host.delays -= host.old.delays
     r.prnt()
 
