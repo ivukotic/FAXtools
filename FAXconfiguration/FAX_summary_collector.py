@@ -57,6 +57,12 @@ class host:
         v={"connections":self.nconn,"avg. connnection time":self.ctime, "timeouts":self.timeouts, "errors":self.errors, "redirects":self.redirects, "delays":self.delays }
         m = {"headers":{"timestamp":int(time.time())}, "body":v}
         jmsg=json.dumps([m])
+        print jmsg
+        try:
+            u = urllib2.urlopen('uct2-es-head.mwt2.org:8080', urllib.urlencode(jmsg))
+            print u.read(), u.code
+        except:
+            print "Error when uploading to flume: ", sys.exc_info()[0]
 
 class Command(object):
     
@@ -178,5 +184,6 @@ for r in redirectors:
             host.errors -= host.old.errors
             host.redirects -= host.old.redirects
             host.delays -= host.old.delays
+            host.postToFlume()
     r.prnt()
 
