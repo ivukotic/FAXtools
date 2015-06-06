@@ -140,18 +140,14 @@ for r in redirectors:  # this is file to be asked for
         with open(logfile, 'r') as f:
             doc=f.readline()
             if doc=='': continue
-            print doc
             try:
-                print 'start parsing'
                 dom = xml.dom.minidom.parseString(doc)
                 root_node = dom.documentElement
                 if root_node.tagName == 'statistics':
                     host.tos = root_node.getAttributeNode('tos').nodeValue
-                    print 'tos >>>> ', host.tos
                 stats=root_node.getElementsByTagName("stats")
                 for s in stats:
                     kind=s.getAttributeNode('id').nodeValue
-                    print kind
                     if kind=='link':
                         host.nconn = int(s.getElementsByTagName('num')[0].childNodes[0].data)
                         host.ctime = int(s.getElementsByTagName('ctime')[0].childNodes[0].data)
