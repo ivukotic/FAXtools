@@ -185,5 +185,7 @@ for r in redirectors:
             host.redirects -= host.old.redirects
             host.delays -= host.old.delays
             host.postToFlume()
+        else:
+            print 'No previous information available.'
     r.prnt()
 
