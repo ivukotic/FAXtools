@@ -53,6 +53,10 @@ class host:
     def prnt(self):
         print '\tip:',self.ip, 'tos:',self.tos
         print '\tnconn:',self.nconn,'\t avg. conn time:', self.ctime, '\ttimeouts:',self.timeouts,'\terrors:',self.errors,'\tredirects:',self.redirects,'\tdelays:',self.delays
+    def postToFlume(self):
+        v={"connections":self.nconn,"avg. connnection time":self.ctime, "timeouts":self.timeouts, "errors":self.errors, "redirects":self.redirects, "delays":self.delays }
+        m = {"headers":{"timestamp":int(time.time())}, "body":v}
+        jmsg=json.dumps([m])
 
 class Command(object):
     
@@ -168,7 +172,7 @@ for r in redirectors:
             if host.tos!=host.old.tos:
                 print "server got restarted!"
                 continue
-            host.nconn -= host.old.nconn
+            # host.nconn -= host.old.nconn # this is current connections so not incremental
             host.ctime -= host.old.ctime
             host.timeouts -= host.old.timeouts
             host.errors -= host.old.errors
