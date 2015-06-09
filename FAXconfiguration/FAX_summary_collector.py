@@ -59,7 +59,7 @@ class host:
         jmsg=json.dumps([m])
         print jmsg
         try:
-            u = urllib2.urlopen('uct2-es-head.mwt2.org:18080', urllib.urlencode(jmsg))
+            u = urllib2.urlopen('http://uct2-es-head.mwt2.org:18080', urllib.urlencode(jmsg))
             print u.read(), u.code
         except:
             print "Error when uploading to flume: ", sys.exc_info()[0]
