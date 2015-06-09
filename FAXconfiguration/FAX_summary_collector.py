@@ -55,7 +55,7 @@ class host:
         print '\tnconn:',self.nconn,'\t avg. conn time:', self.ctime, '\ttimeouts:',self.timeouts,'\terrors:',self.errors,'\tredirects:',self.redirects,'\tdelays:',self.delays
     def postToFlume(self):
         v={"connections":self.nconn,"avg. connnection time":self.ctime, "timeouts":self.timeouts, "errors":self.errors, "redirects":self.redirects, "delays":self.delays }
-        m = {"headers":{"timestamp":int(time.time())}, "body":str(v)}
+        m = {"headers":{"timestamp":int(time.time())*1000}, "body":str(v)}
         jmsg=json.dumps([m])
         print jmsg
         try:
