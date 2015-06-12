@@ -102,7 +102,7 @@ try:
     req = urllib2.Request("http://atlas-agis-api.cern.ch/request/service/query/get_redirector_services/?json&state=ACTIVE", None)
     opener = urllib2.build_opener()
     f = opener.open(req)
-    res=json.:wqload(f)
+    res=json.load(f)
     for s in res:
         print s["name"], s["endpoint"]
         redirectors.append(redirector(s["name"],s["endpoint"]))
