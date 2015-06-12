@@ -64,7 +64,7 @@ class host:
         print jmsg
         try:
             #u = urllib2.urlopen('http://uct2-es-head.mwt2.org:18080', jmsg)
-            u = urllib2.urlopen('http://aianalytics.cern.ch:18081', jmsg)
+            u = urllib2.urlopen('http://aianalytics01.cern.ch:18081', jmsg)
             print u.read(), u.code
         except:
             print "Error when uploading to flume: ", sys.exc_info()[0]
