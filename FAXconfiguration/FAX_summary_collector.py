@@ -63,7 +63,8 @@ class host:
         jmsg=json.dumps([m])
         print jmsg
         try:
-            u = urllib2.urlopen('http://uct2-es-head.mwt2.org:18080', jmsg)
+            #u = urllib2.urlopen('http://uct2-es-head.mwt2.org:18080', jmsg)
+            u = urllib2.urlopen('http://aianalytics.cern.ch:18081', jmsg)
             print u.read(), u.code
         except:
             print "Error when uploading to flume: ", sys.exc_info()[0]
@@ -101,7 +102,7 @@ try:
     req = urllib2.Request("http://atlas-agis-api.cern.ch/request/service/query/get_redirector_services/?json&state=ACTIVE", None)
     opener = urllib2.build_opener()
     f = opener.open(req)
-    res=json.load(f)
+    res=json.:wqload(f)
     for s in res:
         print s["name"], s["endpoint"]
         redirectors.append(redirector(s["name"],s["endpoint"]))
