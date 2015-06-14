@@ -57,8 +57,8 @@ class host:
         #v={"timestamp":int(time.time())*1000, "connections":self.nconn,"avg. connnection time":self.ctime, "timeouts":self.timeouts, "errors":self.errors, "redirects":self.redirects, "delays":self.delays }
         #m = {"headers":{"timestamp":int(time.time())*1000}, "body":str(v)}
         m = {
-            "headers":{"type":"FAXredirectors", "timestamp":int(time.time()*1000), "redirector": self.ip, "connections":self.nconn,"ctime":self.ctime, "timeouts":self.timeouts, "errors":self.errors, "redirects":self.redirects, "delays":self.delays },
-            "body":'"type":"FAXredirectors", "redirector":"' + self.ip + '","connections":'+str(self.nconn) 
+            "headers":{type:"FAXredirectors", "timestamp":int(time.time()*1000), "redirector": self.ip, "connections":self.nconn,"ctime":self.ctime, "timeouts":self.timeouts, "errors":self.errors, "redirects":self.redirects, "delays":self.delays },
+            "body":'"redirector":"' + self.ip + '","connections":'+str(self.nconn) 
         }
         jmsg=json.dumps([m])
         print jmsg
