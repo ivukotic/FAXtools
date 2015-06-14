@@ -42,7 +42,7 @@ class host:
     def loadPrevious(self):
         fn='previous_'+self.ip+'.state'
         if not os.path.isfile(fn): 
-            del self.old
+            self.old=None
             return 
         with open(fn, 'r') as f:
             self.old=pickle.load(f)
