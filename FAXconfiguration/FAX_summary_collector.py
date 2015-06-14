@@ -48,7 +48,6 @@ class host:
             self.old=pickle.load(f)
     def writeNew(self):
         fn='previous_'+self.ip+'.state'
-        self.old=None
         with open(fn, 'w') as f:
             pickle.dump(self, f)
     def prnt(self):
@@ -191,6 +190,7 @@ for r in redirectors:
             host.redirects -= host.old.redirects
             host.delays -= host.old.delays
             host.postToFlume()
+            host.old=None
         else:
             print 'No previous information available.'
     r.prnt()
