@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os, sys, subprocess, threading, time, datetime, atexit
-import logging,  pickle
+import logging,  pickle, copy
 import  urllib, urllib2, socket
 
 import xml.dom.minidom 
@@ -185,7 +185,7 @@ for r in redirectors:
         # write out current state
         fn='previous_'+host.ip+'.state'
         with open(fn, 'w') as fo:
-            tod=deepcopy(host)
+            tod=copy.deepcopy(host)
             tod.old=None
             pickle.dump(tod, fo)
             
