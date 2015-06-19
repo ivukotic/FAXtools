@@ -48,6 +48,7 @@ class host:
             try:
                 self.old=pickle.load(f)
             except EOFError:
+                self.old=None
                 print ' ERROR --- could not pickle file', fn
     def writeNew(self):
         fn='previous_'+self.ip+'.state'
