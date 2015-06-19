@@ -44,16 +44,16 @@ class host:
         if not os.path.isfile(fn): 
             self.old=None
             return
-        with open(fn,'r') as f:
+        with open(fn,'r') as fi:
             try:
-                self.old=pickle.load(f)
+                self.old=pickle.load(fi)
             except EOFError:
                 self.old=None
                 print ' ERROR --- could not pickle file', fn
     def writeNew(self):
         fn='previous_'+self.ip+'.state'
-        with open(fn, 'w') as f:
-            pickle.dump(self, f)
+        with open(fn, 'w') as fo:
+            pickle.dump(self, fo)
     def prnt(self):
         print '\tip:',self.ip, 'tos:',self.tos
         print '\tnconn:',self.nconn,'\t avg. conn time:', self.ctime, '\ttimeouts:',self.timeouts,'\terrors:',self.errors,'\tredirects:',self.redirects,'\tdelays:',self.delays
