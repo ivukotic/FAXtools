@@ -48,6 +48,7 @@ class host:
         with open(fn,'r') as fi:
             try:
                 self.old=pickle.load(fi)
+                print 'loaded old info.'
             except EOFError:
                 print ' ERROR --- could not pickle file', fn
     def writeNew(self):
@@ -184,7 +185,7 @@ for r in redirectors:
         # write out current state
         fn='previous_'+host.ip+'.state'
         with open(fn, 'w') as fo:
-            tod=host
+            tod=deepcopy(host)
             tod.old=None
             pickle.dump(tod, fo)
             
