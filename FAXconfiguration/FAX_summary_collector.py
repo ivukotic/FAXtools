@@ -43,9 +43,11 @@ class host:
         fn='previous_'+self.ip+'.state'
         if not os.path.isfile(fn): 
             self.old=None
-            return 
-        with open(fn, 'r') as f:
-            self.old=pickle.load(f)
+            return
+        try:
+            self.old=pickle.load(open(fn, 'r'))
+        except EOFError:
+            print ' ERROR --- could not pickle file', fn
     def writeNew(self):
         fn='previous_'+self.ip+'.state'
         with open(fn, 'w') as f:
