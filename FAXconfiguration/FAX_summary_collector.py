@@ -92,6 +92,19 @@ class Command(object):
             self.process.terminate()
             thread.join()
         return self.process.returncode
+
+        
+def dnsalias_to_nodes(redirector):
+    ho = redirector.address.split(':')[0]
+    try: 
+        data=socket.getaddrinfo(ho,1094,0, 0, socket.SOL_TCP )
+    except:
+        print "Unexpected error:", sys.exc_info()[0] 
+        return []
+    for addr in data:
+        (family, socktype, proto, canonname, sockaddr) = addr
+        (hostname, aliaslist, ipaddrlist) = socket.gethostbyaddr(sockaddr[0])    
+        redirector.ips.append(host(hostname))
     
 
 workingDir='./' #'/afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/'
@@ -110,19 +123,6 @@ try:
         redirectors.append(redirector(s["name"],s["endpoint"]))
 except:
     print "Unexpected error:", sys.exc_info()[0]    
-
-        
-def dnsalias_to_nodes(redirector):
-    ho = redirector.address.split(':')[0]
-    try: 
-        data=socket.getaddrinfo(ho,1094,0, 0, socket.SOL_TCP )
-    except:
-        print "Unexpected error:", sys.exc_info()[0] 
-        return []
-    for addr in data:
-        (family, socktype, proto, canonname, sockaddr) = addr
-        (hostname, aliaslist, ipaddrlist) = socket.gethostbyaddr(sockaddr[0])    
-        redirector.ips.append(host(hostname))
 
 for r in redirectors:
     dnsalias_to_nodes(r)
@@ -180,7 +180,14 @@ for r in redirectors:  # this is file to be asked for
 
 for r in redirectors: 
     for host in r.ips:
-        host.writeNew()
+        
+        # write out current state
+        fn='previous_'+host.ip+'.state'
+        with open(fn, 'w') as fo:
+            tod=host
+            tod.old=None
+            pickle.dump(tod, fo)
+            
         if host.old!=None:
             if host.tos!=host.old.tos:
                 print "server got restarted!"
@@ -192,7 +199,6 @@ for r in redirectors:
             host.redirects -= host.old.redirects
             host.delays -= host.old.delays
             host.postToFlume()
-            host.old=None
         else:
             print 'No previous information available.'
     r.prnt()
