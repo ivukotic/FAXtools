@@ -43,6 +43,7 @@ class host:
         fn='previous_'+self.ip+'.state'
         self.old=None
         if not os.path.isfile(fn): 
+            print 'cound not find file:',fn
             return
         with open(fn,'r') as fi:
             try:
