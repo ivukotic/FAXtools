@@ -59,8 +59,9 @@ class host:
         print '\tip:',self.ip, 'tos:',self.tos
         print '\tnconn:',self.nconn,'\t avg. conn time:', self.ctime, '\ttimeouts:',self.timeouts,'\terrors:',self.errors,'\tredirects:',self.redirects,'\tdelays:',self.delays
     def postToFlume(self):
+        cdt=datetime.datetime.utcnow()
         m = {
-            "headers":{"type":"FAXredirectors", "timestamp":int(time.time()*1000), "redirector": self.ip, "connections":self.nconn,"ctime":self.ctime, "timeouts":self.timeouts, "errors":self.errors, "redirects":self.redirects, "delays":self.delays },
+            "headers":{"type":"FAXredirectors", "timestamp":cdt.isoformat(), "redirector": self.ip, "connections":self.nconn,"ctime":self.ctime, "timeouts":self.timeouts, "errors":self.errors, "redirects":self.redirects, "delays":self.delays },
             "body":''
         }
         jmsg=json.dumps([m])

@@ -11,21 +11,27 @@ voms-proxy-init -valid 24:0 -voms atlas -pwstdin < /home/ivukotic/gridlozinka.tx
 
 #####  ES template is like this
 #   
-#   curl -XPOST 'http://aianalytics01.cern.ch:9200/_template/template_1' -d '{
-#       "template" : "fax_summary_red*",
-#       "settings" : {  "number_of_shards" : 5, "number_of_replicas" : 2 },
+#   curl -XPOST 'http://aianalytics01.cern.ch:9200/_template/fax_summary_redirectors_template' -d '{
+#       "template" : "fax_summary_redirectors*",
+#       "settings" : {  "number_of_shards" : 3, "number_of_replicas" : 2 },
 #       "mappings" : {
 #           "summary_redirectors" : {
 #               "_source" : { "enabled" : true },
 #               "properties" : {
-#                   "@fields.redirector" : { "type" : "string", "index" : "not_analyzed" },
-#                   "@fields.connections" : { "type" : "integer", "index" : "analyzed" },
-#                   "@fields.ctime" : { "type" : "integer", "index" : "analyzed" },
-#                   "@fields.delays" : { "type" : "integer", "index" : "analyzed" },
-#                   "@fields.timeouts" : { "type" : "integer", "index" : "analyzed" },
-#                   "@fields.redirects" : { "type" : "integer", "index" : "not_analyzed" },
-#                   "@fields.errors" : { "type" : "integer", "index" : "not_analyzed" }
+#                   "redirector" : { "type" : "string", "index" : "not_analyzed" },
+#                   "connections" : { "type" : "integer", "index" : "analyzed" },
+#                   "ctime" : { "type" : "integer", "index" : "analyzed" },
+#                   "delays" : { "type" : "integer", "index" : "analyzed" },
+#                   "timeouts" : { "type" : "integer", "index" : "analyzed" },
+#                   "redirects" : { "type" : "integer", "index" : "not_analyzed" },
+#                   "errors" : { "type" : "integer", "index" : "not_analyzed" },
+#                   "timestamp":{ "type": "date"}
 #               }
 #           }
 #       }
 #   }'
+#
+# delete it 
+# curl -XDELETE aianalytics01.cern.ch:9200/_template/fax_summary_redirectors_template
+
+
