@@ -62,8 +62,8 @@ class host:
         cdt=datetime.datetime.utcnow()
         cdt=cdt.replace(microsecond=0)
         m = {
-            "headers":{"type":"FAXredirectors", "timestamp":cdt.isoformat(), "redirector": self.ip, "connections":self.nconn,"ctime":self.ctime, "timeouts":self.timeouts, "errors":self.errors, "redirects":self.redirects, "delays":self.delays },
-            "body":''
+            "headers":{"type":"FAXredirectors", "timestamp":int(time.time()*1000), "redirector": self.ip, "connections":self.nconn,"ctime":self.ctime, "timeouts":self.timeouts, "errors":self.errors, "redirects":self.redirects, "delays":self.delays },
+            "body":'"time":"'+cdt.isoformat()+'"'
         }
         jmsg=json.dumps([m])
         print jmsg
