@@ -18,13 +18,13 @@ voms-proxy-init -valid 24:0 -voms atlas -pwstdin < /home/ivukotic/gridlozinka.tx
 #           "summary_redirectors" : {
 #               "_source" : { "enabled" : true },
 #               "properties" : {
-#                   "redirector" : { "type" : "string", "index" : "not_analyzed" },
-#                   "connections" : { "type" : "integer", "index" : "analyzed" },
-#                   "ctime" : { "type" : "integer", "index" : "analyzed" },
-#                   "delays" : { "type" : "integer", "index" : "analyzed" },
-#                   "timeouts" : { "type" : "integer", "index" : "analyzed" },
-#                   "redirects" : { "type" : "integer", "index" : "not_analyzed" },
-#                   "errors" : { "type" : "integer", "index" : "not_analyzed" },
+#                   "@fields.redirector" : { "type" : "string", "index" : "not_analyzed" },
+#                   "@fields.connections" : { "type" : "integer", "index" : "analyzed" },
+#                   "@fields.ctime" : { "type" : "integer", "index" : "analyzed" },
+#                   "@fields.delays" : { "type" : "integer", "index" : "analyzed" },
+#                   "@fields.timeouts" : { "type" : "integer", "index" : "analyzed" },
+#                   "@fields.redirects" : { "type" : "integer", "index" : "not_analyzed" },
+#                   "@fields.errors" : { "type" : "integer", "index" : "not_analyzed" },
 #                   "timestamp":{ "type": "date"}
 #               }
 #           }
