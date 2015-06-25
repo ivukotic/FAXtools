@@ -20,12 +20,13 @@ voms-proxy-init -valid 24:0 -voms atlas -pwstdin < /home/ivukotic/gridlozinka.tx
 #               "properties" : {
 #                   "@fields.redirector" : { "type" : "string", "index" : "not_analyzed" },
 #                   "@fields.connections" : { "type" : "integer", "index" : "analyzed" },
-#                   "@fields.ctime" : { "type" : "integer", "index" : "analyzed" },
-#                   "@fields.delays" : { "type" : "integer", "index" : "analyzed" },
-#                   "@fields.timeouts" : { "type" : "integer", "index" : "analyzed" },
+#                   "@fields.ctime" : { "type" : "integer", "index" : "not_analyzed" },
+#                   "@fields.delays" : { "type" : "integer", "index" : "not_analyzed" },
+#                   "@fields.timeouts" : { "type" : "integer", "index" : "not_analyzed" },
 #                   "@fields.redirects" : { "type" : "integer", "index" : "not_analyzed" },
 #                   "@fields.errors" : { "type" : "integer", "index" : "not_analyzed" },
-#                   "timestamp":{ "type": "date"}
+#                   "@fields.type" : { "type" : "string", "index" : "not_analyzed" },
+#                   "@fields.timestamp":{ "type": "date"}
 #               }
 #           }
 #       }
@@ -33,5 +34,6 @@ voms-proxy-init -valid 24:0 -voms atlas -pwstdin < /home/ivukotic/gridlozinka.tx
 #
 # delete it 
 # curl -XDELETE aianalytics01.cern.ch:9200/_template/fax_summary_redirectors_template
-
+# delete index:
+# curl -XDELETE 'http://aianalytics01.cern.ch:9200/fax_summary_redirectors_2015_06_25'
 
