@@ -60,6 +60,7 @@ class host:
         print '\tnconn:',self.nconn,'\t avg. conn time:', self.ctime, '\ttimeouts:',self.timeouts,'\terrors:',self.errors,'\tredirects:',self.redirects,'\tdelays:',self.delays
     def postToFlume(self):
         cdt=datetime.datetime.utcnow()
+        cdt=cdt.replace(microsecond=0)
         m = {
             "headers":{"type":"FAXredirectors", "timestamp":cdt.isoformat(), "redirector": self.ip, "connections":self.nconn,"ctime":self.ctime, "timeouts":self.timeouts, "errors":self.errors, "redirects":self.redirects, "delays":self.delays },
             "body":''
