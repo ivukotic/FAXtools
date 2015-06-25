@@ -10,6 +10,8 @@ voms-proxy-init -valid 24:0 -voms atlas -pwstdin < /home/ivukotic/gridlozinka.tx
 # faxAgent.sinks.ESFAXredirectorsOut.indexType=summary_redirectors
 
 #####  ES template is like this
+# delete it, then create it 
+#   curl -XDELETE aianalytics01.cern.ch:9200/_template/fax_summary_redirectors_template
 #   
 #   curl -XPOST 'http://aianalytics01.cern.ch:9200/_template/fax_summary_redirectors_template' -d '{
 #       "template" : "fax_summary_redirectors*",
@@ -25,15 +27,13 @@ voms-proxy-init -valid 24:0 -voms atlas -pwstdin < /home/ivukotic/gridlozinka.tx
 #                   "@fields.timeouts" : { "type" : "integer", "index" : "not_analyzed" },
 #                   "@fields.redirects" : { "type" : "integer", "index" : "not_analyzed" },
 #                   "@fields.errors" : { "type" : "integer", "index" : "not_analyzed" },
-#                   "@fields.type" : { "type" : "string", "index" : "not_analyzed" },
-#                   "@fields.timestamp":{ "type": "date"}
+#                   "@fields.type" : { "type" : "string", "index" : "not_analyzed" }
 #               }
 #           }
 #       }
 #   }'
 #
-# delete it 
-# curl -XDELETE aianalytics01.cern.ch:9200/_template/fax_summary_redirectors_template
+
 # delete index:
-# curl -XDELETE 'http://aianalytics01.cern.ch:9200/fax_summary_redirectors_2015_06_25'
+# curl -XDELETE 'http://aianalytics01.cern.ch:9200/fax_summary_redirectors_2015-06-25'
 
