@@ -344,6 +344,9 @@ with open('checkRedirectorDownstream.sh', 'w') as f:
                or (r.name=='XROOTD_atlas-xrd-eu' and s.redirector.count('cern.ch')>0):
                 lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
                 comm = cpcomm + ' root://'+r.address+lookingFor+redstring+logfile+' & \n'
+                loc_comm = 'xrdfs ' + r.address + ' locate -h ' + '/atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
+                f.write('echo "executing locate command:\n ' + loc_comm + '" >> ' + logfile + '\n')
+                f.write(loc_comm)
                 f.write('echo "command executed:\n ' + comm + '" >> ' + logfile + '\n')
                 f.write('echo "========================================================================" >> ' + logfile + '\n')
                 f.write(comm)
