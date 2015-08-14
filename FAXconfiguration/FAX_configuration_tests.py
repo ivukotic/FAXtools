@@ -262,7 +262,7 @@ with open('checkDownstream.sh', 'w') as f: # ask global redirectors for files be
         if s.direct==0: continue
         logfile='downstreamTo_'+s.name+logpostfix
         lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
-        comm = cpcomm + ' root://'+ s.redirector + lookingFor + redstring + logfile + ' & \n'
+        comm = cpcomm + ' root://'+ s.redirector + lookingFor + redstring + '>' + logfile + ' & \n'
         
         loc_comm = 'xrdfs ' + s.redirector + ' locate -h ' + '/atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M 2>&1 >> ' + logfile + ' & \n'
         f.write('echo "executing locate command..." >> ' + logfile + '\n')
