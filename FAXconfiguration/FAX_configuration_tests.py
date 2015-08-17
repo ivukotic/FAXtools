@@ -593,7 +593,7 @@ with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiRedirecto
 print '-------------------------------- Writing to GAE -------------------------------------------'
 
 for s in sites:
-    data = dict(epName=s.name, epStatus=str(s.status()), epAddress=s.host, epOffline=str(s.offline))
+    data = dict(epName=s.name, epStatus=str(s.status()), epOffline=str(s.offline) )
     try:
         u = urllib2.urlopen('http://waniotest.appspot.com/wanio', urllib.urlencode(data))
         print u.read(), u.code
