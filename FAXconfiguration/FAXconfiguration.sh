@@ -7,6 +7,7 @@ source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh
 export RUCIO_ACCOUNT=ivukotic
 #localSetupFAX --xrootdVersion=3.3.6-x86_64-slc6
 localSetupFAX --xrootdVersion=4.0.2-x86_64-slc6
+localSetupAGIS
 
 voms-proxy-init -cert /afs/cern.ch/user/i/ivukotic/.globus/usercert.pem -key /afs/cern.ch/user/i/ivukotic/.globus/userkey.pem -voms atlas -pwstdin < /afs/cern.ch/user/i/ivukotic/gridlozinka.txt
 

@@ -4,6 +4,13 @@ import stomp, logging, datetime, ConfigParser, random
 import urllib, urllib2
 from random import shuffle
 
+hasOfflineInfo = True
+try: 
+    from agisconf import agis
+except ImportError: 
+    print "Wont have information on Offline sites."
+    hasOfflineInfo = False
+
 try: import simplejson as json
 except ImportError: import json
 
@@ -68,6 +75,7 @@ class site:
     security=0
     delay=0
     monitor=0
+    offline=False
     comm1=''
     
     def __init__(self, fn, na, ho, re):
@@ -78,12 +86,13 @@ class site:
         self.name=na
         self.host=ho
         self.redirector=re
+        self.offline=False
         # self.rucio=0
     
     def prnt(self, what):
         if (what>=0 and self.redirector!=what): return
         print '------------------------------------\nfullname:',self.fullname
-        print 'redirector:', self.redirector, '\tname:', self.name, '\thost:', self.host
+        print 'redirector:', self.redirector, '\tname:', self.name, '\thost:', self.host, "\t isOffline:", self.offline
         print 'responds:', self.direct, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t security:', self.security, '\t delay:', self.delay, '\t monitored:', self.monitor
     
     def status(self):
@@ -120,10 +129,19 @@ try:
 except:
     print "Unexpected error:", sys.exc_info()[0]    
     
-
-        
-
-
+    
+downed = set()
+try:        
+    downtimes_ongoing = agis.list_downtimes(ongoing_time=datetime.datetime.utcnow())
+    for i in downtimes_ongoing:
+         for en in range(len(downtimes_ongoing[i])):
+              afs=downtimes_ongoing[i][en].affected_services
+              if ('SRM' in afs or 'SRMv2' in afs):
+                   print "Affected site:", i, afs
+                   downed.add(i)
+except:
+    print "Could not load Offlined sites: ", sys.exc_info()[0]    
+    hasOfflineInfo = False
 
 
 print 'Geting redirector list from AGIS...' 
@@ -164,6 +182,12 @@ class Command(object):
 
 
 for s in sites: s.prnt(-1) # print all
+
+print 'labeling offline sites'
+for s in sites:
+    if s.name in downed:
+        s.offline=True
+        
 print 'creating scripts to execute'
     
 
@@ -569,7 +593,7 @@ with open('/afs/cern.ch/user/i/ivukotic/www/logs/FAXconfiguration/tWikiRedirecto
 print '-------------------------------- Writing to GAE -------------------------------------------'
 
 for s in sites:
-    data = dict(epName=s.name, epStatus=str(s.status()), epAddress=s.host)
+    data = dict(epName=s.name, epStatus=str(s.status()), epAddress=s.host, epOffline=str(s.offline))
     try:
         u = urllib2.urlopen('http://waniotest.appspot.com/wanio', urllib.urlencode(data))
         print u.read(), u.code
