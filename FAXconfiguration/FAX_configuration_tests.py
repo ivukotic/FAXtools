@@ -593,7 +593,7 @@ print '-------------------------------- Writing to GAE -------------------------
 for s in sites:
     data = dict(epName=s.name, epStatus=str(s.status()), epOffline=str(s.offline) )
     try:
-        u = urllib2.urlopen('http://waniotest.appspot.com/wanio', urllib.urlencode(data))
+        u = urllib2.urlopen('http://waniotest.appspot.com/endpointstatus', urllib.urlencode(data))
         print u.read(), u.code
     except:
         print "Error when uploading to GAE:", sys.exc_info()[0]
