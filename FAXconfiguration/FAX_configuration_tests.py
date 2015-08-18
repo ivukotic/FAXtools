@@ -178,12 +178,13 @@ class Command(object):
     
 
 
-for s in sites: s.prnt(-1) # print all
-
 print 'labeling offline sites'
 for s in sites:
     if s.name in downed:
         s.offline=True
+        
+for s in sites: s.prnt(-1) # print all
+
         
 print 'creating scripts to execute'
     
