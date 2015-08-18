@@ -4,12 +4,10 @@ import stomp, logging, datetime, ConfigParser, random
 import urllib, urllib2
 from random import shuffle
 
-hasOfflineInfo = True
 try: 
     from agisconf import agis
 except ImportError: 
     print "Wont have information on Offline sites."
-    hasOfflineInfo = False
 
 try: import simplejson as json
 except ImportError: import json
@@ -140,8 +138,7 @@ try:
                    print "Affected site:", i, afs
                    downed.add(i)
 except:
-    print "Could not load Offlined sites: ", sys.exc_info()[0]    
-    hasOfflineInfo = False
+    print "Could not load Offlined sites: ", sys.exc_info()[0]   
 
 
 print 'Geting redirector list from AGIS...' 
