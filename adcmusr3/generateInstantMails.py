@@ -15,7 +15,7 @@ ssblink="http://dashb-atlas-ssb.cern.ch/dashboard/request.py/getplotdata?time=1&
 hours=5
 cuthours=3
 limtime=timedelta(0,cuthours*3600)
-curtime=datetime.datetime.utcnow()
+curtime=datetime.utcnow()
 cuttime=curtime-timedelta(0,hours*3600)
 
 def loadJson(url):
