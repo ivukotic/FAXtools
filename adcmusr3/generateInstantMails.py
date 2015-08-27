@@ -134,14 +134,14 @@ for si in data:
 
 # lastReported
 try:
-	f1 = open(outputdir+'/LastReported.json','r')
-        prev=json.load(f1)
-        for c in prev:
-            if c in Sites:
-                Sites[c].lastReported=prev[c]
+    f1 = open(outputdir+'/LastReported.json','r')
+    prev=json.load(f1)
+    for c in prev:
+        if c in Sites:
+            Sites[c].lastReported=prev[c]
     f1.close()
 except:
-	pass
+    pass
 
 # exit immediately in case too many direct access problems.
 totFailedDirect=totFailedUp=totFailedDown=0
