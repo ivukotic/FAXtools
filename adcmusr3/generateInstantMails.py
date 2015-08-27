@@ -2,6 +2,7 @@
 import os, sys, time
 from  datetime import datetime
 from datetime import timedelta
+
 try: import simplejson as json
 except ImportError: import json
 
@@ -9,12 +10,27 @@ import urllib2
 
 outputdir=sys.argv[1]
 print 'output will be stored in:', outputdir
+ssblink="http://dashb-atlas-ssb.cern.ch/dashboard/request.py/getplotdata?time=1&dateFrom=&dateTo=&sites=all&clouds=all&batch=1&columnid="
 
 hours=5
 cuthours=3
 limtime=timedelta(0,cuthours*3600)
-curtime=datetime.now()
+curtime=datetime.datetime.utcnow()
 cuttime=curtime-timedelta(0,hours*3600)
+
+def loadJson(url):
+    print url
+    try:
+    	response=urllib2.Request(url,None)
+    	opener = urllib2.build_opener()
+    	f = opener.open(response)
+    	data = json.load(f)
+    	data=data["csvdata"]
+        return data
+    except:
+        print "Unexpected error:", sys.exc_info()[0]
+        sys.exit(1)
+        
 
 class site:
         direct=0
@@ -57,16 +73,7 @@ class site:
 
 
 #direct
-url="http://dashb-atlas-ssb.cern.ch/dashboard/request.py/getplotdata?time=1&dateFrom=&dateTo=&sites=all&clouds=all&batch=1&columnid=10083"
-print url
-try:
-	response=urllib2.Request(url,None)
-	opener = urllib2.build_opener()
-	f = opener.open(response)
-	data = json.load(f)
-	data=data["csvdata"]
-except:
-    print "Unexpected error:", sys.exc_info()[0]
+data=loadJson(ssblink+"10083")
 
 Sites=dict()
 for si in data:
@@ -85,16 +92,7 @@ for si in data:
 	if si['COLOR']==3: Sites[n].directfails+= (et - st)
 
 ##upstream
-url="http://dashb-atlas-ssb.cern.ch/dashboard/request.py/getplotdata?time=1&dateFrom=&dateTo=&sites=all&clouds=all&batch=1&columnid=10084"
-print url
-try:
-        response=urllib2.Request(url,None)
-        opener = urllib2.build_opener()
-        f = opener.open(response)
-        data = json.load(f)
-        data=data["csvdata"]
-except:
-    print "Unexpected error:", sys.exc_info()[0]
+data=loadJson(ssblink+"10084")
 
 for si in data:
         n=si['VOName']
@@ -113,16 +111,7 @@ for si in data:
 
 
 ##downstream
-url="http://dashb-atlas-ssb.cern.ch/dashboard/request.py/getplotdata?time=1&dateFrom=&dateTo=&sites=all&clouds=all&batch=1&columnid=10085"
-print url
-try:
-        response=urllib2.Request(url,None)
-        opener = urllib2.build_opener()
-        f = opener.open(response)
-        data = json.load(f)
-        data=data["csvdata"]
-except:
-    print "Unexpected error:", sys.exc_info()[0]
+data=loadJson(ssblink+"10085")
 
 for si in data:
         n=si['VOName']
@@ -148,10 +137,9 @@ try:
 	f1 = open(outputdir+'/LastReported.json','r')
         prev=json.load(f1)
         for c in prev:
-		#print c, prev[c]
-                if c in Sites:
-			Sites[c].lastReported=prev[c]
-        f1.close()
+            if c in Sites:
+                Sites[c].lastReported=prev[c]
+    f1.close()
 except:
 	pass
 

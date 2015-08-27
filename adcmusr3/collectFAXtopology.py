@@ -195,7 +195,7 @@ f6.write(json.dumps(content))
 f6.close()
 
 print 'writing monitoring.data'
-ts=datetime.datetime.now()
+ts=datetime.datetime.utcnow()
 ts=ts.replace(microsecond=0)
 ts=ts.replace(second=0)
 fr=str(ts-datetime.timedelta(0,5*3600)).replace(" ","+").replace(":","%3A")
