@@ -3,7 +3,7 @@
 export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
 source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh --quiet
 export RUCIO_ACCOUNT=adcmusr3
-localSetupAGIS --quiet
+lsetup agis --quiet
 
 cd ~/FAXtools/adcmusr3/
 
