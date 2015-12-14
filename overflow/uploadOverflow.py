@@ -13,7 +13,7 @@ headers={ 'Content-Type': 'application/json' }
 try:
     req = urllib2.Request("http://bigpanda.cern.ch/jobs/?transfertype=fax&limit=100000&hours=1&json", None, headers)
     opener = urllib2.build_opener()
-    f = opener.open(req,timeout=50)
+    f = opener.open(req,timeout=600)
     res=json.load(f)
     f.close()
     cleaned=[]
@@ -28,9 +28,12 @@ try:
         jo=[j['pandaid'],j['jeditaskid'], j['jobstatus'],j['currentpriority'], j['computingsite'],j['produsername'],j['creationtime'],j['waittime'],j['duration'],j['cpuconsumptiontime']]
         cleaned.append(jo)
     json_data = json.dumps(cleaned)
-
+except URLError as e:
+    print "# Can't load from bigpandamon ", e.reason
+    sys.exit(1)
 except:
     print "# Can't load from bigpandamon ", sys.exc_info()[0]
+    sys.exit(1)
 
 print json_data
 
