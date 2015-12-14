@@ -28,7 +28,7 @@ try:
         jo=[j['pandaid'],j['jeditaskid'], j['jobstatus'],j['currentpriority'], j['computingsite'],j['produsername'],j['creationtime'],j['waittime'],j['duration'],j['cpuconsumptiontime']]
         cleaned.append(jo)
     json_data = json.dumps(cleaned)
-except URLError as e:
+except urllib2.URLError as e:
     print "# Can't load from bigpandamon ", e.reason
     sys.exit(1)
 except:
