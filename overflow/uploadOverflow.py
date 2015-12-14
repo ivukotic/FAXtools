@@ -17,7 +17,7 @@ try:
     res=json.load(f)
     f.close()
     cleaned=[]
-    for j in res:
+    for j in res['jobs']:
         if j['jobstatus']=='cancelled': continue
         if j['jobstatus']=='activated': continue
         if j['jobstatus']=='running': continue
