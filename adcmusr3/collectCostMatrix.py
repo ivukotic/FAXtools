@@ -7,6 +7,9 @@ from agisconf import agis
 from datetime import datetime
 import socket
 
+from elasticsearch import Elasticsearch
+from elasticsearch import helpers
+
 import logging
 
 debug=False
@@ -28,13 +31,19 @@ global messages
 messages=[]
 
 hostalias='dashb-mb.cern.ch'
+queue = '/queue/faxmon.costMatrix'
+
+d = datetime.now()
+ind="faxcost-"+str(d.year)+"."+str(d.month)+"."+str(d.day)
+        
 s=socket.gethostbyname_ex(hostalias)
 if debug: 
     print 'aliases: ', s[2]
+
 allhosts=[]
 for a in s[2]:
     allhosts.append([(a, 61123)])
-queue = '/queue/faxmon.costMatrix'
+
 
 
 class MyListener(object):
@@ -59,7 +68,7 @@ class sites:
                 return
         if debug: print 'appended site'
         self.siteD.append(sit)
-  
+
 class site:
     def __init__(self):
         self.rates=[]
@@ -82,7 +91,7 @@ class site:
 
 
 allSites=sites()
-
+allData = []
 logFile=sys.argv[2]
 lf = open(logFile, 'w')
 
@@ -100,6 +109,10 @@ for host in allhosts:
         for message in messages:
             s=site()
             message=message.split('\n')
+            data = {
+                '_index': ind,
+                '_type': 'rate'
+            }
             for l in message:
                 # print l
                 l=l.split(": ")
@@ -107,17 +120,35 @@ for host in allhosts:
                 l[1]=l[1].strip()
                 if debug: print l[0],l[1],"\t",
                 lf.write(l[0]+" "+l[1]+" \t")
-                if l[0]=='site_from': s.fr=l[1]
-                if l[0]=='site_to': s.to=l[1]
+                if l[0]=='site_from': 
+                    s.fr=l[1]
+                    data['source']=l[1]
+                if l[0]=='site_to': 
+                    s.to=l[1]
+                    data['destination']=l[1]
                 if l[0]=='metricName': continue
-                if l[0]=='rate': s.rates.append(float(l[1]))
-                if l[0]=='timestamp': s.timestamps.append( l[1] )
+                if l[0]=='rate': 
+                    s.rates.append(float(l[1]))
+                    data['rate']=float(l[1])
+                if l[0]=='timestamp': 
+                    s.timestamps.append( l[1] )
+                    data['timestamp']=l[1].replace(' ','T')
             if debug: print 
             lf.write("\n")
             allSites.addSite(s)
+            allData.append(data)
         messages=[]        
 
 lf.close()
+
+es = Elasticsearch([{'host':'cl-analytics.mwt2.org', 'port':9200}])
+try:
+    res = helpers.bulk(es, allData, raise_on_exception=True)
+    print "inserted:",res[0], '\tErrors:',res[1]
+except helpers.BulkIndexError as e:
+    print "indexing error: ", e
+except:
+    print 'Something seriously wrong happened in idexing step. ', sys.exc_info()[0]
 
 f1 = open(outputdir+'/cost.data','w')
 f2 = open(outputdir+'/costsource.data','w')
