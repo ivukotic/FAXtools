@@ -98,7 +98,9 @@ lf = open(logFile, 'w')
 # Connect to all of the  stompservers, listen to the queue for 2 seconds, print the messages and disconnect
 for host in allhosts: 
     try:
-        conn = stomp.Connection(host, use_ssl=True, ssl_version=ssl.PROTOCOL_TLSv1, ssl_key_file='/afs/cern.ch/user/a/adcmusr3/.globus/Request2014/hostkey.pem', ssl_cert_file='/afs/cern.ch/user/a/adcmusr3/.globus/Request2014/hostcert.pem')
+        # /afs/cern.ch/user/a/adcmusr3/.globus/adcmusr3_20151009_EXPIRE-20161112/hostkey.pem
+        # /afs/cern.ch/user/a/adcmusr3/.globus/adcmusr3_20151009_EXPIRE-20161112/hostcert.pem
+        conn = stomp.Connection(host, use_ssl=True, ssl_version=ssl.PROTOCOL_TLSv1, ssl_key_file='/afs/cern.ch/user/a/adcmusr3/.globus/adcmusr3_20151009_EXPIRE-20161112/hostkey.pem', ssl_cert_file='/afs/cern.ch/user/a/adcmusr3/.globus/adcmusr3_20151009_EXPIRE-20161112/hostcert.pem')
         conn.set_listener('MyConsumer', MyListener())
         conn.start()
         conn.connect()
