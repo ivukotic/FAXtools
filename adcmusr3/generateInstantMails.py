@@ -203,13 +203,15 @@ for sn,s in Sites.items():
                 print "BLACKLISTED upstream!", sn, s.lastReported
                 s.lastReported[1]=1
 
-        if s.lastReported[2]==0 and s.downstreamfails>limtime and s.downstream==3:
-                if s.cloud not in clouds:
-                        clouds[s.cloud]=dict()
-                if sn not in clouds[s.cloud]: clouds[s.cloud][sn]=''
-                clouds[s.cloud][sn]+="Failing to access file via downstream redirection during more than "+str(cuthours)+" in last "+str(hours)+" hours. "
-                print "BLACKLISTED downstream!", sn, s.lastReported
-                s.lastReported[2]=1
+        # commented out downstream redirection mailing in order not to bother people not responsible.
+        # #############################################################################################
+        # if s.lastReported[2]==0 and s.downstreamfails>limtime and s.downstream==3:
+        #         if s.cloud not in clouds:
+        #                 clouds[s.cloud]=dict()
+        #         if sn not in clouds[s.cloud]: clouds[s.cloud][sn]=''
+        #         clouds[s.cloud][sn]+="Failing to access file via downstream redirection during more than "+str(cuthours)+" in last "+str(hours)+" hours. "
+        #         print "BLACKLISTED downstream!", sn, s.lastReported
+        #         s.lastReported[2]=1
 print alljson
 
 f1 = open(outputdir+'/LastReported.json','w')
