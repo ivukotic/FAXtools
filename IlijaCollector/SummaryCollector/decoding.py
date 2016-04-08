@@ -3,16 +3,6 @@ import struct,requests
 import sys, time
 from elasticsearch import Elasticsearch, exceptions as es_exceptions
 
-def RefreshConnection(lastReconnectionTime):
-    global es
-    if ( time.time()-lastReconnectionTime < 60 ):
-        return
-    lastReconnectionTime=time.time()
-    logger.info('make sure we are connected right...')
-    res = requests.get('http://uct2-es-door.mwt2.org:9200')
-    logger.info(res.content)
-    es = Elasticsearch([{'host':'uct2-es-door.mwt2.org', 'port':9200}])
-
 header = namedtuple("header", ["code", "pseq","plen","server_start"])
 mapheader = namedtuple("mapheader",["dictID","info"])
 
@@ -33,17 +23,20 @@ def userInfo(message):
     c = message
     if '/' in message:
         prot,c = message.split('/',1)
-    user,c  =c.split('.',1)
-    pid,c   =c.split(':',1)
-    sid,host=c.split('@',1)
+    hind = c.rfind('@')
+    host = c[hind+1:]
+    c=c[:hind]
+    c,sid = c.split(':',1)
+    hind = c.rfind('.')
+    pid = c[hind+1:]
+    user = c[:hind]
     pi=0
     si=0
     try:
         pi=int(pid)
         si=int(sid)
     except ValueError as e: 
-        logger.error("serious value error: ", pid, sid)
-        logger.error("message was:", message)
+        print("serious value error: ", pid, sid, "message was:", message)
     return userid(user,pi,si,host)
 
 def authorizationInfo(message):
