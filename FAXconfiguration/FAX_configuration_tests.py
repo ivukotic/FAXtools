@@ -192,7 +192,7 @@ print 'creating scripts to execute'
 dsNAMEpref='user.ivukotic.xrootd.'
 fnNAMEpref='/user.ivukotic.xrootd.'
 workingDir='/afs/cern.ch/user/i/ivukotic/FAXtools/FAXconfiguration/'
-cpcomm='xrdcp -d 2 -f -np '
+cpcomm='timeout 270 xrdcp -d 2 -f -np '
 ts=datetime.datetime.utcnow()
 logpostfix=ts.strftime("_%Y-%m-%dT%H00")+'.log'
 redstring=' - 2>&1 >/dev/null | cat >'
