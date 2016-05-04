@@ -295,7 +295,7 @@ try:
             lookingFor = '//atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M'
             comm = cpcomm + ' root://'+ s.redirector + lookingFor + redstring + '>' + logfile + ' & \n'
         
-            loc_comm = 'xrdfs ' + s.redirector + ' locate -h ' + '/atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M 2>&1 >> ' + logfile + ' \n'
+            loc_comm = 'timeout 5 xrdfs ' + s.redirector + ' locate -h ' + '/atlas/rucio/user/ivukotic:user.ivukotic.xrootd.'+s.lname+'-1M 2>&1 >> ' + logfile + ' \n'
             f.write('echo "executing locate command..." >> ' + logfile + '\n')
             f.write(loc_comm)
             f.write('echo "done with locate command." >> ' + logfile + '\n')
@@ -335,8 +335,8 @@ for s in sites:
                 
                 
 
-print "================================= CHECK DELAYS ================================================"
-print " this test is not run as we don't understand it's results.  "
+#print "================================= CHECK DELAYS ================================================"
+#print " this test is not run as we don't understand it's results.  "
 #
 # with open('checkDelays.sh', 'w') as f:
 #     for s in sites:
@@ -537,8 +537,8 @@ for s in sites: s.prnt(0)  #print only real sites
 
 
     
-print "================================= CHECK MONITORING =================================================="
-print "this test is turned off since dashboard link does not work any more and nobody was looking at the results."    
+#print "================================= CHECK MONITORING =================================================="
+#print "this test is turned off since dashboard link does not work any more and nobody was looking at the results."    
 # print 'Geting info from Dashboard ...'
 # ts1=datetime.datetime.utcnow()
 # ts1=ts1.replace(microsecond=0)
