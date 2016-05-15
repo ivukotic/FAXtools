@@ -34,7 +34,7 @@ hostalias='dashb-mb.cern.ch'
 queue = '/queue/faxmon.costMatrix'
 
 d = datetime.now()
-ind="faxcost-"+str(d.year)+"."+str(d.month)+"."+str(d.day)
+ind = "faxcost-" + str(d.year) + "." + str(d.month).zfill(2) 
         
 s=socket.gethostbyname_ex(hostalias)
 if debug: 
