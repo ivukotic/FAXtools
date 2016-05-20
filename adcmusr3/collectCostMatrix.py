@@ -34,7 +34,7 @@ hostalias='dashb-mb.cern.ch'
 queue = '/queue/faxmon.costMatrix'
 
 d = datetime.now()
-ind="faxcost-"+str(d.year)+"."+str(d.month)+"."+str(d.day)
+ind = "faxcost-" + str(d.year) + "." + str(d.month).zfill(2) 
         
 s=socket.gethostbyname_ex(hostalias)
 if debug: 
@@ -144,13 +144,22 @@ for host in allhosts:
 lf.close()
 
 es = Elasticsearch([{'host':'cl-analytics.mwt2.org', 'port':9200}])
+es1 = Elasticsearch([{'host':'es-atlas.cern.ch', 'port':9202}], ,http_auth=('es-atlas', 'pass'))
 try:
     res = helpers.bulk(es, allData, raise_on_exception=True)
     print "inserted:",res[0], '\tErrors:',res[1]
 except helpers.BulkIndexError as e:
     print "indexing error: ", e
 except:
-    print 'Something seriously wrong happened in idexing step. ', sys.exc_info()[0]
+    print 'Something seriously wrong happened in idexing to UC step. ', sys.exc_info()[0]
+
+try:
+    res = helpers.bulk(es1, allData, raise_on_exception=True)
+    print "inserted:",res[0], '\tErrors:',res[1]
+except helpers.BulkIndexError as e:
+    print "indexing error: ", e
+except:
+    print 'Something seriously wrong happened in idexing to CERN step. ', sys.exc_info()[0]
 
 f1 = open(outputdir+'/cost.data','w')
 f2 = open(outputdir+'/costsource.data','w')
