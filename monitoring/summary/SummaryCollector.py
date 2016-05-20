@@ -99,7 +99,7 @@ def eventCreator():
             continue
         except:
             logger.error ("unexpected error. messsage was: %s", d)
-            print sys.exc_info()[0]
+            print(sys.exc_info()[0])
             q.task_done()
             continue
             
