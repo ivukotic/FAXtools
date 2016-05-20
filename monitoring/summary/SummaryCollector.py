@@ -5,7 +5,7 @@ import decoding
 import xmltodict
 from xml.parsers.expat import ExpatError
 
-import Queue, os, sys, time
+import queue, os, sys, time
 import threading
 from threading import Thread
 import socket, requests
@@ -299,7 +299,7 @@ es = None
 while (not es):
     RefreshConnection()
 
-q=Queue.Queue()
+q=queue.Queue()
 #start eventCreator threads
 for i in range(2):
      t = Thread(target=eventCreator)
