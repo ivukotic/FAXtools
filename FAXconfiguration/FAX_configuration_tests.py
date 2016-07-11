@@ -116,7 +116,7 @@ class redirector:
 print 'Geting site list from AGIS...' 
 
 try:
-    req = urllib2.Request("http://atlas-agis-api.cern.ch/request/service/query/get_se_services/?json&state=ACTIVE&flavour=XROOTD", None)
+    req = urllib2.Request("http://atlas-agis-api.cern.ch/request/service/query/get_se_services/?json&state=ACTIVE&flavour=XROOTD&door_type=external", None)
     opener = urllib2.build_opener()
     f = opener.open(req)
     res=json.load(f)
