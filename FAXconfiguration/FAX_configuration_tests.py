@@ -67,7 +67,9 @@ class site:
     fullname=''
     host=''
     redirector=''
+    door_type=''
     direct=0
+    native=0
     upstream=0
     downstream=0
     security=0
@@ -76,7 +78,7 @@ class site:
     offline=False
     comm1=''
     
-    def __init__(self, fn, na, ho, re):
+    def __init__(self, fn, na, ho, re, dt):
         if na=='GRIF':
             na=fn
         self.fullname=fn
@@ -85,17 +87,18 @@ class site:
         self.host=ho
         self.redirector=re
         self.offline=False
+        self.door_type=dt
         # self.rucio=0
     
     def prnt(self, what):
         if (what>=0 and self.redirector!=what): return
         print '------------------------------------\nfullname:',self.fullname
         print 'redirector:', self.redirector, '\tname:', self.name, '\thost:', self.host, "\t isOffline:", self.offline
-        print 'responds:', self.direct, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t security:', self.security, '\t delay:', self.delay, '\t monitored:', self.monitor
+        print 'responds:', self.direct,'\t native:', self.native, '\t upstream:', self.upstream, '\t downstream:', self.downstream, '\t security:', self.security, '\t delay:', self.delay, '\t monitored:', self.monitor
     
     def status(self):
        s=0
-       # s=s|(self.rucio<<5)
+       s=s|(self.native<<5)
        s=s|(self.monitor<<4)
        s=s|(self.security<<3)
        s=s|(self.downstream<<2)
@@ -121,8 +124,12 @@ try:
     f = opener.open(req)
     res=json.load(f)
     for s in res:
-        print  s["name"],s["rc_site"], s["endpoint"], s["redirector"]["endpoint"]
-        si=site(s["name"],s["rc_site"], s["endpoint"], s["redirector"]["endpoint"])
+        if "redirector" in s: 
+            red=s["redirector"]["endpoint"] 
+        else: 
+            red="unassigned"
+        print  s["name"],s["rc_site"], s["endpoint"], red, s["door_type"]
+        si=site(s["name"],s["rc_site"], s["endpoint"], red, s["door_type"])
         sites.append(si)
 except:
     print "Unexpected error:", sys.exc_info()[0]    
