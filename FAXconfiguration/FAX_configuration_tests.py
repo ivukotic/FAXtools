@@ -125,7 +125,10 @@ try:
     res=json.load(f)
     for s in res:
         if "redirector" in s: 
-            red=s["redirector"]["endpoint"] 
+            if s["redirector"] is None:
+                red="unassigned"
+            else:
+                red=s["redirector"]["endpoint"]
         else: 
             red="unassigned"
         print  s["name"],s["rc_site"], s["endpoint"], red, s["door_type"]
